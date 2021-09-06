@@ -1,6 +1,6 @@
 #crummy.com/software/BeautifulSoup/bs4/doc/
 
-import os
+import os #for replit
 import requests
 from bs4 import BeautifulSoup
 
@@ -14,7 +14,7 @@ for i in range(1, page_to_crawl + 1):
   soup = BeautifulSoup(response.text, "html.parser")
   soup.encoding = response.encoding
 
-  #row_01 & row_02 appears cyclically, including all information we need
+  #row_01 & row_02 appears alternately, including all information we need
 
   #in a row there'll be three <td>, first one has the <div> which contains the hyperlink of the article and the title while other two contain the source and the date
 
