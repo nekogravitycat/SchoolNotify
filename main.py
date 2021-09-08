@@ -5,7 +5,6 @@ from replit import db
 import time
 import requests
 from bs4 import BeautifulSoup
-
 import email.message
 import smtplib
 
@@ -90,11 +89,6 @@ print(f"Latest date: {db['latest_date']}\n")
 send_email = True
 
 if send_email:
-  msg = email.message.EmailMessage()
-  msg["From"] = os.environ["account"]
-  msg["To"] = os.environ["email"]
-  msg["Subject"] = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
-
   content = ""
   
   if is_empty:
@@ -107,12 +101,20 @@ if send_email:
 
   content += f"form: {from_date}<br>latest: {db['latest_date']}"
 
-  #msg.set_content("") #for plain text
-  msg.add_alternative(content, subtype = "html") #for html
-
   server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
   server.login(os.environ["account"], os.environ["password"])
-  server.send_message(msg)
+
+  for r in os.environ["recipients"].split(";"): #split recipients with ;
+    msg = email.message.EmailMessage()
+    msg["From"] = os.environ["account"]
+    msg["To"] = r
+    msg["Subject"] = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
+
+    #msg.set_content("") #for plain text
+    msg.add_alternative(content, subtype = "html") #for html
+
+    server.send_message(msg)
+  
   server.close()
 
 
