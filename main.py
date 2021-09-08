@@ -71,21 +71,20 @@ while next:
   page += 1
 
 
-from_date = ""
+from_date = db['latest_date']
 is_empty = len(result) == 0
 
 if is_empty:
-  print("No any new announcemt")
+  print("No any new announcemt\n")
 
 else:
-  from_date = db['latest_date']
   db["latest_date"] = result[0].date_str()
 
   for r in result:
     print(r.detail() + "\n")
 
 print(f"From: {from_date}")
-print(f"Latest date: {db['latest_date']}")
+print(f"Latest date: {db['latest_date']}\n")
 
 
 send_email = True
