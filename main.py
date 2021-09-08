@@ -1,40 +1,47 @@
 #crummy.com/software/BeautifulSoup/bs4/doc/
 
-import os #for replit
+import os
+from replit import db
+import time
 import requests
 from bs4 import BeautifulSoup
 
 import email.message
 import smtplib
 
-page_to_crawl = 1
-result = [] #storing Announcement()
+#db["latest_date"] = "2021-08-10" #for testing
+result = [] #storing Announcement()s
 
 
 class Announcement:
   def __init__(self, link, title, date):
-    self.link = link
-    self.title = title
-    self.date = date
+    self.link = link #str
+    self.title = title #str
+    self.date = date #time.struct_time
 
   def detail(self):
-    return f"{str(self.link)}\n{str(self.title)}\n{str(self.date)}"
+    return f"{str(self.link)}\n{str(self.title)}\n{str(self.date_str())}"
 
   def html(self):
-    return f'<a href="{self.link}">{self.title}</a> {self.date}'
+    return f'<a href="{str(self.link)}">{str(self.title)}</a> {str(self.date_str())}'
+
+  def date_str(self):
+    return time.strftime("%Y-%m-%d", self.date)
 
 
-for i in range(1, page_to_crawl + 1):
-  header_ = { "User-Agent" : os.environ['User-Agent'] }
-  response = requests.get(f"http://www.{os.environ['host']}/files/501-1000-1001-{i}.php?Lang=zh-tw", headers = header_)
+next = True
+page = 1
+
+while next:
+  header_ = {
+    "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+  } #pretend to be a browser
+  response = requests.get(f"http://www.{os.environ['host']}/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = header_)
 
   response.encoding = response.apparent_encoding
 
   soup = BeautifulSoup(response.text, "html.parser")
   soup.encoding = response.encoding
-
-  #row_01 & row_02 appears alternately, including all information we need
-  #in a row there'll be three <td>, first one has the <div> which contains the hyperlink of the article and the title while other two contain the source and the date
 
   row = soup.find_all("tr", class_ = ["row_01", "row_02"])
 
@@ -54,30 +61,55 @@ for i in range(1, page_to_crawl + 1):
 
     title = table_list[0].text.strip()
     #source = table_list[1].text.strip() #unwanted
-    date = table_list[2].text.strip()
+    date = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
+    if date > time.strptime(db["latest_date"], "%Y-%m-%d"):
+      result.append(Announcement(link, title, date))
+    else:
+      next = False
+      break
+  
+  page += 1
 
-    result.append(Announcement(link, title, date))
+
+from_date = ""
+is_empty = len(result) == 0
+
+if is_empty:
+  print("No any new announcemt")
+
+else:
+  from_date = db['latest_date']
+  db["latest_date"] = result[0].date_str()
+
+  for r in result:
+    print(r.detail() + "\n")
+
+print(f"From: {from_date}")
+print(f"Latest date: {db['latest_date']}")
 
 
-for r in result:
-  print(r.detail() + "\n")
-
-
-send_email = False
+send_email = True
 
 if send_email:
   msg = email.message.EmailMessage()
   msg["From"] = os.environ["account"]
   msg["To"] = os.environ["email"]
-  msg["Subject"] = "School Announcements Test"
+  msg["Subject"] = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
 
   content = ""
-  for r in result:
-    content += r.html()
-    content += "<br><br>"
+  
+  if is_empty:
+    content = f"No any new announcemt<br><br>"
 
-  #msg.set_content("")
-  msg.add_alternative(content, subtype = "html")
+  else:
+    for r in result:
+      content += r.html()
+      content += "<br><br>" #<br> = new line in html
+
+  content += f"form: {from_date}<br>latest: {db['latest_date']}"
+
+  #msg.set_content("") #for plain text
+  msg.add_alternative(content, subtype = "html") #for html
 
   server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
   server.login(os.environ["account"], os.environ["password"])
