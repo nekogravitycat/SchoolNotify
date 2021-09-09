@@ -1,5 +1,6 @@
 #crummy.com/software/BeautifulSoup/bs4/doc/
 #schedule.readthedocs.io/en/stable/
+#uptimerobot.com/
 
 import os
 from replit import db
@@ -12,8 +13,6 @@ import smtplib
 from alive import alive
 
 alive()
-
-result = [] #storing a list of Announcement()
 
 #db["latest_date"] = "2021-08-10" #for testing
 #db["latest_title"] = "Test title" #for testing
@@ -34,7 +33,6 @@ class Announcement:
     return time.strftime("%Y-%m-%d", self.date)
 
 
-
 header_ = {
     "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
   } #pretend to be a browser
@@ -42,9 +40,10 @@ header_ = {
 
 def Job():
   print(f"runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
-
+  
   next = True
   page = 1
+  result = [] #storing a list of Announcement()
 
   while next:
     response = requests.get(f"http://www.{os.environ['host']}/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = header_)
@@ -133,9 +132,11 @@ def Job():
   print("done! waiting for next round!\n")
 
 
-scheduler = schedule.Scheduler() #replit uses UTC+0, so schedule tasks 8 hours earlier
+scheduler = schedule.Scheduler() #replit uses UTC+0, so schedule tasks 8 hours earlier, 24-hour clock
 scheduler.every().monday.at("12:00").do(Job)
+#scheduler.every().tuesday.at("12:00").do(Job)
 scheduler.every().wednesday.at("12:00").do(Job)
+#scheduler.every().thursday.at("12:00").do(Job)
 scheduler.every().friday.at("12:00").do(Job)
 
 print("tasks scheduled")
