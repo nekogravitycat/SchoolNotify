@@ -8,6 +8,8 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.8"
 bs4 = "^0.0.1"
 replit = "^3.2.4"
+schedule = "^1.1.0"
+Flask = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 
