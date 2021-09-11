@@ -133,11 +133,11 @@ def Job():
 
 
 scheduler = schedule.Scheduler() #replit uses UTC+0, so schedule tasks 8 hours earlier, 24-hour clock
-scheduler.every().monday.at("12:00").do(Job)
-#scheduler.every().tuesday.at("12:00").do(Job)
-scheduler.every().wednesday.at("12:00").do(Job)
-#scheduler.every().thursday.at("12:00").do(Job)
-scheduler.every().friday.at("12:00").do(Job)
+scheduler.every().monday.at("10:00").do(Job)
+#scheduler.every().tuesday.at("10:00").do(Job)
+#scheduler.every().wednesday.at("10:00").do(Job)
+scheduler.every().thursday.at("10:00").do(Job)
+#scheduler.every().friday.at("10:00").do(Job)
 
 print("tasks scheduled")
 
