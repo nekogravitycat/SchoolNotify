@@ -7,33 +7,35 @@ from replit import db
 import time
 import schedule
 import requests
-from bs4 import BeautifulSoup
+import bs4
+#from bs4 import BeautifulSoup
 import email.message
 import smtplib
-from alive import alive
+import alive
 
-alive()
+alive.alive()
 
-#db["latest_date"] = "2021-08-10" #for testing
+#db["latest_date"] = "2021-09-10" #for testing
 #db["latest_title"] = "Test title" #for testing
 
+
 class Announcement:
-  def __init__(self, link, title, date):
-    self.link = link #str
-    self.title = title #str
-    self.date = date #time.struct_time
+  def __init__(self, link: str, title: str, date: time.struct_time):
+    self.link: str = link
+    self.title: str = title
+    self.date: time.struct_time = date
 
-  def detail(self):
-    return f"{str(self.link)}\n{str(self.title)}\n{str(self.date_str())}"
+  def detail(self) -> str:
+    return f"{self.link}\n{self.title}\n{self.date_str()}"
 
-  def html(self):
-    return f'<a href="{str(self.link)}">{str(self.title)}</a> {str(self.date_str())}'
+  def html(self) -> str:
+    return f'<a href="{self.link}">{self.title}</a> {self.date_str()}'
 
-  def date_str(self):
+  def date_str(self) -> str:
     return time.strftime("%Y-%m-%d", self.date)
 
 
-header_ = {
+header_: dict = {
     "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
   } #pretend to be a browser
 
@@ -41,48 +43,67 @@ header_ = {
 def Job():
   print(f"runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
   
-  next = True
-  page = 1
-  result = [] #storing a list of Announcement()
+  next: bool = True
+  page: int = 1
+  result: list = [] #storing a list of Announcement()
 
   while next:
-    response = requests.get(f"http://www.{os.environ['host']}/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = header_)
+    try_times: int = 3 #times to try when request is failed
 
-    response.encoding = response.apparent_encoding
+    while try_times >= 0:
+      try:
+        response: requests.Response = requests.get(f"http://{os.environ['school']}/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = header_)
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    soup.encoding = response.encoding
+        response.encoding = response.apparent_encoding
 
-    row = soup.find_all("tr", class_ = ["row_01", "row_02"])
+        soup: bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
+        soup.encoding = response.encoding
 
-    for r in row:
-      #hyperlink of the article
-      division = r.select_one("div")
-      anchor = division.select_one("a")
+        row: bs4.element.ResultSet = soup.find_all("tr", class_ = ["row_01", "row_02"])
 
-      link = anchor["href"]
+        for r in row:
+          #hyperlink of the article
+          division: bs4.element.Tag = r.select_one("div")
+          anchor: bs4.element.Tag = division.select_one("a")
 
-      #title, source (unwanted), and date
-      table = r.select("td")
-      table_list = []
+          link: str = anchor["href"]
 
-      for td in table:
-        table_list.append(td)
+          #title, source (unwanted), and date
+          table: bs4.element.ResultSet = r.select("td")
+          table_list: list = []
 
-      title = table_list[0].text.strip()
-      #source = table_list[1].text.strip() #unwanted
-      date = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
-      if date >= time.strptime(db["latest_date"], "%Y-%m-%d") and title != db["latest_title"]:
-        result.append(Announcement(link, title, date))
+          for td in table:
+            table_list.append(td)
+
+          title: str = table_list[0].text.strip()
+          #source = table_list[1].text.strip() #unwanted
+          date: time.struct_time = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
+
+          if date >= time.strptime(db["latest_date"], "%Y-%m-%d") and title != db["latest_title"]:
+            result.append(Announcement(link, title, date))
+            
+          else:
+            next = False
+            break
+
+      except Exception as e:
+        try_times -= 1
+        print(f"request failed: {try_times} retry times remaining, wait 1 min to try again")
+        print(repr(e) + "\n")
+        time.sleep(60) #sleep for 1 minute to try again
+
       else:
-        next = False
         break
-    
+
+    if try_times < 0:
+      print("request failed: tried to many times\n")
+      return
+
     page += 1
 
 
-  from_date = db['latest_date']
-  is_empty = len(result) == 0
+  from_date: str = db['latest_date']
+  is_empty: bool = len(result) == 0
 
   if is_empty:
     print("No new announcemts\n")
@@ -98,10 +119,10 @@ def Job():
   print(f"Latest date: {db['latest_date']}\n")
 
 
-  send_email = True
+  send_email: bool = True
 
   if send_email:
-    content = ""
+    content: str = ""
     
     if is_empty:
       content = f"No new announcemts<br><br>"
@@ -113,26 +134,50 @@ def Job():
 
     content += f"form: {from_date}<br>latest: {db['latest_date']}"
 
-    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-    server.login(os.environ["account"], os.environ["password"])
+    try_times: int = 3 #times to try when smtp is failed
 
-    for r in os.environ["recipients"].split(";"): #split recipients with ;
-      msg = email.message.EmailMessage()
-      msg["From"] = os.environ["account"]
-      msg["To"] = r
-      msg["Subject"] = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
+    while try_times >= 0:
+      try:
+        server: smtplib.SMTP_SSL = smtplib.SMTP_SSL(os.environ["smtp_server"], 465)
+        server.login(os.environ["smtp_account"], os.environ["smtp_password"])
 
-      #msg.set_content("") #for plain text
-      msg.add_alternative(content, subtype = "html") #for html
+        subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
 
-      server.send_message(msg)
+        for r in os.environ["recipients"].split(";"): #split recipients with ;
+          msg: email.message.EmailMessage = email.message.EmailMessage()
+          msg["From"] = os.environ["account"]
+          msg["To"] = r
+          msg["Subject"] = subject
+
+          #msg.set_content("") #for plain text
+          msg.add_alternative(content, subtype = "html") #for html
+
+          server.send_message(msg)
+        
+        server.close()
+
+      except Exception as e:
+        try_times -= 1
+        print(f"smtp failed: {try_times} retry times remaining, wait 1 min to try again")
+        print(repr(e) + "\n")
+        time.sleep(60) #sleep for 1 minute to try again
+
+      else:
+        break
     
-    server.close()
+    if try_times < 0:
+      print("smtp failed: tried to many times\n")
+      return
 
   print("done! waiting for next round!\n")
 
 
-scheduler = schedule.Scheduler() #replit uses UTC+0, so schedule tasks 8 hours earlier, 24-hour clock
+#Job() #for testing, remember to set "send_email" into False
+
+
+#replit uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
+scheduler: schedule.Scheduler = schedule.Scheduler()
+
 scheduler.every().monday.at("10:00").do(Job)
 #scheduler.every().tuesday.at("10:00").do(Job)
 #scheduler.every().wednesday.at("10:00").do(Job)
