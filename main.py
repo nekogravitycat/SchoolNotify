@@ -10,9 +10,9 @@ import requests
 import bs4
 import email.message
 import smtplib
-import alive
+import website
 
-alive.alive() #for uptimerobot
+website.alive() #for uptimerobot
 
 #db["latest_date"] = "2021-09-10" #for testing
 #db["latest_title"] = "Test title" #for testing
