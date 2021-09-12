@@ -8,12 +8,11 @@ import time
 import schedule
 import requests
 import bs4
-#from bs4 import BeautifulSoup
 import email.message
 import smtplib
 import alive
 
-alive.alive()
+alive.alive() #for uptimerobot
 
 #db["latest_date"] = "2021-09-10" #for testing
 #db["latest_title"] = "Test title" #for testing
