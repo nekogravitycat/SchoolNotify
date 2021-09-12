@@ -1,6 +1,7 @@
-#replit packager files
+#replit files
 poetry.lock
 pyproject.toml
+.breakpoints
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
