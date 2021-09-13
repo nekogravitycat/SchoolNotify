@@ -14,7 +14,7 @@ import website
 
 website.alive() #for uptimerobot
 
-#db["latest_date"] = "2021-09-10" #for testing
+#db["latest_date"] = "2021-09-11" #for testing
 #db["latest_title"] = "Test title" #for testing
 
 
@@ -142,18 +142,23 @@ def Job():
 
         subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
 
+        list_len: int = len(os.environ["recipients"].split(";"))
+        count: int = 1
+
         for r in os.environ["recipients"].split(";"): #split recipients with ;
           msg: email.message.EmailMessage = email.message.EmailMessage()
-          msg["From"] = os.environ["account"]
+          msg["From"] = os.environ["smtp_account"]
           msg["To"] = r
           msg["Subject"] = subject
-
           #msg.set_content("") #for plain text
           msg.add_alternative(content, subtype = "html") #for html
-
           server.send_message(msg)
+
+          print(f"email sent: {count}/{list_len}")
+          count += 1
         
         server.close()
+        print()
 
       except Exception as e:
         try_times -= 1
