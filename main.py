@@ -1,6 +1,6 @@
-#crummy.com/software/BeautifulSoup/bs4/doc/
-#schedule.readthedocs.io/en/stable/
-#uptimerobot.com/
+#crummy.com/software/BeautifulSoup/bs4/doc
+#schedule.readthedocs.io/en/stable
+#uptimerobot.com
 
 import os
 from replit import db
@@ -89,6 +89,10 @@ def Job():
         try_times -= 1
         print(f"request failed: {try_times} retry times remaining, wait 1 min to try again")
         print(repr(e) + "\n")
+
+        if try_times == -1:
+          ErrorReport(repr(e))
+
         time.sleep(60) #sleep for 1 minute to try again
 
       else:
@@ -164,6 +168,10 @@ def Job():
         try_times -= 1
         print(f"smtp failed: {try_times} retry times remaining, wait 1 min to try again")
         print(repr(e) + "\n")
+
+        if try_times == -1:
+          ErrorReport(repr(e))
+        
         time.sleep(60) #sleep for 1 minute to try again
 
       else:
@@ -174,6 +182,35 @@ def Job():
       return
 
   print("done! waiting for next round!\n")
+
+
+def ErrorReport(e: str):
+  content: str = f"Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n\nExpectionn:\n{e}"
+
+  try_times: int = 3
+
+  while try_times >= 0:
+    try:
+      server: smtplib.SMTP_SSL = smtplib.SMTP_SSL(os.environ["smtp_server"], 465)
+      server.login(os.environ["smtp_account"], os.environ["smtp_password"])
+
+      msg: email.message.EmailMessage = email.message.EmailMessage()
+      msg["From"] = os.environ["smtp_account"]
+      msg["To"] = os.environ["email_admin"]
+      msg["Subject"] = "School Notify: An Error Occurred"
+      msg.set_content(content)
+
+      server.send_message(msg)
+      server.close()
+
+    except Exception as e:
+      try_times -= 1
+      print(f"error report smtp failed: {try_times} retry times remaining, wait 1 min to try again")
+      print(repr(e) + "\n")
+      time.sleep(60) #sleep for 1 minute to try again
+
+    else:
+      break
 
 
 #Job() #for testing, remember to set "send_email" into False
