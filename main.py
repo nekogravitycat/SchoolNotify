@@ -195,20 +195,22 @@ def EmailSend(to: list, subject: str, content:str, is_html: bool):
     return
 
 
-#Job() #for testing, remember to set "send_email" into False
+def ScheduleRun():
+  #Job() #for testing, remember to set "send_email" into False
 
+  #replit uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
+  scheduler: schedule.Scheduler = schedule.Scheduler()
 
-#replit uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
-scheduler: schedule.Scheduler = schedule.Scheduler()
+  scheduler.every().monday.at("10:00").do(Job)
+  #scheduler.every().tuesday.at("10:00").do(Job)
+  #scheduler.every().wednesday.at("10:00").do(Job)
+  scheduler.every().thursday.at("10:00").do(Job)
+  #scheduler.every().friday.at("10:00").do(Job)
 
-scheduler.every().monday.at("10:00").do(Job)
-#scheduler.every().tuesday.at("10:00").do(Job)
-#scheduler.every().wednesday.at("10:00").do(Job)
-scheduler.every().thursday.at("10:00").do(Job)
-#scheduler.every().friday.at("10:00").do(Job)
+  print("tasks scheduled")
 
-print("tasks scheduled")
+  while True:
+    scheduler.run_pending()
+    time.sleep(1)
 
-while True:
-  scheduler.run_pending()
-  time.sleep(1)
+ScheduleRun()
