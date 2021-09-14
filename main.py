@@ -14,7 +14,7 @@ import website
 
 website.alive() #for uptimerobot
 
-#db["latest_date"] = "2021-09-11" #for testing
+#db["latest_date"] = "2021-09-13" #for testing
 #db["latest_title"] = "Test title" #for testing
 
 
@@ -48,6 +48,7 @@ def Job():
 
   while next:
     try_times: int = 3 #times to try when request is failed
+    ex: Exception
 
     while try_times >= 0:
       try:
@@ -86,19 +87,17 @@ def Job():
             break
 
       except Exception as e:
+        ex = e
         try_times -= 1
         print(f"request failed: {try_times} retry times remaining, wait 1 min to try again")
         print(repr(e) + "\n")
-
-        if try_times == -1:
-          ErrorReport(repr(e))
-
         time.sleep(60) #sleep for 1 minute to try again
 
       else:
         break
 
     if try_times < 0:
+      ErrorReport(repr(ex))
       print("request failed: tried to many times\n")
       return
 
@@ -125,6 +124,7 @@ def Job():
   send_email: bool = True
 
   if send_email:
+    subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
     content: str = ""
     
     if is_empty:
@@ -136,81 +136,63 @@ def Job():
         content += "<br><br>" #<br> = new line in html
 
     content += f"form: {from_date}<br>latest: {db['latest_date']}"
-
-    try_times: int = 3 #times to try when smtp is failed
-
-    while try_times >= 0:
-      try:
-        server: smtplib.SMTP_SSL = smtplib.SMTP_SSL(os.environ["smtp_server"], 465)
-        server.login(os.environ["smtp_account"], os.environ["smtp_password"])
-
-        subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
-
-        list_len: int = len(os.environ["recipients"].split(";"))
-        count: int = 1
-
-        for r in os.environ["recipients"].split(";"): #split recipients with ;
-          msg: email.message.EmailMessage = email.message.EmailMessage()
-          msg["From"] = os.environ["smtp_account"]
-          msg["To"] = r
-          msg["Subject"] = subject
-          #msg.set_content("") #for plain text
-          msg.add_alternative(content, subtype = "html") #for html
-          server.send_message(msg)
-
-          print(f"email sent: {count}/{list_len}")
-          count += 1
-        
-        server.close()
-        print()
-
-      except Exception as e:
-        try_times -= 1
-        print(f"smtp failed: {try_times} retry times remaining, wait 1 min to try again")
-        print(repr(e) + "\n")
-
-        if try_times == -1:
-          ErrorReport(repr(e))
-        
-        time.sleep(60) #sleep for 1 minute to try again
-
-      else:
-        break
-    
-    if try_times < 0:
-      print("smtp failed: tried to many times\n")
-      return
+    EmailSend(os.environ["recipients_test"].split(";"), subject, content, True)
 
   print("done! waiting for next round!\n")
 
 
 def ErrorReport(e: str):
+  subject: str = "School Notify: An Error Occurred"
   content: str = f"Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n\nExpectionn:\n{e}"
+  EmailSend(os.environ["email_admin"], subject, content, False)
 
-  try_times: int = 3
+
+def EmailSend(to: list, subject: str, content:str, is_html: bool):
+  try_times: int = 3 #times to try when smtp is failed
+  ex: Exception
 
   while try_times >= 0:
     try:
       server: smtplib.SMTP_SSL = smtplib.SMTP_SSL(os.environ["smtp_server"], 465)
       server.login(os.environ["smtp_account"], os.environ["smtp_password"])
 
-      msg: email.message.EmailMessage = email.message.EmailMessage()
-      msg["From"] = os.environ["smtp_account"]
-      msg["To"] = os.environ["email_admin"]
-      msg["Subject"] = "School Notify: An Error Occurred"
-      msg.set_content(content)
+      list_len: int = len(to)
+      count: int = 1
 
-      server.send_message(msg)
+      for r in to:
+        msg: email.message.EmailMessage = email.message.EmailMessage()
+        msg["From"] = os.environ["smtp_account"]
+        msg["To"] = r
+        msg["Subject"] = subject
+
+        if is_html:
+          msg.add_alternative(content, subtype = "html") #for html
+
+        else:
+          msg.set_content(content)
+
+        server.send_message(msg)
+
+        print(f"email sent: {count}/{list_len}")
+        count += 1
+      
       server.close()
+      print()
 
     except Exception as e:
+      ex = e
       try_times -= 1
-      print(f"error report smtp failed: {try_times} retry times remaining, wait 1 min to try again")
+      print(f"smtp failed: {try_times} retry times remaining, wait 1 min to try again")
       print(repr(e) + "\n")
       time.sleep(60) #sleep for 1 minute to try again
 
     else:
       break
+  
+  if try_times < 0:
+    ErrorReport(repr(ex))
+    print("smtp failed: tried to many times\n")
+    return
 
 
 #Job() #for testing, remember to set "send_email" into False
