@@ -136,7 +136,7 @@ def Job():
         content += "<br><br>" #<br> = new line in html
 
     content += f"form: {from_date}<br>latest: {db['latest_date']}"
-    EmailSend(os.environ["recipients_test"].split(";"), subject, content, True)
+    EmailSend(os.environ["recipients"].split(";"), subject, content, True)
 
   print("done! waiting for next round!\n")
 
@@ -180,7 +180,6 @@ def EmailSend(to: list, subject: str, content:str, is_html: bool):
       print()
 
     except Exception as e:
-      ex = e
       try_times -= 1
       print(f"smtp failed: {try_times} retry times remaining, wait 1 min to try again")
       print(repr(e) + "\n")
@@ -190,14 +189,12 @@ def EmailSend(to: list, subject: str, content:str, is_html: bool):
       break
   
   if try_times < 0:
-    ErrorReport(repr(ex))
+    #don't call ErrorReport() here or it'll create an infinite loop
     print("smtp failed: tried to many times\n")
     return
 
 
 def ScheduleRun():
-  #Job() #for testing, remember to set "send_email" into False
-
   #replit uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
   scheduler: schedule.Scheduler = schedule.Scheduler()
 
@@ -216,3 +213,4 @@ def ScheduleRun():
     time.sleep(1)
 
 ScheduleRun()
+#Job() #for testing, remember to set "send_email" into False
