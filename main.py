@@ -201,11 +201,13 @@ def ScheduleRun():
   #replit uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
   scheduler: schedule.Scheduler = schedule.Scheduler()
 
-  scheduler.every().monday.at("10:00").do(Job)
-  #scheduler.every().tuesday.at("10:00").do(Job)
-  #scheduler.every().wednesday.at("10:00").do(Job)
-  scheduler.every().thursday.at("10:00").do(Job)
-  #scheduler.every().friday.at("10:00").do(Job)
+  time_to_send: str = "10:00"
+
+  scheduler.every().monday.at(time_to_send).do(Job)
+  #scheduler.every().tuesday.at(time_to_send).do(Job)
+  #scheduler.every().wednesday.at(time_to_send).do(Job)
+  scheduler.every().thursday.at(time_to_send).do(Job)
+  #scheduler.every().friday.at(time_to_send).do(Job)
 
   print("tasks scheduled")
 
