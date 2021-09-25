@@ -35,6 +35,9 @@ def sub():
   if email == "":
    return "Email arg cannot be empty"
 
+  if not myemail.is_vaild(email):
+    return "Invaild email address"
+
   if f"email_{email}" in db.prefix("email"):
     return "You've already subscribed to this service"
 
@@ -69,14 +72,10 @@ def ver():
 
   if f"email_{email}" in db.prefix("email"):
     return "You've already subscribed to this service"
-  
-  if f"ask_{email}" not in db.prefix("ask"):
-    print("Email not found")
-    return "Email not found"
 
-  if password != db[f"ask_{email}"].split(";")[1]:
-    print("Wrong password")
-    return "Wrong password"
+  if (f"ask_{email}" not in db.prefix("ask")) or password != db[f"ask_{email}"].split(";")[1]:
+    print("Wrong email or password")
+    return "Wrong email or password"
 
   db[f"email_{email}"] = password
   del db[f"ask_{email}"]
@@ -99,14 +98,10 @@ def unsub():
   if email == "" or password == "":
     print("Bad request")
     return "Bad request"
-  
-  if f"email_{email}" not in db.prefix("email"):
-    print("Email not found")
-    return "Email not found"
 
-  if password != db[f"email_{email}"]:
-    print("Wrong password")
-    return "Wrong password"
+  if (f"email_{email}" not in db.prefix("email")) or password != db[f"email_{email}"]:
+    print("Wrong email or password")
+    return "Wrong email or password"
 
   del db[f"email_{email}"]
   print("Successfully unsubscribed!\n")
@@ -143,7 +138,7 @@ def ClearAsk(target: str):
 
 
 key: str = rollingcode.random_str(10)
-key_next = rollingcode.random_str(10)
+key_next: str = rollingcode.random_str(10)
 
 
 #Provide the passcode showen in the console after loading the page for first time

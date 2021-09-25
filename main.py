@@ -46,7 +46,7 @@ def Job():
   page: int = 1
   result: list = [] #storing a list of Announcement()
 
-  while next and False:
+  while next:
     try_times: int = 3 #times to try when request is failed
     ex: Exception
 
@@ -122,7 +122,7 @@ def Job():
   print(f"Latest date: {db['latest_date']}\n")
 
 
-  send_email: bool = False
+  send_email: bool = True
 
   if send_email and len(db.prefix("email")) > 0:
     subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
@@ -174,5 +174,5 @@ def ScheduleRun():
     time.sleep(1)
 
 
-Job() #for testing, remember to set "send_email" into False
+#Job() #for testing, remember to set "send_email" into False
 ScheduleRun()

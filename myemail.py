@@ -3,6 +3,12 @@ import time
 import email.message
 import smtplib
 import website
+import re
+
+
+def is_vaild(email: str) -> bool:
+  email_regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
+  return email_regex.match(email) != None
 
 
 def send(to: list, subject: str, content_base:str, is_html: bool, append_unsub: bool = False) -> bool:
