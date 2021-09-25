@@ -8,14 +8,14 @@ import time
 import schedule
 import requests
 import bs4
-import email.message
-import smtplib
+import myemail
+
 import website
 
 website.alive() #for uptimerobot
 
-#db["latest_date"] = "2021-09-13" #for testing
-#db["latest_title"] = "Test title" #for testing
+db["latest_date"] = "2021-09-17" #for testing
+db["latest_title"] = "Test title" #for testing
 
 
 class Announcement:
@@ -46,7 +46,7 @@ def Job():
   page: int = 1
   result: list = [] #storing a list of Announcement()
 
-  while next:
+  while next and False:
     try_times: int = 3 #times to try when request is failed
     ex: Exception
 
@@ -78,8 +78,9 @@ def Job():
           title: str = table_list[0].text.strip()
           #source = table_list[1].text.strip() #unwanted
           date: time.struct_time = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
+          latest_date: time.struct_time = time.strptime(db["latest_date"], "%Y-%m-%d")
 
-          if date >= time.strptime(db["latest_date"], "%Y-%m-%d") and title != db["latest_title"]:
+          if date > latest_date or (date > latest_date and title != db["latest_title"]):
             result.append(Announcement(link, title, date))
             
           else:
@@ -91,7 +92,7 @@ def Job():
         try_times -= 1
         print(f"request failed: {try_times} retry times remaining, wait 1 min to try again")
         print(repr(e) + "\n")
-        time.sleep(60) #sleep for 1 minute to try again
+        time.sleep(1) #sleep for 1 minute to try again
 
       else:
         break
@@ -121,9 +122,9 @@ def Job():
   print(f"Latest date: {db['latest_date']}\n")
 
 
-  send_email: bool = True
+  send_email: bool = False
 
-  if send_email:
+  if send_email and len(db.prefix("email")) > 0:
     subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
     content: str = ""
     
@@ -135,8 +136,15 @@ def Job():
         content += r.html()
         content += "<br><br>" #<br> = new line in html
 
-    content += f"form: {from_date}<br>latest: {db['latest_date']}"
-    EmailSend(os.environ["recipients"].split(";"), subject, content, True)
+    recipients: list = []
+
+    for r in db.prefix("email"):
+      recipients.append(r[6:])
+
+    myemail.send(recipients, subject, content, True, True)
+
+  elif len(db.prefix("email")) == 0:
+    print("Recipient list is empty\n")
 
   print("done! waiting for next round!\n")
 
@@ -144,54 +152,7 @@ def Job():
 def ErrorReport(e: str):
   subject: str = "School Notify: An Error Occurred"
   content: str = f"Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n\nExpectionn:\n{e}"
-  EmailSend(os.environ["email_admin"], subject, content, False)
-
-
-def EmailSend(to: list, subject: str, content:str, is_html: bool):
-  try_times: int = 3 #times to try when smtp is failed
-  ex: Exception
-
-  while try_times >= 0:
-    try:
-      server: smtplib.SMTP_SSL = smtplib.SMTP_SSL(os.environ["smtp_server"], 465)
-      server.login(os.environ["smtp_account"], os.environ["smtp_password"])
-
-      list_len: int = len(to)
-      count: int = 1
-
-      for r in to:
-        msg: email.message.EmailMessage = email.message.EmailMessage()
-        msg["From"] = os.environ["smtp_account"]
-        msg["To"] = r
-        msg["Subject"] = subject
-
-        if is_html:
-          msg.add_alternative(content, subtype = "html") #for html
-
-        else:
-          msg.set_content(content)
-
-        server.send_message(msg)
-
-        print(f"email sent: {count}/{list_len}")
-        count += 1
-      
-      server.close()
-      print()
-
-    except Exception as e:
-      try_times -= 1
-      print(f"smtp failed: {try_times} retry times remaining, wait 1 min to try again")
-      print(repr(e) + "\n")
-      time.sleep(60) #sleep for 1 minute to try again
-
-    else:
-      break
-  
-  if try_times < 0:
-    #don't call ErrorReport() here or it'll create an infinite loop
-    print("smtp failed: tried to many times\n")
-    return
+  myemail.send(os.environ["email_admin"], subject, content, False)
 
 
 def ScheduleRun():
@@ -212,5 +173,6 @@ def ScheduleRun():
     scheduler.run_pending()
     time.sleep(1)
 
+
+Job() #for testing, remember to set "send_email" into False
 ScheduleRun()
-#Job() #for testing, remember to set "send_email" into False

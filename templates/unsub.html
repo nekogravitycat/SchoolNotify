@@ -1,0 +1,26 @@
+<html>
+<body>
+
+<script>
+  function ask() {
+    const href = location.href;
+    const url = new URL(href);
+    const email = url.searchParams.get("email");
+    const key = url.searchParams.get("key");
+
+    if(email == null || key == null){
+      alert("Bad request");
+      return;
+    }
+
+    var r = confirm("Are you sure you want to unsubscribe?");
+    if(r == true) {
+      window.open(`https://SchoolNotify.nekogravitycat.repl.co/unsub?email=${email}&key=${key}`,"_self");
+    }
+  }
+
+  window.onload = ask();
+</script>
+
+</body>
+</html>
