@@ -123,18 +123,18 @@ def uptime():
   elif timestamp == "C":
     ClearAsk("A")
     timestamp = "A"
-
-  print(f"Current timestamp = {timestamp}\n")
+    
   return "Hello, uptimerobot!"
 
 
 def ClearAsk(target: str):
-  print("Request cleared:")
+  cleared: str = ""
   for a in db.prefix("ask"):
     if db[a].split(";")[0] == target:
-      print(a[4:])
+      cleared += f"{a[4:]}\n"
       del db[a]
-  print()
+  if len(cleared) > 0:
+    print(f"Request cleared:\n{cleared}")
 
 
 key: str = rollingcode.random_str(10)

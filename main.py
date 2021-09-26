@@ -9,13 +9,16 @@ import schedule
 import requests
 import bs4
 import myemail
-
 import website
 
 website.alive() #for uptimerobot
 
-db["latest_date"] = "2021-09-17" #for testing
-db["latest_title"] = "Test title" #for testing
+crawl_web: bool = True
+send_email: bool = True
+run_immediate: bool = False
+
+#db["latest_date"] = "2021-09-17" #for testing
+#db["latest_title"] = "Test title" #for testing
 
 
 class Announcement:
@@ -46,7 +49,7 @@ def Job():
   page: int = 1
   result: list = [] #storing a list of Announcement()
 
-  while next:
+  while next and crawl_web:
     try_times: int = 3 #times to try when request is failed
     ex: Exception
 
@@ -121,9 +124,6 @@ def Job():
   print(f"From: {from_date}")
   print(f"Latest date: {db['latest_date']}\n")
 
-
-  send_email: bool = True
-
   if send_email and len(db.prefix("email")) > 0:
     subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
     content: str = ""
@@ -174,5 +174,7 @@ def ScheduleRun():
     time.sleep(1)
 
 
-#Job() #for testing, remember to set "send_email" into False
+if run_immediate:
+  Job()
+
 ScheduleRun()
