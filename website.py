@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, render_template
 from threading import Thread
 from replit import db
@@ -12,15 +13,14 @@ def sub_link(email: str) -> str:
   return f"https://SchoolNotify.nekogravitycat.repl.co/sub?email={email}"
 
 
-def verify_link(email: str, password:str) -> str:
-  return f"https://SchoolNotify.nekogravitycat.repl.co/verify?email={email}&key={password}"
+def verify_link(email: str, token:str) -> str:
+  return f"https://SchoolNotify.nekogravitycat.repl.co/verify?email={email}&token={token}"
 
 
-def unsub_ask_link(email: str, password:str = "") -> str:
-  if password == "":
-    password = db[f"email_{email}"]
-    
-  return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&key={password}"
+def unsub_ask_link(email: str, token:str = "") -> str:
+  if token == "":
+    token = db[f"email_{email}"]
+  return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&token={token}"
 
 
 @app.route("/")
@@ -32,52 +32,60 @@ def home():
 def sub():
   email: str = request.args.get("email", default = "", type = str)
 
+  print(f"Ask to sub: {email}")
+
   if email == "":
-   return "Email arg cannot be empty"
+    print("Bad request")
+    return "Bad request"
 
   if not myemail.is_vaild(email):
+    print("Invaild email address")
     return "Invaild email address"
 
   if f"email_{email}" in db.prefix("email"):
+    print("Already subscribed")
     return "You've already subscribed to this service"
 
   if f"ask_{email}" in db.prefix("ask"):
+    print("Already sent email")
     return "The verification email has been sent before, go check your inbox or wait for 15mins to send again"
 
-  password: str = rollingcode.random_str(6)
-  print(f"Ask to sub: {email}, Pass: {password}")
+  token: str = rollingcode.random_str(6)
 
-  hyperlink: str = verify_link(email, password)
+  hyperlink: str = verify_link(email, token)
 
   content: str = f"Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a>"
 
   if myemail.send([email], r"Please verify your email", content, True) == True:
-    db[f"ask_{email}"] = timestamp + ";" + password
+    db[f"ask_{email}"] = timestamp + ";" + token
+    print(f"Passed: {token}")
     return f"A verification email has been sent to {email}, go check it!"
   
   else:
+    print(f"Passed: {token}, failed to send email")
     return "Failed to send email, please try again later."
 
 
 @app.route("/verify")
 def ver():
   email: str = request.args.get("email", default = "", type = str)
-  password: str = request.args.get("key", default = "", type = str)
+  token: str = request.args.get("token", default = "", type = str)
 
-  print(f"Verify: {email}, {password}")
+  print(f"Verify: {email}, {token}")
   
-  if email == "" or password == "":
+  if email == "" or token == "":
     print("Bad request")
     return "Bad request"
 
   if f"email_{email}" in db.prefix("email"):
+    print("Already subscribed")
     return "You've already subscribed to this service"
 
-  if (f"ask_{email}" not in db.prefix("ask")) or password != db[f"ask_{email}"].split(";")[1]:
-    print("Wrong email or password")
-    return "Wrong email or password"
+  if (f"ask_{email}" not in db.prefix("ask")) or token != db[f"ask_{email}"].split(";")[1]:
+    print("Wrong email or token")
+    return "Wrong email or token"
 
-  db[f"email_{email}"] = password
+  db[f"email_{email}"] = token
   del db[f"ask_{email}"]
   print("Successfully subscribed!\n")
   return "Successfully subscribed!"
@@ -90,18 +98,18 @@ def unsub_ask():
 
 @app.route("/unsub")
 def unsub():
-  email: str = request.values.get("email")
-  password: str = request.values.get("key")
+  email: str = request.args.get("email", default = "", type = str)
+  token: str = request.args.get("token", default = "", type = str)
 
-  print(f"Unsub: {email}, {password}")
+  print(f"Unsub: {email}, {token}")
 
-  if email == "" or password == "":
+  if email == "" or token == "":
     print("Bad request")
     return "Bad request"
 
-  if (f"email_{email}" not in db.prefix("email")) or password != db[f"email_{email}"]:
-    print("Wrong email or password")
-    return "Wrong email or password"
+  if (f"email_{email}" not in db.prefix("email")) or token != db[f"email_{email}"]:
+    print("Wrong email or token")
+    return "Wrong email or token"
 
   del db[f"email_{email}"]
   print("Successfully unsubscribed!\n")
@@ -110,6 +118,9 @@ def unsub():
 
 @app.route("/uptimebot")
 def uptime():
+  if request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]:
+    return "Hello, visitor!"
+
   global timestamp
 
   if timestamp == "A":
@@ -124,30 +135,29 @@ def uptime():
     ClearAsk("A")
     timestamp = "A"
     
+  print("uptimerobot visited")
   return "Hello, uptimerobot!"
 
 
 def ClearAsk(target: str):
   cleared: str = ""
+
   for a in db.prefix("ask"):
-    if db[a].split(";")[0] == target:
-      cleared += f"{a[4:]}\n"
-      del db[a]
+      if db[a].split(";")[0] == target:
+        cleared += f"{a[4:]}\n"
+        del db[a]
+
   if len(cleared) > 0:
     print(f"Request cleared:\n{cleared}")
-
-
-key: str = rollingcode.random_str(10)
-key_next: str = rollingcode.random_str(10)
 
 
 #Provide the passcode showen in the console after loading the page for first time
 @app.route("/db")
 def ShowDB():
-  print(rollingcode.key_next)
+  print(f"db token: {rollingcode.code_next}")
   
-  password: str = request.args.get("key", default = "", type = str)
-  verified: bool = password == rollingcode.key
+  token: str = request.args.get("token", default = "", type = str)
+  verified: bool = token == rollingcode.code
 
   rollingcode.roll()
 
@@ -158,7 +168,7 @@ def ShowDB():
     return ls
   
   else:
-    return "Wrong password"
+    return "Wrong token"
 
 
 def run():

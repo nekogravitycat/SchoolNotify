@@ -6,12 +6,12 @@ def random_str(digits: int) -> str:
   return "".join(random.choices(string.ascii_uppercase + string.digits, k = digits))
 
 
-key: str = random_str(10)
-key_next = random_str(10)
+code: str = random_str(10)
+code_next = random_str(10)
 
 
 def roll():
-  global key, key_next
+  global code, code_next
 
-  key = key_next
-  key_next = random_str(10)
+  code = code_next
+  code_next = random_str(10)
