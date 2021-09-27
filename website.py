@@ -1,21 +1,18 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, abort
 from threading import Thread
 from replit import db
 import myemail
 import rollingcode
 
 app = Flask("")
-timestamp: str = "A"
 
 
 def sub_link(email: str) -> str:
   return f"https://SchoolNotify.nekogravitycat.repl.co/sub?email={email}"
 
-
 def verify_link(email: str, token:str) -> str:
   return f"https://SchoolNotify.nekogravitycat.repl.co/verify?email={email}&token={token}"
-
 
 def unsub_ask_link(email: str, token:str = "") -> str:
   if token == "":
@@ -36,11 +33,11 @@ def sub():
 
   if email == "":
     print("Bad request")
-    return "Bad request"
+    abort(400, "No email adderss provided")
 
   if not myemail.is_vaild(email):
     print("Invaild email address")
-    return "Invaild email address"
+    abort(400, "Invaild email address")
 
   if f"email_{email}" in db.prefix("email"):
     print("Already subscribed")
@@ -57,7 +54,7 @@ def sub():
   content: str = f"Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a>"
 
   if myemail.send([email], r"Please verify your email", content, True) == True:
-    db[f"ask_{email}"] = timestamp + ";" + token
+    db[f"ask_{email}"] = db["timestamp"] + ";" + token
     print(f"Passed: {token}")
     return f"A verification email has been sent to {email}, go check it!"
   
@@ -75,7 +72,7 @@ def ver():
   
   if email == "" or token == "":
     print("Bad request")
-    return "Bad request"
+    abort(400, "Bad request")
 
   if f"email_{email}" in db.prefix("email"):
     print("Already subscribed")
@@ -83,7 +80,7 @@ def ver():
 
   if (f"ask_{email}" not in db.prefix("ask")) or token != db[f"ask_{email}"].split(";")[1]:
     print("Wrong email or token")
-    return "Wrong email or token"
+    abort(403, "Wrong email or token")
 
   db[f"email_{email}"] = token
   del db[f"ask_{email}"]
@@ -105,11 +102,11 @@ def unsub():
 
   if email == "" or token == "":
     print("Bad request")
-    return "Bad request"
+    abort(400, "Bad request")
 
   if (f"email_{email}" not in db.prefix("email")) or token != db[f"email_{email}"]:
     print("Wrong email or token")
-    return "Wrong email or token"
+    abort(403, "Wrong email or token")
 
   del db[f"email_{email}"]
   print("Successfully unsubscribed!\n")
@@ -121,21 +118,19 @@ def uptime():
   if request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]:
     return "Hello, visitor!"
 
-  global timestamp
-
-  if timestamp == "A":
+  if db["timestamp"] == "A":
     ClearAsk("B")
-    timestamp = "B"
+    db["timestamp"] = "B"
 
-  elif timestamp == "B":
+  elif db["timestamp"] == "B":
     ClearAsk("C")
-    timestamp = "C"
+    db["timestamp"] = "C"
 
-  elif timestamp == "C":
+  elif db["timestamp"] == "C":
     ClearAsk("A")
-    timestamp = "A"
+    db["timestamp"] = "A"
     
-  print("uptimerobot visited")
+  print("UpTimeRobot visited")
   return "Hello, uptimerobot!"
 
 
@@ -168,7 +163,7 @@ def ShowDB():
     return ls
   
   else:
-    return "Wrong token"
+    abort(403, "Wrong token")
 
 
 def run():
