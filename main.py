@@ -62,7 +62,7 @@ def Job():
         soup: bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
         soup.encoding = response.encoding
 
-        row: bs4.element.ResultSet = soup.find_all("tr", class_ = ["row_01", "row_02"])
+        row: bs4.element.ResultSet = soup.find_all("tr", class_ = ["row_01", "row_02"]) 
 
         for r in row:
           #hyperlink of the article

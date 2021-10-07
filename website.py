@@ -51,7 +51,7 @@ def sub():
 
   hyperlink: str = verify_link(email, token)
 
-  content: str = f"Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a>"
+  content: str = f"Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>The link will be vaild for 5 minutes."
 
   if myemail.send([email], r"Please verify your email", content, True) == True:
     db[f"ask_{email}"] = db["timestamp"] + ";" + token
@@ -79,8 +79,8 @@ def ver():
     return "You've already subscribed to this service"
 
   if (f"ask_{email}" not in db.prefix("ask")) or token != db[f"ask_{email}"].split(";")[1]:
-    print("Wrong email or token")
-    abort(403, "Wrong email or token")
+    print("Invalid email or token")
+    abort(403, "Invalid email or token")
 
   db[f"email_{email}"] = token
   del db[f"ask_{email}"]
