@@ -45,7 +45,7 @@ def sub():
 
   if f"ask_{email}" in db.prefix("ask"):
     print("Already sent email")
-    return "一封驗證電子郵件已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15mins to send again"
+    return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15mins to send again"
 
   token: str = rollingcode.random_str(6)
 
@@ -72,15 +72,15 @@ def ver():
   
   if email == "" or token == "":
     print("Bad request")
-    abort(400, "Bad request")
+    abort(400, "無效的請求\nBad request")
 
   if f"email_{email}" in db.prefix("email"):
     print("Already subscribed")
-    return "您已訂閱至此服務。\nWhoohoo! You've already subscribed to this service owo"
+    return "您已訂閱至此服務\nWhoohoo! You've already subscribed to this service owo"
 
   if (f"ask_{email}" not in db.prefix("ask")) or token != db[f"ask_{email}"].split(";")[1]:
     print("Invalid email or token")
-    abort(403, "無效的電子郵件或令牌\nInvalid email or token")
+    abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link is expired and needs to ask for subscribe again)")
 
   db[f"email_{email}"] = token
   del db[f"ask_{email}"]
@@ -110,7 +110,7 @@ def unsub():
 
   del db[f"email_{email}"]
   print("Successfully unsubscribed!\n")
-  return "成功退訂！\nSuccessfully unsubscribed!"
+  return "成功取消訂閱！\nSuccessfully unsubscribed!"
 
 
 @app.route("/uptimebot")
@@ -146,12 +146,19 @@ def ClearAsk(target: str):
     print(f"Request cleared:\n{cleared}")
 
 
+@app.route("/db/")
+def ForbiddenDB():
+  print(f"db token: {rollingcode.code_next}")
+  rollingcode.roll()
+  abort(403, "No token provided")
+
+
 #Provide the passcode showen in the console after loading the page for first time
-@app.route("/db")
-def ShowDB():
+@app.route("/db/<token>")
+def ShowDB(token):
   print(f"db token: {rollingcode.code_next}")
   
-  token: str = request.args.get("token", default = "", type = str)
+  #token: str = request.args.get("token", default = "", type = str)
   verified: bool = token == rollingcode.code
 
   rollingcode.roll()
