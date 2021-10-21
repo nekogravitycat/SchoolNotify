@@ -80,7 +80,7 @@ def ver():
 
   if (f"ask_{email}" not in db.prefix("ask")) or token != db[f"ask_{email}"].split(";")[1]:
     print("Invalid email or token")
-    abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link is expired and needs to ask for subscribe again)")
+    abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link has expired and needs to ask for subscribe again)")
 
   db[f"email_{email}"] = token
   del db[f"ask_{email}"]
