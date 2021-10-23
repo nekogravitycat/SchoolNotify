@@ -48,7 +48,6 @@ def sub():
     return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15mins to send again"
 
   token: str = rollingcode.random_str(6)
-
   hyperlink: str = verify_link(email, token)
 
   content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes."

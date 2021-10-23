@@ -13,13 +13,14 @@ import hgsh
 
 website.alive() #for uptimerobot
 
-send_email: bool = False
+send_email: bool = True
 run_immediate: bool = False
 
 
 #for testing
 #db["hchs_latest_date"] = "2021-10-10"
 #db["hchs_latest_title"] = "Test title"
+#db["hgsh_latest_date"] = "2021-10-10"
 #db["hgsh_latest_id"] = "10499"
 
 
@@ -32,9 +33,13 @@ def ShowResult(result: list):
 def Job():
   if(send_email):
     basic.push_email("hchs", hchs.get_news())
+    basic.push_email("hgsh", hgsh.get_news())
+    
   else:
+    print("---- HCHS ----")
     ShowResult(hchs.get_news())
-  #WIP
+    print("---- HGSH ----")
+    ShowResult(hgsh.get_news())
 
 
 def ScheduleRun():

@@ -5,12 +5,8 @@ import bs4
 import basic
 
 
-class msg(basic.msg):
-  pass
-
-
 def get_news() -> list:
-  print(f"runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
+  print(f"hchs runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
   
   next: bool = True
   page: int = 1
@@ -22,7 +18,7 @@ def get_news() -> list:
 
     while try_times >= 0:
       try:
-        response: requests.Response = requests.get(f"http://www.hchs.hc.edu.tw/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = basic.header_)
+        response: requests.Response = requests.get(f"http://www.hchs.hc.edu.tw/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = basic.header)
 
         response.encoding = response.apparent_encoding
 
@@ -48,10 +44,10 @@ def get_news() -> list:
           title: str = table_list[0].text.strip()
           #source = table_list[1].text.strip() #unwanted
           date: time.struct_time = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
-          latest_date: time.struct_time = time.strptime(db["latest_date"], "%Y-%m-%d")
+          latest_date: time.struct_time = time.strptime(db["hchs_latest_date"], "%Y-%m-%d")
 
-          if(date > latest_date or (date > latest_date and title != db["latest_title"])):
-            result.append(msg(link, title, date))
+          if(date > latest_date or (date >= latest_date and title != db["hchs_latest_title"])):
+            result.append(basic.msg(link, title, date))
             
           else:
             next = False
@@ -60,16 +56,16 @@ def get_news() -> list:
       except Exception as e:
         ex = e
         try_times -= 1
-        print(f"request failed: {try_times} retry times remaining, wait 1 min to try again")
+        print(f"hchs request failed: {try_times} retry times remaining, wait 1 sec to try again")
         print(repr(e) + "\n")
-        time.sleep(1) #sleep for 1 minute to try again
+        time.sleep(1) #sleep for 1 sec to try again
 
       else:
         break
 
     if(try_times < 0):
       basic.ErrorReport(repr(ex))
-      print("request failed: tried to many times\n")
+      print("hchs request failed: tried to many times\n")
       return
 
     page += 1
