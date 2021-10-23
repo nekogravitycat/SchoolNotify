@@ -16,7 +16,7 @@ def verify_link(email: str, token:str) -> str:
 
 def unsub_ask_link(email: str, token:str = "") -> str:
   if token == "":
-    token = db[f"email_{email}"]
+    token = db[f"hchs_email_{email}"]
   return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&token={token}"
 
 
@@ -39,27 +39,27 @@ def sub():
     print("Invaild email address")
     abort(400, "無效的電子郵件\nInvaild email address")
 
-  if(f"email_{email}" in db.prefix("email")):
+  if(f"email_{email}" in db.prefix("hchs_email")):
     print("Already subscribed")
-    return "您已訂閱至此服務\nYou've already subscribed to this service owo"
+    return "您已訂閱至此服務\nYou've already subscribed to this service"
 
   if(f"ask_{email}" in db.prefix("ask")):
     print("Already sent email")
-    return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15mins to send again"
+    return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15 minutes to send again"
 
   token: str = rollingcode.random_str(6)
   hyperlink: str = verify_link(email, token)
 
-  content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes."
+  content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes"
 
   if(myemail.send([email], r"Please verify your email", content, True) == True):
     db[f"ask_{email}"] = db["timestamp"] + ";" + token
     print(f"Passed: {token}")
-    return f"一封驗證電子郵件已送出至 {email}，請查收\nA verification email has been sent to {email}, go check it!"
+    return f"一封驗證電子郵件已送出至 {email}\nA verification email has been sent to {email}"
   
   else:
     print(f"Passed: {token}, failed to send email")
-    return "目前無法發送電子郵件，請稍後再試\nFailed to send email, please try again later."
+    return "目前無法發送電子郵件，請稍後再試\nFailed to send email, please try again later"
 
 
 @app.route("/verify")
@@ -73,18 +73,18 @@ def ver():
     print("Bad request")
     abort(400, "無效的請求\nBad request")
 
-  if(f"email_{email}" in db.prefix("email")):
+  if(f"hchs_email_{email}" in db.prefix("hchs_email")):
     print("Already subscribed")
-    return "您已訂閱至此服務\nWhoohoo! You've already subscribed to this service owo"
+    return "您已訂閱至此服務\nWhoohoo! You've already subscribed to this service"
 
   if((f"ask_{email}" not in db.prefix("ask")) or token != db[f"ask_{email}"].split(";")[1]):
     print("Invalid email or token")
     abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link has expired and needs to ask for subscribe again)")
 
-  db[f"email_{email}"] = token
+  db[f"hchs_email_{email}"] = token
   del db[f"ask_{email}"]
   print("Successfully subscribed!\n")
-  return "歡呼！已完成訂閱！\nHooray! Successfully subscribed! :)"
+  return "成功訂閱！\nSuccessfully subscribed!"
 
 
 @app.route("/unsub-ask")
@@ -103,11 +103,11 @@ def unsub():
     print("Bad request")
     abort(400, "無效的請求\nBad request")
 
-  if((f"email_{email}" not in db.prefix("email")) or token != db[f"email_{email}"]):
+  if((f"hchs_email_{email}" not in db.prefix("hchs_email")) or token != db[f"hchs_email_{email}"]):
     print("Invaild email or token")
     abort(403, "無效的電子郵件或令牌\nInvalid email or token")
 
-  del db[f"email_{email}"]
+  del db[f"hchs_email_{email}"]
   print("Successfully unsubscribed!\n")
   return "成功取消訂閱！\nSuccessfully unsubscribed!"
 
