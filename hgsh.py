@@ -18,7 +18,7 @@ def newsIdGrabber(pageNum: int = 0, maxRows: int = 15) -> list:
     "maxRows" : str(maxRows),
     "keyword" : "",
     "uid" : "WID_0_2_21b2de5a55209704d947481c9d16786c85145eca",
-    "tf" : "1",
+    "tf" : "1", #"tf" means "the fuck?"
     "auth_type" : "user"
   }
 

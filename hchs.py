@@ -50,7 +50,7 @@ def get_news() -> list:
           date: time.struct_time = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
           latest_date: time.struct_time = time.strptime(db["latest_date"], "%Y-%m-%d")
 
-          if date > latest_date or (date > latest_date and title != db["latest_title"]):
+          if(date > latest_date or (date > latest_date and title != db["latest_title"])):
             result.append(msg(link, title, date))
             
           else:
@@ -67,7 +67,7 @@ def get_news() -> list:
       else:
         break
 
-    if try_times < 0:
+    if(try_times < 0):
       basic.ErrorReport(repr(ex))
       print("request failed: tried to many times\n")
       return

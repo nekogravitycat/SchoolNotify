@@ -17,7 +17,7 @@ def send(to: list, subject: str, content_base:str, is_html: bool, append_unsub: 
 
   content_all:str = content_base
 
-  while try_times >= 0:
+  while(try_times >= 0):
     try:
       server: smtplib.SMTP_SSL = smtplib.SMTP_SSL(os.environ["smtp_server"], 465)
       server.login(os.environ["smtp_account"], os.environ["smtp_password"])
@@ -31,13 +31,13 @@ def send(to: list, subject: str, content_base:str, is_html: bool, append_unsub: 
         msg["To"] = r
         msg["Subject"] = subject
 
-        if append_unsub:
+        if(append_unsub):
           content_all = content_base + f'Click <a href="{website.unsub_ask_link(r)}">{"here"}</a> to unsubscribe'
 
         else:
           content_all = content_base
 
-        if is_html:
+        if(is_html):
           msg.add_alternative(content_all, subtype = "html") #for html
 
         else:
@@ -59,7 +59,7 @@ def send(to: list, subject: str, content_base:str, is_html: bool, append_unsub: 
       print(repr(e) + "\n")
       time.sleep(1) #sleep for 1 second to try again
   
-  if try_times < 0:
+  if(try_times < 0):
     #don't call ErrorReport() here or it'll create an infinite loop
     print("smtp failed: tried to many times\n")
     return False

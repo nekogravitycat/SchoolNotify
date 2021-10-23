@@ -5,6 +5,7 @@
 import time
 import schedule
 import website
+from replit import db
 
 import basic
 import hchs
@@ -12,18 +13,27 @@ import hgsh
 
 website.alive() #for uptimerobot
 
-send_email: bool = True
+send_email: bool = False
 run_immediate: bool = False
 
-#db["latest_date"] = "2021-09-17" #for testing
-#db["latest_title"] = "Test title" #for testing
+
+#for testing
+#db["hchs_latest_date"] = "2021-10-10"
+#db["hchs_latest_title"] = "Test title"
+#db["hgsh_latest_id"] = "10499"
+
+
+def ShowResult(result: list):
+  for re in result:
+    print(re.detail())
+    print()
 
 
 def Job():
   if(send_email):
     basic.push_email("hchs", hchs.get_news())
   else:
-    hchs.get_news()
+    ShowResult(hchs.get_news())
   #WIP
 
 
@@ -46,7 +56,7 @@ def ScheduleRun():
     time.sleep(1)
 
 
-if run_immediate:
+if(run_immediate):
   Job()
 
 ScheduleRun()

@@ -29,7 +29,7 @@ def push_email(school: str, result: list):
   from_date: str = db['latest_date']
   is_empty: bool = len(result) == 0
 
-  if is_empty:
+  if(is_empty):
     print("No new announcemts\n")
 
   else:
@@ -42,11 +42,11 @@ def push_email(school: str, result: list):
   print(f"From: {from_date}")
   print(f"Latest date: {db['latest_date']}\n")
 
-  if len(db.prefix("email")) > 0:
+  if(len(db.prefix("email")) > 0):
     subject: str = f"School Announcements ({from_date[5:]} ~ {db['latest_date'][5:]})".replace("-", "/")
     content: str = ""
     
-    if is_empty:
+    if(is_empty):
       content = f"No new announcemts<br><br>"
 
     else:
