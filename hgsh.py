@@ -25,10 +25,6 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
   for i in range(1, len(block)):
     newsid.append(block[i][3:8].replace('"', ""))
   
-  """
-  for s in newsid:
-    print(s)
-  """
   return newsid
 
 
@@ -55,5 +51,8 @@ def get_news() -> list:
 
     if(date >= latest_date):
       result.append(basic.msg(link, title, date))
+
+      db["hgsh_latest_date"] = time.strftime("%Y-%m-%d", date)
+      db["hgsh_latest_id"] = id
 
   return result

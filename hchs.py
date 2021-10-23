@@ -48,6 +48,9 @@ def get_news() -> list:
 
           if(date > latest_date or (date >= latest_date and title != db["hchs_latest_title"])):
             result.append(basic.msg(link, title, date))
+
+            db["hchs_latest_date"] = time.strftime("%Y-%m-%d", date)
+            db["hchs_latest_title"] = title
             
           else:
             next = False

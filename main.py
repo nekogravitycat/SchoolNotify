@@ -1,7 +1,3 @@
-#crummy.com/software/BeautifulSoup/bs4/doc
-#schedule.readthedocs.io/en/stable
-#uptimerobot.com
-
 import time
 import schedule
 import website

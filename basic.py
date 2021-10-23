@@ -27,7 +27,6 @@ header: dict = {
 
 def push_email(school: str, result: list):
   db_tag_date: str = f"{school}_latest_date"
-  db_tag_title: str = f"{school}_latest_title"
   db_tag_email: str = f"{school}_email"
 
   from_date: str = db[db_tag_date]
@@ -37,9 +36,6 @@ def push_email(school: str, result: list):
     print("No new announcemts\n")
 
   else:
-    db[db_tag_date] = result[0].date_str()
-    db[db_tag_title] = result[0].title
-
     for r in result:
       print(r.detail() + "\n")
 
