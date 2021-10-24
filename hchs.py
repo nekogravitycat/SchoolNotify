@@ -10,13 +10,10 @@ def get_news() -> list:
   
   next: bool = True
   page: int = 1
-  result: list = [] #storing a list of Announcement()
+  result: list = [] #storing a list of basic.msg()
 
-  while(next):
-    try_times: int = 3 #times to try when request is failed
-    ex: Exception
-
-    while(try_times >= 0):
+  try:
+    while(next):
       response: requests.Response = requests.get(f"http://www.hchs.hc.edu.tw/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = basic.header)
 
       response.encoding = response.apparent_encoding
@@ -55,6 +52,11 @@ def get_news() -> list:
           next = False
           break
 
-    page += 1
+      page += 1
+      
+    return result
     
-  return result
+  except Exception as e:
+    print("hchs failed")
+    print(repr(e) + "\n")
+    return None

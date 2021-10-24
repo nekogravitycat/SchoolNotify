@@ -35,32 +35,38 @@ def get_news() -> list:
   page: int = 0
   result: list = []
 
-  while(next):
-    for id in get_newsid(page):
-      if(id == db["hgsh_latest_id"]):
-        break
+  try:
+    while(next):
+      for id in get_newsid(page):
+        if(id == db["hgsh_latest_id"]):
+          break
 
-      link: str =  f"https://www.hgsh.hc.edu.tw/ischool/public/news_view/show.php?nid={id}"
+        link: str =  f"https://www.hgsh.hc.edu.tw/ischool/public/news_view/show.php?nid={id}"
 
-      response: requests.Response = requests.get(link, headers = basic.header)
-      response.encoding = response.apparent_encoding
+        response: requests.Response = requests.get(link, headers = basic.header)
+        response.encoding = response.apparent_encoding
 
-      soup: bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
-      soup.encoding = response.encoding
+        soup: bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
+        soup.encoding = response.encoding
 
-      title: str = soup.title.string
-      date: time.struct_time = time.strptime(soup.find(id = "info_time").text.strip(), "%Y-%m-%d %H:%M:%S")
-      latest_date: time.struct_time = time.strptime(db["hgsh_latest_date"], "%Y-%m-%d")
+        title: str = soup.title.string
+        date: time.struct_time = time.strptime(soup.find(id = "info_time").text.strip(), "%Y-%m-%d %H:%M:%S")
+        latest_date: time.struct_time = time.strptime(db["hgsh_latest_date"], "%Y-%m-%d")
 
-      if(date >= latest_date):
-        result.append(basic.msg(link, title, date))
+        if(date >= latest_date):
+          result.append(basic.msg(link, title, date))
 
-        db["hgsh_latest_date"] = time.strftime("%Y-%m-%d", date)
-        db["hgsh_latest_id"] = id
+          db["hgsh_latest_date"] = time.strftime("%Y-%m-%d", date)
+          db["hgsh_latest_id"] = id
 
-      else:
-        next = False
+        else:
+          next = False
 
-    page += 1
+      page += 1
 
-  return result
+    return result
+  
+  except Exception as e:
+    print("hgsh failed")
+    print(repr(e) + "\n")
+    return None
