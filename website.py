@@ -8,16 +8,16 @@ import rollingcode
 app = Flask("")
 
 
-def sub_link(email: str) -> str:
-  return f"https://SchoolNotify.nekogravitycat.repl.co/sub?email={email}"
+def sub_link(email: str, school: str) -> str:
+  return f"https://SchoolNotify.nekogravitycat.repl.co/sub?email={email}&school={school}"
 
-def verify_link(email: str, token:str) -> str:
-  return f"https://SchoolNotify.nekogravitycat.repl.co/verify?email={email}&token={token}"
+def verify_link(email: str, school:str, token:str) -> str:
+  return f"https://SchoolNotify.nekogravitycat.repl.co/verify?email={email}&school={school}&token={token}"
 
-def unsub_ask_link(email: str, token:str = "") -> str:
+def unsub_ask_link(email: str, school: str, token:str = "") -> str:
   if token == "":
-    token = db[f"hchs_email_{email}"]
-  return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&token={token}"
+    token = db[f"{school}_email_{email}"]
+  return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&school={school}&token={token}"
 
 
 @app.route("/")
@@ -28,33 +28,38 @@ def home():
 @app.route("/sub")
 def sub():
   email: str = request.args.get("email", default = "", type = str)
+  school: str = request.args.get("school", default = "", type = str)
 
   print(f"Ask to sub: {email}")
 
   if(email == ""):
-    print("Bad request")
+    print("Bad request: no email")
     abort(400, "請提供電子郵件\nNo email adderss provided")
+
+  if(school == ""):
+    print("Bad request: no school")
+    abort(400, "請選擇學校\nNo school selected")
 
   if(not myemail.is_vaild(email)):
     print("Invaild email address")
     abort(400, "無效的電子郵件\nInvaild email address")
 
-  if(f"email_{email}" in db.prefix("hchs_email")):
+  if(f"{school}_email_{email}" in db.prefix(f"{school}_email")):
     print("Already subscribed")
     return "您已訂閱至此服務\nYou've already subscribed to this service"
 
-  if(f"ask_{email}" in db.prefix("ask")):
+  if(f"ask_{school}_{email}" in db.prefix(f"ask_{school}")):
     print("Already sent email")
     return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15 minutes to send again"
 
   token: str = rollingcode.random_str(6)
-  hyperlink: str = verify_link(email, token)
+  hyperlink: str = verify_link(email, school, token)
 
   content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes"
 
   if(myemail.send([email], r"Please verify your email", content, True) == True):
-    db[f"ask_{email}"] = db["timestamp"] + ";" + token
-    print(f"Passed: {token}")
+    db[f"ask_{school}_{email}"] = db["timestamp"] + ";" + token
+    print(f"Passed: {school}, {token}")
     return f"一封驗證電子郵件已送出至 {email}\nA verification email has been sent to {email}"
   
   else:
@@ -65,24 +70,25 @@ def sub():
 @app.route("/verify")
 def ver():
   email: str = request.args.get("email", default = "", type = str)
+  school: str = request.args.get("school", default = "", type = str)
   token: str = request.args.get("token", default = "", type = str)
 
-  print(f"Verify: {email}, {token}")
+  print(f"Verify: {email}, {school}, {token}")
   
-  if(email == "" or token == ""):
+  if(email == "" or school == "" or token == ""):
     print("Bad request")
     abort(400, "無效的請求\nBad request")
 
-  if(f"hchs_email_{email}" in db.prefix("hchs_email")):
+  if(f"{school}_email_{email}" in db.prefix(f"{school}_email")):
     print("Already subscribed")
     return "您已訂閱至此服務\nWhoohoo! You've already subscribed to this service"
 
-  if((f"ask_{email}" not in db.prefix("ask")) or token != db[f"ask_{email}"].split(";")[1]):
+  if((f"ask_{school}_{email}" not in db.prefix(f"ask_{school}")) or token != db[f"ask_{school}_{email}"].split(";")[1]):
     print("Invalid email or token")
     abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link has expired and needs to ask for subscribe again)")
 
-  db[f"hchs_email_{email}"] = token
-  del db[f"ask_{email}"]
+  db[f"{school}_email_{email}"] = token
+  del db[f"ask_{school}_{email}"]
   print("Successfully subscribed!\n")
   return "成功訂閱！\nSuccessfully subscribed!"
 
@@ -95,19 +101,20 @@ def unsub_ask():
 @app.route("/unsub")
 def unsub():
   email: str = request.args.get("email", default = "", type = str)
+  school: str = request.args.get("school", default = "", type = str)
   token: str = request.args.get("token", default = "", type = str)
 
-  print(f"Unsub: {email}, {token}")
+  print(f"Unsub: {email}, {school}, {token}")
 
-  if(email == "" or token == ""):
+  if(email == "" or school == "" or token == ""):
     print("Bad request")
     abort(400, "無效的請求\nBad request")
 
-  if((f"hchs_email_{email}" not in db.prefix("hchs_email")) or token != db[f"hchs_email_{email}"]):
+  if((f"{school}_email_{email}" not in db.prefix(f"{school}_email")) or token != db[f"{school}_email_{email}"]):
     print("Invaild email or token")
     abort(403, "無效的電子郵件或令牌\nInvalid email or token")
 
-  del db[f"hchs_email_{email}"]
+  del db[f"{school}_email_{email}"]
   print("Successfully unsubscribed!\n")
   return "成功取消訂閱！\nSuccessfully unsubscribed!"
 

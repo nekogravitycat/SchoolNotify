@@ -11,7 +11,7 @@ def is_vaild(email: str) -> bool:
   return email_regex.match(email) != None
 
 
-def send(to: list, subject: str, content_base:str, is_html: bool, append_unsub: bool = False) -> bool:
+def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:str = "") -> bool:
   try_times: int = 3 #times to try when smtp is failed
   ex: Exception
 
@@ -31,8 +31,8 @@ def send(to: list, subject: str, content_base:str, is_html: bool, append_unsub: 
         msg["To"] = r
         msg["Subject"] = subject
 
-        if(append_unsub):
-          content_all = content_base + f'Click <a href="{website.unsub_ask_link(r)}">{"here"}</a> to unsubscribe'
+        if(unsub_school != ""):
+          content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r)}">{"這裡"}</a> 來退訂此服務'
 
         else:
           content_all = content_base

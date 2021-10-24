@@ -42,12 +42,12 @@ def push_email(school: str, result: list):
   print(f"From: {from_date}")
   print(f"Latest date: {db[db_tag_date]}\n")
 
-  if(len(db.prefix("db_tag_email")) > 0):
-    subject: str = f"School Announcements ({from_date[5:]} ~ {db[db_tag_date][5:]})".replace("-", "/")
+  if(len(db.prefix(db_tag_email)) > 0):
+    subject: str = f"{school} 學校公告 ({from_date[5:]} ~ {db[db_tag_date][5:]})".replace("-", "/")
     content: str = ""
     
     if(is_empty):
-      content = f"No new announcemts<br><br>"
+      content = f"尚無新公告<br><br>"
 
     else:
       for r in result:
@@ -59,9 +59,9 @@ def push_email(school: str, result: list):
     for re in db.prefix(db_tag_email):
       recipients.append(re[11:])
 
-    myemail.send(recipients, subject, content, True, True)
+    myemail.send(recipients, subject, content, True, school)
 
-  elif len(db.prefix(db_tag_email)) == 0:
+  else:
     print("Recipient list is empty\n")
 
   print("done! waiting for next round!\n")
