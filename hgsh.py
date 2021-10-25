@@ -29,7 +29,7 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
 
 
 def get_news() -> list:
-  print(f"hchs runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
+  print(f"hgsh runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
 
   next: bool = True
   page: int = 0
@@ -37,7 +37,9 @@ def get_news() -> list:
 
   try:
     while(next):
-      for id in get_newsid(page):
+      newsid: list = get_newsid(page)
+
+      for id in newsid:
         if(id == db["hgsh_latest_id"]):
           break
 
@@ -56,13 +58,14 @@ def get_news() -> list:
         if(date >= latest_date):
           result.append(basic.msg(link, title, date))
 
-          db["hgsh_latest_date"] = time.strftime("%Y-%m-%d", date)
-          db["hgsh_latest_id"] = id
-
         else:
           next = False
 
       page += 1
+
+    if(len(result) > 0):
+      db["hgsh_latest_date"] = time.strftime("%Y-%m-%d", result[0].date)
+      db["hgsh_latest_id"] = newsid[0]
 
     return result
   

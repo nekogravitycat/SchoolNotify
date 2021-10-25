@@ -30,7 +30,7 @@ def sub():
   email: str = request.args.get("email", default = "", type = str)
   school: str = request.args.get("school", default = "", type = str)
 
-  print(f"Ask to sub: {email}")
+  print(f"Ask to sub: {email}, {school}")
 
   if(email == ""):
     print("Bad request: no email")
@@ -136,7 +136,6 @@ def uptime():
     ClearAsk("A")
     db["timestamp"] = "A"
     
-  print("UpTimeRobot visited")
   return "Hello, uptimerobot!"
 
 

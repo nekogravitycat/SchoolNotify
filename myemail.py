@@ -1,5 +1,4 @@
 import os
-import time
 import email.message
 import smtplib
 import website
@@ -28,7 +27,7 @@ def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:s
       msg["Subject"] = subject
 
       if(unsub_school != ""):
-        content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r)}">{"這裡"}</a> 來退訂此服務'
+        content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_school)}">{"這裡"}</a> 來退訂此服務'
 
       else:
         content_all = content_base

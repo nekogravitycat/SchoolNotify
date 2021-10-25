@@ -13,16 +13,20 @@ run_immediate: bool = False
 
 
 #for testing
-#db["hchs_latest_date"] = "2021-10-10"
+#db["hchs_latest_date"] = "2021-10-11"
 #db["hchs_latest_title"] = "Test title"
-#db["hgsh_latest_date"] = "2021-10-10"
-#db["hgsh_latest_id"] = "10499"
+#db["hgsh_latest_date"] = "2021-10-11"
+#db["hgsh_latest_id"] = "10446"
 
 
 def ShowResult(result: list):
-  for re in result:
-    print(re.detail())
-    print()
+  if(len(result) == 0):
+    print("No new announcements")
+
+  else:
+    for re in result:
+      print(re.detail())
+      print()
 
 
 def Job():
