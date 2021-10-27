@@ -3,6 +3,7 @@ from flask import Flask, request, render_template, abort
 from threading import Thread
 from replit import db
 import myemail
+import mydb
 import rollingcode
 
 app = Flask("")
@@ -16,7 +17,8 @@ def verify_link(email: str, school:str, token:str) -> str:
 
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
   if token == "":
-    token = db[f"{school}_email_{email}"]
+    token = mydb.get_token("school", email)
+
   return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&school={school}&token={token}"
 
 
@@ -44,11 +46,11 @@ def sub():
     print("Invaild email address")
     abort(400, "無效的電子郵件\nInvaild email address")
 
-  if(f"{school}_email_{email}" in db.prefix(f"{school}_email")):
+  if(mydb.exist_token(school, email)):
     print("Already subscribed")
     return "您已訂閱至此服務\nYou've already subscribed to this service"
 
-  if(f"ask_{school}_{email}" in db.prefix(f"ask_{school}")):
+  if(mydb.exist_ask(school, email)):
     print("Already sent email")
     return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15 minutes to send again"
 
@@ -58,7 +60,7 @@ def sub():
   content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes"
 
   if(myemail.send([email], r"Please verify your email", content, True) == True):
-    db[f"ask_{school}_{email}"] = db["timestamp"] + ";" + token
+    mydb.set_ask(school, email, mydb.get_timestamp() + ";" + token)
     print(f"Passed: {school}, {token}")
     return f"一封驗證電子郵件已送出至 {email}\nA verification email has been sent to {email}"
   
@@ -79,16 +81,17 @@ def ver():
     print("Bad request")
     abort(400, "無效的請求\nBad request")
 
-  if(f"{school}_email_{email}" in db.prefix(f"{school}_email")):
+  if(mydb.exist_token(school, email)):
     print("Already subscribed")
     return "您已訂閱至此服務\nWhoohoo! You've already subscribed to this service"
 
-  if((f"ask_{school}_{email}" not in db.prefix(f"ask_{school}")) or token != db[f"ask_{school}_{email}"].split(";")[1]):
+  if((not mydb.exist_ask(school, email)) or token != mydb.get_ask(school, email).split(";")[1]):
     print("Invalid email or token")
     abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link has expired and needs to ask for subscribe again)")
 
-  db[f"{school}_email_{email}"] = token
-  del db[f"ask_{school}_{email}"]
+  mydb.set_token(school, email, token)
+  mydb.del_ask(school, email)
+  
   print("Successfully subscribed!\n")
   return "成功訂閱！\nSuccessfully subscribed!"
 
@@ -110,11 +113,11 @@ def unsub():
     print("Bad request")
     abort(400, "無效的請求\nBad request")
 
-  if((f"{school}_email_{email}" not in db.prefix(f"{school}_email")) or token != db[f"{school}_email_{email}"]):
+  if((not mydb.exist_token(school, email)) or token != mydb.get_token(school, email)):
     print("Invaild email or token")
     abort(403, "無效的電子郵件或令牌\nInvalid email or token")
 
-  del db[f"{school}_email_{email}"]
+  mydb.del_token(school, email)
   print("Successfully unsubscribed!\n")
   return "成功取消訂閱！\nSuccessfully unsubscribed!"
 
@@ -124,17 +127,19 @@ def uptime():
   if(request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]):
     return "Hello, visitor!"
 
-  if(db["timestamp"] == "A"):
+  timestamp: str = mydb.get_timestamp()
+
+  if(timestamp == "A"):
     ClearAsk("B")
-    db["timestamp"] = "B"
+    mydb.set_timestamp("B")
 
-  elif(db["timestamp"] == "B"):
+  elif(timestamp == "B"):
     ClearAsk("C")
-    db["timestamp"] = "C"
+    mydb.set_timestamp("C")
 
-  elif(db["timestamp"] == "C"):
+  elif(timestamp == "C"):
     ClearAsk("A")
-    db["timestamp"] = "A"
+    mydb.set_timestamp("A")
     
   return "Hello, uptimerobot!"
 
@@ -142,7 +147,7 @@ def uptime():
 def ClearAsk(target: str):
   cleared: str = ""
 
-  for a in db.prefix("ask"):
+  for a in mydb.list_ask():
       if(db[a].split(";")[0] == target):
         cleared += f"{a[4:]}\n"
         del db[a]

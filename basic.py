@@ -1,7 +1,7 @@
 import os
-from replit import db
 import time
 import myemail
+import mydb
 
 
 class msg:
@@ -26,10 +26,7 @@ header: dict = {
 
 
 def push_email(school: str, result: list):
-  db_tag_date: str = f"{school}_latest_date"
-  db_tag_email: str = f"{school}_email"
-
-  from_date: str = db[db_tag_date]
+  latest_date: str = mydb.get_info(school, 'date')
   is_empty: bool = len(result) == 0
 
   if(is_empty):
@@ -39,11 +36,10 @@ def push_email(school: str, result: list):
     for r in result:
       print(r.detail() + "\n")
 
-  print(f"From: {from_date}")
-  print(f"Latest date: {db[db_tag_date]}\n")
+  print(f"Latest date: {latest_date}\n")
 
-  if(len(db.prefix(db_tag_email)) > 0):
-    subject: str = f"{school} 學校公告 ({from_date[5:]} ~ {db[db_tag_date][5:]})".replace("-", "/")
+  if(len(mydb.list_token(school)) > 0):
+    subject: str = f"{school} 學校公告 ({latest_date[5:]})".replace("-", "/")
     content: str = ""
     
     if(is_empty):
@@ -56,7 +52,7 @@ def push_email(school: str, result: list):
 
     recipients: list = []
 
-    for re in db.prefix(db_tag_email):
+    for re in mydb.list_token(school):
       recipients.append(re[11:])
 
     myemail.send(recipients, subject, content, True, school)

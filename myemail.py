@@ -10,6 +10,7 @@ def is_vaild(email: str) -> bool:
   return email_regex.match(email) != None
 
 
+#Retuen a boolean telling if the process ran successfully
 def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:str = "") -> bool:
   content_all: str = content_base
 
