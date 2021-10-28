@@ -40,9 +40,9 @@ def get_news() -> list:
         title: str = table_list[0].text.strip()
         #source = table_list[1].text.strip() #unwanted
         date: time.struct_time = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
-        latest_date: time.struct_time = time.strptime(mydb.get_info("hchs", "date"), "%Y-%m-%d")
+        latest_date: time.struct_time = time.strptime(mydb.info.get("hchs", "date"), "%Y-%m-%d")
 
-        if(date > latest_date or (date >= latest_date and title != mydb.get_info("hchs", "title"))):
+        if(date > latest_date or (date >= latest_date and title != mydb.info.get("hchs", "title"))):
           result.append(basic.msg(link, title, date))
 
         else:
@@ -52,8 +52,8 @@ def get_news() -> list:
       page += 1
 
     if(len(result) > 0):
-      mydb.set_info("hchs", "date", time.strftime("%Y-%m-%d", result[0].date))
-      mydb.set_info("hchs", "title", result[0].title)
+      mydb.info.set("hchs", "date", time.strftime("%Y-%m-%d", result[0].date))
+      mydb.info.set("hchs", "title", result[0].title)
 
     return result
     

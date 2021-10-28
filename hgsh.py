@@ -40,7 +40,7 @@ def get_news() -> list:
       newsid: list = get_newsid(page)
 
       for id in newsid:
-        if(id == mydb.get_info("hgsh", "id")):
+        if(id == mydb.info.get("hgsh", "id")):
           break
 
         link: str =  f"https://www.hgsh.hc.edu.tw/ischool/public/news_view/show.php?nid={id}"
@@ -53,7 +53,7 @@ def get_news() -> list:
 
         title: str = soup.title.string
         date: time.struct_time = time.strptime(soup.find(id = "info_time").text.strip(), "%Y-%m-%d %H:%M:%S")
-        latest_date: time.struct_time = time.strptime(mydb.get_info("hgsh", "date"), "%Y-%m-%d")
+        latest_date: time.struct_time = time.strptime(mydb.info.get("hgsh", "date"), "%Y-%m-%d")
 
         if(date >= latest_date):
           result.append(basic.msg(link, title, date))
@@ -64,8 +64,8 @@ def get_news() -> list:
       page += 1
 
     if(len(result) > 0):
-      mydb.set_info("hgsh", "date", time.strftime("%Y-%m-%d", result[0].date))
-      mydb.set_info("hgsh", "id", newsid[0])
+      mydb.info.set("hgsh", "date", time.strftime("%Y-%m-%d", result[0].date))
+      mydb.info.set("hgsh", "id", newsid[0])
 
     return result
   

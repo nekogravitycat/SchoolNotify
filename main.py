@@ -13,10 +13,10 @@ run_immediate: bool = False
 
 
 #for testing
-#mydb.set_info("hchs", "date", "2021-10-20")
-#mydb.set_info("hchs", "title", "Test title")
-#mydb.set_info("hgsh", "date", "2021-10-20")
-#mydb.set_info("hgsh", "id", "10523")
+#mydb.info.set("hchs", "date", "2021-10-20")
+#mydb.info.set("hchs", "title", "Test title")
+#mydb.info.set("hgsh", "date", "2021-10-20")
+#mydb.info.set("hgsh", "id", "10523")
 
 
 def ShowResult(result: list):

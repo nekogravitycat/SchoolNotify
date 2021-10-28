@@ -37,7 +37,7 @@ def push_email(school: str, result: list):
     for r in result:
       print(r.detail() + "\n")
 
-  if(len(mydb.list_token(school)) > 0):
+  if(len(mydb.token.list(school)) > 0):
     subject: str = f"{school} 學校公告 ({today.strftime('%m/%d')})".replace("-", "/")
     content: str = ""
     
@@ -51,7 +51,7 @@ def push_email(school: str, result: list):
 
     recipients: list = []
 
-    for re in mydb.list_token(school):
+    for re in mydb.token.list(school):
       recipients.append(re[11:])
 
     myemail.send(recipients, subject, content, True, school)
