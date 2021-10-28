@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime, timezone, timedelta
 import myemail
 import mydb
 
@@ -26,7 +27,7 @@ header: dict = {
 
 
 def push_email(school: str, result: list):
-  latest_date: str = mydb.get_info(school, 'date')
+  today: str = datetime.now(timezone(timedelta(hours=8))).date()
   is_empty: bool = len(result) == 0
 
   if(is_empty):
@@ -36,10 +37,8 @@ def push_email(school: str, result: list):
     for r in result:
       print(r.detail() + "\n")
 
-  print(f"Latest date: {latest_date}\n")
-
   if(len(mydb.list_token(school)) > 0):
-    subject: str = f"{school} 學校公告 ({latest_date[5:]})".replace("-", "/")
+    subject: str = f"{school} 學校公告 ({today.strftime('%m/%d')})".replace("-", "/")
     content: str = ""
     
     if(is_empty):

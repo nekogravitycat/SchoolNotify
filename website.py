@@ -17,7 +17,7 @@ def verify_link(email: str, school:str, token:str) -> str:
 
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
   if token == "":
-    token = mydb.get_token("school", email)
+    token = mydb.get_token(school, email)
 
   return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&school={school}&token={token}"
 
