@@ -11,7 +11,6 @@ website.alive() #for uptimerobot
 send_email: bool = True
 run_immediate: bool = False
 
-
 #for testing
 #mydb.info.set("hchs", "date", "2021-10-20")
 #mydb.info.set("hchs", "title", "Test title")
@@ -48,10 +47,7 @@ def ScheduleRun():
   time_to_send: str = "10:00"
 
   scheduler.every().monday.at(time_to_send).do(Job)
-  #scheduler.every().tuesday.at(time_to_send).do(Job)
-  #scheduler.every().wednesday.at(time_to_send).do(Job)
   scheduler.every().thursday.at(time_to_send).do(Job)
-  #scheduler.every().friday.at(time_to_send).do(Job)
 
   print("tasks scheduled")
 
