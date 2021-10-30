@@ -17,7 +17,7 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
     "auth_type" : "user"
   }
 
-  responce: requests.Response = requests.post("https://www.hgsh.hc.edu.tw/ischool/widget/site_news/news_query_json.php", data = send_data)
+  responce: requests.Response = requests.post(url = "https://www.hgsh.hc.edu.tw/ischool/widget/site_news/news_query_json.php", data = send_data)
 
   block: str = str(responce.content).split("newsId")
   newsid: list = []

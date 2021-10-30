@@ -41,7 +41,7 @@ class ask:
       return db.prefix(f"ask_{school}")
 
   def exist(school: str, email: str) -> bool:
-    return (f"ask_{school}_{email}" in ask.ask(school))
+    return (f"ask_{school}_{email}" in ask.list(school))
 
   def delete(school: str, email: str):
     del db[f"ask_{school}_{email}"]
