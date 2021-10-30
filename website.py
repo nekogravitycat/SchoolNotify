@@ -144,13 +144,18 @@ def uptime():
   return "Hello, uptimerobot!"
 
 
+@app.route("/github")
+def github():
+  return '<meta http-equiv="refresh" content="0; url=https://github.com/nekogravitycat/SchoolNotify">'
+
+
 def ClearAsk(target: str):
   cleared: str = ""
 
   for a in mydb.ask.list():
-      if(db[a].split(";")[0] == target):
-        cleared += f"{a[4:]}\n"
-        del db[a]
+    if(db[a].split(";")[0] == target):
+      cleared += f"{a[4:]}\n"
+      del db[a]
 
   if(len(cleared) > 0):
     print(f"Request cleared:\n{cleared}")
@@ -175,8 +180,10 @@ def ShowDB(token):
 
   if(verified):
     ls: str = ""
+    
     for k in db.keys():
       ls += f"{k} : {db[k]}<br>"
+
     return ls
   
   else:

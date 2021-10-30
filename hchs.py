@@ -42,7 +42,7 @@ def get_news() -> list:
         date: time.struct_time = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
         latest_date: time.struct_time = time.strptime(mydb.info.get("hchs", "date"), "%Y-%m-%d")
 
-        if(date > latest_date or (date >= latest_date and title != mydb.info.get("hchs", "title"))):
+        if((date > latest_date) or (date >= latest_date and title != mydb.info.get("hchs", "title"))):
           result.append(basic.msg(link, title, date))
 
         else:

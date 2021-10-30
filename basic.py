@@ -26,8 +26,11 @@ header: dict = {
 } #pretend to be a browser
 
 
+def today() -> datetime.date:
+  return datetime.now(timezone(timedelta(hours=8))).date()
+
+
 def push_email(school: str, result: list):
-  today: str = datetime.now(timezone(timedelta(hours=8))).date()
   is_empty: bool = len(result) == 0
 
   if(is_empty):
@@ -38,7 +41,7 @@ def push_email(school: str, result: list):
       print(r.detail() + "\n")
 
   if(len(mydb.token.list(school)) > 0):
-    subject: str = f"{school} 學校公告 ({today.strftime('%m/%d')})".replace("-", "/")
+    subject: str = f"{school} 學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
     content: str = ""
     
     if(is_empty):
@@ -64,5 +67,5 @@ def push_email(school: str, result: list):
 
 def ErrorReport(e: str):
   subject: str = "School Notify: An Error Occurred"
-  content: str = f"Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n\nExpectionn:\n{e}"
+  content: str = f"Time: {today()}\n\nExpectionn:\n{e}"
   myemail.send(os.environ["email_admin"], subject, content, False)
