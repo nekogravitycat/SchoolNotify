@@ -5,9 +5,9 @@ import basic
 import mydb
 
 class news_id:
-  def __init__(self, id: str, is_top: bool, date: time.struct_time = None):
+  def __init__(self, id: str, is_pinned: bool, date: time.struct_time = None):
     self.id = id
-    self.is_top = is_top
+    self.is_pinned = is_pinned
     self.date = date
 
 
@@ -30,12 +30,12 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
 
   for i in range(1, len(block)):
     id: str = "".join(str(n) for n in block[i][3:8] if n.isdigit())
-    is_top: bool = False
+    is_pinned: bool = False
 
     if(block[i][block[i].find("top") + 5] == "1"):
-      is_top = True
+      is_pinned = True
 
-    newsid.append(news_id(id, is_top))
+    newsid.append(news_id(id, is_pinned))
   
   return newsid
 
@@ -54,7 +54,7 @@ def get_news() -> list:
       news: list = get_newsid(page)
 
       for n in news:
-        if(n.id == mydb.info.get("hchs", "id") and not n.is_top):
+        if(n.id == mydb.info.get("hchs", "id") and not n.is_pinned):
           break
 
         link: str =  f"http://www.hchs.hc.edu.tw/ischool/public/news_view/show.php?nid={n.id}"
@@ -70,19 +70,19 @@ def get_news() -> list:
         date: time.struct_time = time.strptime(soup.find(id = "info_time").text.strip(), "%Y-%m-%d %H:%M:%S")
         latest_date: time.struct_time = time.strptime(mydb.info.get("hchs", "date"), "%Y-%m-%d")
 
-        if(date >= latest_date or n.is_top):
+        if(date >= latest_date or n.is_pinned):
           result.append(basic.msg(link, title, date))
-          if(not n.is_top):
-            vaild_news.append(news_id(n.id, n.is_top, date))
+          if(not n.is_pinned):
+            vaild_news.append(news_id(n.id, n.is_pinned, date))
 
         else:
           next = False
 
       page += 1
 
-    if(len(result) > 0):
+    if(len(vaild_news) > 0):
       for vn in vaild_news:
-        if(not vn.is_top):
+        if(not vn.is_pinned):
           mydb.info.set("hchs", "date", time.strftime("%Y-%m-%d", vn.date))
           mydb.info.set("hchs", "id", vn.id)
           break
@@ -93,65 +93,3 @@ def get_news() -> list:
     print("hchs failed")
     print(repr(e) + "\n")
     return None
-
-
-
-
-"""
-def get_news() -> list:
-  print(f"hchs runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
-  
-  next: bool = True
-  page: int = 1
-  result: list = [] #storing a list of basic.msg()
-
-  try:
-    while(next):
-      response: requests.Response = requests.get(f"http://www.hchs.hc.edu.tw/files/501-1000-1001-{page}.php?Lang=zh-tw", headers = basic.header)
-
-      response.encoding = response.apparent_encoding
-
-      soup: bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
-      soup.encoding = response.encoding
-
-      row: bs4.element.ResultSet = soup.find_all("tr", class_ = ["row_01", "row_02"]) 
-
-      for r in row:
-        #hyperlink of the article
-        division: bs4.element.Tag = r.select_one("div")
-        anchor: bs4.element.Tag = division.select_one("a")
-
-        link: str = anchor["href"]
-
-        #title, source (unwanted), and date
-        table: bs4.element.ResultSet = r.select("td")
-        table_list: list = []
-
-        for td in table:
-          table_list.append(td)
-
-        title: str = table_list[0].text.strip()
-        #source = table_list[1].text.strip() #unwanted
-        date: time.struct_time = time.strptime(table_list[2].text.strip(), "%Y-%m-%d")
-        latest_date: time.struct_time = time.strptime(mydb.info.get("hchs", "date"), "%Y-%m-%d")
-
-        if((date > latest_date) or (date >= latest_date and title != mydb.info.get("hchs", "title"))):
-          result.append(basic.msg(link, title, date))
-
-        else:
-          next = False
-          break
-
-      page += 1
-
-    if(len(result) > 0):
-      mydb.info.set("hchs", "date", time.strftime("%Y-%m-%d", result[0].date))
-      mydb.info.set("hchs", "title", result[0].title)
-
-    return result
-    
-  except Exception as e:
-    print("hchs failed")
-    print(repr(e) + "\n")
-    return None
-"""
