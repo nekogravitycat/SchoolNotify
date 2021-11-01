@@ -23,7 +23,7 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
   newsid: list = []
 
   for i in range(1, len(block)):
-    newsid.append(block[i][3:8].replace('"', ""))
+    newsid.append("".join(str(n) for n in block[i][3:8] if n.isdigit()))
   
   return newsid
 

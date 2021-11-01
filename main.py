@@ -12,9 +12,9 @@ send_email: bool = True
 run_immediate: bool = False
 
 #for testing
-#mydb.info.set("hchs", "date", "2021-10-20")
-#mydb.info.set("hchs", "title", "Test title")
-#mydb.info.set("hgsh", "date", "2021-10-20")
+#mydb.info.set("hchs", "date", "2021-10-27")
+#mydb.info.set("hchs", "id", "59")
+#mydb.info.set("hgsh", "date", "2021-10-27")
 #mydb.info.set("hgsh", "id", "10523")
 
 
