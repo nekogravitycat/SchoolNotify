@@ -1,6 +1,7 @@
 import time
 import requests
 import bs4
+import re
 import basic
 import mydb
 
@@ -25,19 +26,15 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
 
   responce: requests.Response = requests.post(url = "http://www.hchs.hc.edu.tw/ischool/widget/site_news/news_query_json.php", data = send_data)
 
-  block: str = str(responce.content).split("newsId")
-  newsid: list = []
+  result: list = []
 
-  for i in range(1, len(block)):
-    id: str = "".join(str(n) for n in block[i][3:8] if n.isdigit())
-    is_pinned: bool = False
+  id_pinned: list = re.findall(r'"newsId":"([0-9]*)","top":([01])', responce.text)
 
-    if(block[i][block[i].find("top") + 5] == "1"):
-      is_pinned = True
+  for i in id_pinned:
+    is_pinned: bool = (i[1] == 1)
+    result.append(news_id(i[0], is_pinned))
 
-    newsid.append(news_id(id, is_pinned))
-  
-  return newsid
+  return result
 
 
 def get_news() -> list:
@@ -77,6 +74,7 @@ def get_news() -> list:
 
         else:
           next = False
+          break
 
       page += 1
 

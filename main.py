@@ -8,14 +8,14 @@ import hgsh
 
 website.alive() #for uptimerobot
 
-send_email: bool = True
+send_email: bool = False
 run_immediate: bool = False
 
 #for testing
-#mydb.info.set("hchs", "date", "2021-10-27")
-#mydb.info.set("hchs", "id", "59")
-#mydb.info.set("hgsh", "date", "2021-10-27")
-#mydb.info.set("hgsh", "id", "10523")
+#mydb.info.set("hchs", "date", "2021-11-03")
+#mydb.info.set("hchs", "id", "142")
+#mydb.info.set("hgsh", "date", "2021-11-04")
+#mydb.info.set("hgsh", "id", "10371")
 
 
 def ShowResult(result: list):
