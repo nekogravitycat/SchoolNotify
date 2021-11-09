@@ -6,9 +6,10 @@ import mydb
 import hchs
 import hgsh
 
+
 website.alive() #for uptimerobot
 
-send_email: bool = False
+send_email: bool = True
 run_immediate: bool = False
 
 #for testing
@@ -34,10 +35,15 @@ def Job():
     basic.push_email("hgsh", hgsh.get_news())
     
   else:
-    print("---- HCHS ----")
+    ischool_info: list = ["date", "id"]
+
+    basic.memory.remember("hchs", ischool_info)
     ShowResult(hchs.get_news())
-    print("---- HGSH ----")
+    basic.memory.recall("hchs", ischool_info)
+
+    basic.memory.remember("hgsh", ischool_info)
     ShowResult(hgsh.get_news())
+    basic.memory.recall("hgsh", ischool_info)
 
 
 def ScheduleRun():
@@ -58,5 +64,6 @@ def ScheduleRun():
 
 if(run_immediate):
   Job()
+
 
 ScheduleRun()
