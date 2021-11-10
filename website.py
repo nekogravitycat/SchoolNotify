@@ -1,10 +1,13 @@
 import os
-from flask import Flask, request, render_template, abort
+from flask import Flask, request, render_template, abort, redirect, make_response
 from threading import Thread
+import hashlib
+import string
+import random
 from replit import db
 import myemail
 import mydb
-import rollingcode
+
 
 app = Flask("")
 
@@ -54,7 +57,7 @@ def sub():
     print("Already sent email")
     return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15 minutes to send again"
 
-  token: str = rollingcode.random_str(6)
+  token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k = 6)) #generates a six-characters-long token
   hyperlink: str = verify_link(email, school, token)
 
   content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes"
@@ -144,11 +147,6 @@ def uptime():
   return "Hello, uptimerobot!"
 
 
-@app.route("/github")
-def github():
-  return '<meta http-equiv="refresh" content="0; url=https://github.com/nekogravitycat/SchoolNotify">'
-
-
 def ClearAsk(target: str):
   cleared: str = ""
 
@@ -161,33 +159,44 @@ def ClearAsk(target: str):
     print(f"Request cleared:\n{cleared}")
 
 
-@app.route("/db/")
-def ForbiddenDB():
-  print(f"db token: {rollingcode.code_next}")
-  rollingcode.roll()
-  abort(403, "No token provided")
+@app.route("/login", methods = ["POST", "GET"])
+def login():
+  if(request.method == "POST"):
+    token = request.form["token"]
 
-
-#Provide the passcode showen in the console after loading the page for first time
-@app.route("/db/<token>")
-def ShowDB(token):
-  print(f"db token: {rollingcode.code_next}")
+    if(token != ""):
+      resp = make_response(redirect("/db"))
+      sha: str = hashlib.sha256(token.encode()).hexdigest()
+      resp.set_cookie("token", sha)
+      return resp
   
-  #token: str = request.args.get("token", default = "", type = str)
-  verified: bool = token == rollingcode.code
+  else:
+    token: str = request.cookies.get("token")
 
-  rollingcode.roll()
+    if(token == os.environ["db_token"]):
+      return redirect("/db")
 
-  if(verified):
+    else:
+      return render_template("login.html")
+
+
+@app.route("/db")
+def ShowDB():
+  token: str = request.cookies.get("token")
+
+  if(token == ""):
+    return redirect("/login")
+
+  elif(token != os.environ["db_token"]):
+    return redirect("/login?try-again=1") 
+
+  else:
     ls: str = ""
     
     for k in db.keys():
       ls += f"{k} : {db[k]}<br>"
 
     return ls
-  
-  else:
-    abort(403, "Invaild token")
 
 
 def run():
