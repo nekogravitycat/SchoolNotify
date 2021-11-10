@@ -53,3 +53,15 @@ class timestamp:
 
   def set(stamp: str):
     db["timestamp"] = stamp
+
+
+temp: dict = {}
+
+class memory:
+  def remember(school: str, info: list):
+    for i in info:
+      temp[i] = info.get(school, i)
+
+  def recall(school: str, info: list):
+    for i in info:
+      info.set(school, i, temp[i])

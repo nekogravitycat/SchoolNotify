@@ -12,12 +12,6 @@ website.alive() #for uptimerobot
 send_email: bool = True
 run_immediate: bool = False
 
-#for testing
-#mydb.info.set("hchs", "date", "2021-11-03")
-#mydb.info.set("hchs", "id", "142")
-#mydb.info.set("hgsh", "date", "2021-11-04")
-#mydb.info.set("hgsh", "id", "10371")
-
 
 def ShowResult(result: list):
   if(len(result) == 0):
@@ -37,13 +31,13 @@ def Job():
   else:
     ischool_info: list = ["date", "id"]
 
-    basic.memory.remember("hchs", ischool_info)
+    mydb.memory.remember("hchs", ischool_info)
     ShowResult(hchs.get_news())
-    basic.memory.recall("hchs", ischool_info)
+    mydb.memory.recall("hchs", ischool_info)
 
-    basic.memory.remember("hgsh", ischool_info)
+    mydb.memory.remember("hgsh", ischool_info)
     ShowResult(hgsh.get_news())
-    basic.memory.recall("hgsh", ischool_info)
+    mydb.memory.recall("hgsh", ischool_info)
 
 
 def ScheduleRun():

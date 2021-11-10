@@ -69,15 +69,3 @@ def ErrorReport(e: str):
   subject: str = "School Notify: An Error Occurred"
   content: str = f"Time: {today()}\n\nExpectionn:\n{e}"
   myemail.send(os.environ["email_admin"], subject, content, False)
-
-
-temp: dict = {}
-
-class memory:
-  def remember(school: str, info: list):
-    for i in info:
-      temp[i] = mydb.info.get(school, i)
-
-  def recall(school: str, info: list):
-    for i in info:
-      mydb.info.set(school, i, temp[i])

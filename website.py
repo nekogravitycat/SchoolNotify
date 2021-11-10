@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, render_template, abort, redirect, make_response
-from threading import Thread
+import threading
 import hashlib
 import string
 import random
@@ -204,5 +204,5 @@ def run():
 
 
 def alive():
-  t = Thread(target = run)
+  t = threading.Thread(target = run)
   t.start()
