@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, abort, redirect, make_response
+import flask
 import threading
 import hashlib
 import string
@@ -9,45 +9,43 @@ import myemail
 import mydb
 
 
-app = Flask("")
+app = flask.Flask("")
 
+
+base: str = "https://SchoolNotify.nekogravitycat.repl.co"
 
 def sub_link(email: str, school: str) -> str:
-  return f"https://SchoolNotify.nekogravitycat.repl.co/sub?email={email}&school={school}"
+  return f"{base}/sub?email={email}&school={school}"
 
 def verify_link(email: str, school:str, token:str) -> str:
-  return f"https://SchoolNotify.nekogravitycat.repl.co/verify?email={email}&school={school}&token={token}"
+  return f"{base}/verify?email={email}&school={school}&token={token}"
 
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
   if token == "":
     token = mydb.token.get(school, email)
 
-  return f"https://SchoolNotify.nekogravitycat.repl.co/unsub-ask?email={email}&school={school}&token={token}"
+  return f"{base}/unsub-ask?email={email}&school={school}&token={token}"
 
 
 @app.route("/")
 def home():
-  return render_template("sub.html")
+  return flask.render_template("sub.html")
 
 
 @app.route("/sub")
 def sub():
-  email: str = request.args.get("email", default = "", type = str)
-  school: str = request.args.get("school", default = "", type = str)
+  email: str = flask.request.args.get("email", default = "", type = str)
+  school: str = flask.request.args.get("school", default = "", type = str)
 
   print(f"Ask to sub: {email}, {school}")
 
-  if(email == ""):
-    print("Bad request: no email")
-    abort(400, "請提供電子郵件\nNo email adderss provided")
-
-  if(school == ""):
-    print("Bad request: no school")
-    abort(400, "請選擇學校\nNo school selected")
+  if(email == "" or school == ""):
+    print("Bad flask.request: no email or school")
+    flask.abort(400, "請提供電子郵件和學校\nNo email adderss or school provided")
 
   if(not myemail.is_vaild(email)):
     print("Invaild email address")
-    abort(400, "無效的電子郵件\nInvaild email address")
+    flask.abort(400, "無效的電子郵件\nInvaild email address")
 
   if(mydb.token.exist(school, email)):
     print("Already subscribed")
@@ -62,7 +60,7 @@ def sub():
 
   content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes"
 
-  if(myemail.send([email], r"Please verify your email", content, True) == True):
+  if(myemail.send([email], r"Please verify your email", content, True)):
     mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
     print(f"Passed: {school}, {token}")
     return f"一封驗證電子郵件已送出至 {email}\nA verification email has been sent to {email}"
@@ -74,23 +72,23 @@ def sub():
 
 @app.route("/verify")
 def ver():
-  email: str = request.args.get("email", default = "", type = str)
-  school: str = request.args.get("school", default = "", type = str)
-  token: str = request.args.get("token", default = "", type = str)
+  email: str = flask.request.args.get("email", default = "", type = str)
+  school: str = flask.request.args.get("school", default = "", type = str)
+  token: str = flask.request.args.get("token", default = "", type = str)
 
   print(f"Verify: {email}, {school}, {token}")
   
   if(email == "" or school == "" or token == ""):
-    print("Bad request")
-    abort(400, "無效的請求\nBad request")
+    print("Bad flask.request")
+    flask.abort(400, "無效的請求\nBad flask.request")
 
   if(mydb.token.exist(school, email)):
     print("Already subscribed")
     return "您已訂閱至此服務\nWhoohoo! You've already subscribed to this service"
 
-  if((not mydb.ask.exist(school, email)) or token != mydb.ask.get(school, email).split(";")[1]):
+  if((not mydb.ask.exist(school, email)) or (token != mydb.ask.get(school, email).split(";")[1])):
     print("Invalid email or token")
-    abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link has expired and needs to ask for subscribe again)")
+    flask.abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link has expired and needs to ask for subscribe again)")
 
   mydb.token.set(school, email, token)
   mydb.ask.delete(school, email)
@@ -101,24 +99,24 @@ def ver():
 
 @app.route("/unsub-ask")
 def unsub_ask():
-  return render_template("unsub.html")
+  return flask.render_template("unsub.html")
 
 
 @app.route("/unsub")
 def unsub():
-  email: str = request.args.get("email", default = "", type = str)
-  school: str = request.args.get("school", default = "", type = str)
-  token: str = request.args.get("token", default = "", type = str)
+  email: str = flask.request.args.get("email", default = "", type = str)
+  school: str = flask.request.args.get("school", default = "", type = str)
+  token: str = flask.request.args.get("token", default = "", type = str)
 
   print(f"Unsub: {email}, {school}, {token}")
 
   if(email == "" or school == "" or token == ""):
-    print("Bad request")
-    abort(400, "無效的請求\nBad request")
+    print("Bad flask.request")
+    flask.abort(400, "無效的請求\nBad flask.request")
 
   if((not mydb.token.exist(school, email)) or token != mydb.token.get(school, email)):
     print("Invaild email or token")
-    abort(403, "無效的電子郵件或令牌\nInvalid email or token")
+    flask.abort(403, "無效的電子郵件或令牌\nInvalid email or token")
 
   mydb.token.delete(school, email)
   print("Successfully unsubscribed!\n")
@@ -127,7 +125,7 @@ def unsub():
 
 @app.route("/uptimebot")
 def uptime():
-  if(request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]):
+  if(flask.request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]):
     return "Hello, visitor!"
 
   timestamp: str = mydb.timestamp.get()
@@ -156,39 +154,39 @@ def ClearAsk(target: str):
       del db[a]
 
   if(len(cleared) > 0):
-    print(f"Request cleared:\n{cleared}")
+    print(f"flask.request cleared:\n{cleared}")
 
 
 @app.route("/login", methods = ["POST", "GET"])
 def login():
-  if(request.method == "POST"):
-    token = request.form["token"]
+  if(flask.request.method == "POST"):
+    token = flask.request.form["token"]
 
     if(token != ""):
-      resp = make_response(redirect("/db"))
+      resp = flask.make_response(flask.redirect("/db"))
       sha: str = hashlib.sha256(token.encode()).hexdigest()
       resp.set_cookie("token", sha)
       return resp
   
   else:
-    token: str = request.cookies.get("token")
+    token: str = flask.request.cookies.get("token")
 
     if(token == os.environ["db_token"]):
-      return redirect("/db")
+      return flask.redirect("/db")
 
     else:
-      return render_template("login.html")
+      return flask.render_template("login.html")
 
 
 @app.route("/db")
 def ShowDB():
-  token: str = request.cookies.get("token")
+  token: str = flask.request.cookies.get("token")
 
   if(token == ""):
-    return redirect("/login")
+    return flask.redirect("/login")
 
   elif(token != os.environ["db_token"]):
-    return redirect("/login?try-again=1") 
+    return flask.redirect("/login?try-again=1") 
 
   else:
     ls: str = ""

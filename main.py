@@ -51,7 +51,7 @@ def ScheduleRun():
 
   print("tasks scheduled")
 
-  while True:
+  while(True):
     scheduler.run_pending()
     time.sleep(1)
 
