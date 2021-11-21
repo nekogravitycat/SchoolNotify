@@ -10,7 +10,7 @@ You can subscribe to this service [here](https://schoolnotify.nekogravitycat.rep
 Please note that this service is still in an early stage of development, which means the number of supported schools is very limited (currently there are only two) and is waiting to be increased. For now, *National Hsinchu Senior High School* and *National Hsinchu Girls' Senior High school* are supported.
 
 ## When will I receive the news letters?
-We will send you the news latter at 6pm on every Monday and Thursday, containing new announcements from your school.
+We will send you the news letter at 6pm on every Monday and Thursday, containing new announcements from your school.
 
 ## How can I unsubscribe from this service?
 Each letter we sent to you has a link to unsubscribe at the bottom of the mail.
