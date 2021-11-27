@@ -41,33 +41,33 @@ def sub():
 
   if(email == "" or school == ""):
     print("Bad flask.request: no email or school")
-    flask.abort(400, "請提供電子郵件和學校\nNo email adderss or school provided")
+    return show("請提供電子郵件和學校", "不完整的資訊")
 
   if(not myemail.is_vaild(email)):
     print("Invaild email address")
-    flask.abort(400, "無效的電子郵件\nInvaild email address")
+    return show("無效的電子郵件", "無效的電子郵件")
 
   if(mydb.token.exist(school, email)):
     print("Already subscribed")
-    return "您已訂閱至此服務\nYou've already subscribed to this service"
+    return show("您已訂閱至此服務", "已訂閱")
 
   if(mydb.ask.exist(school, email)):
     print("Already sent email")
-    return "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送\nThe verification email has been sent before, go check your inbox or wait for 15 minutes to send again"
+    return show("一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送", "請進行身分驗證")
 
   token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k = 6)) #generates a six-characters-long token
   hyperlink: str = verify_link(email, school, token)
 
-  content: str = f"點擊以下連結以完成電子郵件認證<br>Click the following link to complete email verification:<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘<br>The link will be vaild for 5 minutes"
+  content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘"
 
   if(myemail.send([email], r"Please verify your email", content, True)):
     mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
     print(f"Passed: {school}, {token}")
-    return f"一封驗證電子郵件已送出至 {email}\nA verification email has been sent to {email}"
+    return show(f"一封驗證電子郵件已送出至 {email}", "請進行身分驗證")
   
   else:
     print(f"Passed: {token}, failed to send email")
-    return "目前無法發送電子郵件，請稍後再試\nFailed to send email, please try again later"
+    return show("目前無法發送電子郵件，請稍後再試", "電子郵件系統錯誤")
 
 
 @app.route("/verify")
@@ -80,21 +80,21 @@ def ver():
   
   if(email == "" or school == "" or token == ""):
     print("Bad flask.request")
-    flask.abort(400, "無效的請求\nBad flask.request")
+    return show("無效的請求", "無效的請求")
 
   if(mydb.token.exist(school, email)):
     print("Already subscribed")
-    return "您已訂閱至此服務\nWhoohoo! You've already subscribed to this service"
+    return show("您已訂閱至此服務", "已訂閱")
 
   if((not mydb.ask.exist(school, email)) or (token != mydb.ask.get(school, email).split(";")[1])):
     print("Invalid email or token")
-    flask.abort(403, "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）\nInvalid email or token (or the verification link has expired and needs to ask for subscribe again)")
+    return show("無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）", "無效的資料")
 
   mydb.token.set(school, email, token)
   mydb.ask.delete(school, email)
   
   print("Successfully subscribed!\n")
-  return "成功訂閱！\nSuccessfully subscribed!"
+  return show("成功訂閱！", "成功訂閱！")
 
 
 @app.route("/unsub-ask")
@@ -112,21 +112,26 @@ def unsub():
 
   if(email == "" or school == "" or token == ""):
     print("Bad flask.request")
-    flask.abort(400, "無效的請求\nBad flask.request")
+    return show("無效的請求", "無效的請求")
 
   if((not mydb.token.exist(school, email)) or token != mydb.token.get(school, email)):
     print("Invaild email or token")
-    flask.abort(403, "無效的電子郵件或令牌\nInvalid email or token")
+    return show("無效的電子郵件或令牌", "無效的資料")
 
   mydb.token.delete(school, email)
   print("Successfully unsubscribed!\n")
-  return "成功取消訂閱！\nSuccessfully unsubscribed!"
+  return show("成功取消訂閱！", "成功取消訂閱！")
+
+
+@app.route("/message")
+def message():
+  return flask.render_template("txt.html")
 
 
 @app.route("/uptimebot")
 def uptime():
   if(flask.request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]):
-    return "Hello, visitor!"
+    return show("Hello, visitor!", "You found me!")
 
   timestamp: str = mydb.timestamp.get()
 
@@ -195,6 +200,15 @@ def ShowDB():
       ls += f"{k} : {db[k]}<br>"
 
     return ls
+
+
+def show(msg: str, title: str = "") -> str:
+  msg.replace("\n", "<br>")
+  if(title != ""):
+    title.replace("\n", "<br>")
+    return flask.render_template("message.html", title=title, msg=msg)
+  else:
+    return flask.render_template("message.html", msg=msg)
 
 
 def run():

@@ -7,8 +7,7 @@
   </head>
   <script>
     function ask() {
-      const href = location.href;
-      const url = new URL(href);
+      const url = new URL(location.href);
       const email = url.searchParams.get("email");
       const token = url.searchParams.get("token");
 

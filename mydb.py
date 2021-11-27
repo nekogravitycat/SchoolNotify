@@ -1,6 +1,7 @@
 from replit import db
 
 
+#users' token (password)
 class token:
   def get(school: str, email: str) -> str:
     return db[f"{school}_email_{email}"]
@@ -18,6 +19,7 @@ class token:
     del db[f"{school}_email_{email}"]
 
 
+#latest infomation from schools
 class info:
   def get(school: str, info: str) -> str:
     return db[f"{school}_latest_{info}"]
@@ -26,6 +28,7 @@ class info:
     db[f"{school}_latest_{info}"] = context
 
 
+#subscribtion requests
 class ask:
   def get(school: str, email: str) -> str:
     return db[f"ask_{school}_{email}"]
@@ -36,7 +39,6 @@ class ask:
   def list(school: str = "") -> tuple:
     if(school == ""):
       return db.prefix("ask")
-    
     else:
       return db.prefix(f"ask_{school}")
 
