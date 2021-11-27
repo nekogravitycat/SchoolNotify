@@ -3,7 +3,7 @@
   <head>
     <link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
     <meta charset="utf-8">
-    <title>SchoolNotify Unsubscription</title>
+    <title>取消訂閱確認</title>
   </head>
   <script>
     function ask() {
@@ -16,7 +16,7 @@
         return;
       }
 
-      var r = confirm("Are you sure you want to unsubscribe?");
+      var r = confirm("確定要取消訂閱此服務嗎？");
       if(r == true) {
         window.open(`https://SchoolNotify.nekogravitycat.repl.co/unsub?email=${email}&token=${token}`,"_self");
       }
