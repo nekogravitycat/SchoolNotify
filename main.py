@@ -24,13 +24,13 @@ def ShowResult(result: list):
 
 
 def Job():
+  ischool_info: list = ["date", "id"]
+
   if(send_email):
     basic.push_email("hchs", hchs.get_news())
     basic.push_email("hgsh", hgsh.get_news())
     
   else:
-    ischool_info: list = ["date", "id"]
-
     mydb.memory.remember("hchs", ischool_info)
     ShowResult(hchs.get_news())
     mydb.memory.recall("hchs", ischool_info)

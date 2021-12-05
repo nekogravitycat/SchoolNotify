@@ -4,6 +4,8 @@ from datetime import datetime, timezone, timedelta
 import myemail
 import mydb
 
+test_mail: bool = False
+
 
 class msg:
   def __init__(self, link: str, title: str, date: time.struct_time):
@@ -54,8 +56,12 @@ def push_email(school: str, result: list):
 
     recipients: list = []
 
-    for re in mydb.token.list(school):
-      recipients.append(re[11:])
+    if(test_mail):
+      recipients.append(os.environ["email_admin"])
+      
+    else:
+      for re in mydb.token.list(school):
+        recipients.append(re[11:])
 
     myemail.send(recipients, subject, content, True, school)
 

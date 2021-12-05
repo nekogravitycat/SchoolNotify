@@ -60,10 +60,10 @@ class timestamp:
 temp: dict = {}
 
 class memory:
-  def remember(school: str, info: list):
-    for i in info:
+  def remember(school: str, info_list: list):
+    for i in info_list:
       temp[i] = info.get(school, i)
 
-  def recall(school: str, info: list):
-    for i in info:
+  def recall(school: str, info_list: list):
+    for i in info_list:
       info.set(school, i, temp[i])
