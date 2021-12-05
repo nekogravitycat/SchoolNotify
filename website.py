@@ -8,7 +8,6 @@ from replit import db
 import myemail
 import mydb
 
-
 app = flask.Flask("")
 
 
@@ -23,7 +22,6 @@ def verify_link(email: str, school:str, token:str) -> str:
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
   if token == "":
     token = mydb.token.get(school, email)
-
   return f"{base}/unsub-ask?email={email}&school={school}&token={token}"
 
 
@@ -63,7 +61,7 @@ def sub():
   if(myemail.send([email], r"Please verify your email", content, True)):
     mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
     print(f"Passed: {school}, {token}")
-    return show(f"一封驗證電子郵件已送出至 {email}", "請進行身分驗證")
+    return show(f"一封驗證電子郵件已送出至 {email}，請查收", "請進行身分驗證")
   
   else:
     print(f"Passed: {token}, failed to send email")

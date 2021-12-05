@@ -11,7 +11,7 @@ def is_vaild(email: str) -> bool:
 
 
 #Retuen a boolean telling if the process ran successfully
-def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:str = "") -> bool:
+def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:str = "") -> bool: #"to" parameter must be an list rather than a single string
   content_all: str = content_base
 
   try:
