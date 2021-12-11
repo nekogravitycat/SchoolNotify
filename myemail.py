@@ -12,7 +12,7 @@ def is_vaild(email: str) -> bool:
 
 
 #Retuen a boolean telling if the process ran successfully
-def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:str = "") -> bool: #"to" parameter must be an list rather than a single string
+def send(to: list, subject: str, content_base:str, is_html: bool, unsub_sch:str = "") -> bool: #"to" parameter must be an list rather than a single string
   content_all: str = content_base
 
   with smtplib.SMTP(host="smtp.office365.com", port="587") as smtp:
@@ -30,8 +30,8 @@ def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:s
         msg["to"] = r
         msg["subject"] = subject
 
-        if(unsub_school != ""):
-          content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_school)}">{"這裡"}</a> 來退訂此服務'
+        if(unsub_sch != ""):
+          content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_sch)}">{"這裡"}</a> 來退訂此服務'
 
         else:
           content_all = content_base
@@ -48,9 +48,9 @@ def send(to: list, subject: str, content_base:str, is_html: bool, unsub_school:s
 
         print(f"email sent: {count}/{list_len}")
         count += 1
-    
-      return True
-
+      
     except Exception as e:
       print("Error message: ", e)
       return False
+
+  return True

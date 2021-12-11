@@ -11,7 +11,7 @@ import mydb
 app = flask.Flask("")
 
 
-base: str = "https://SchoolNotify.nekogravitycat.repl.co"
+base: str = "https://sn.nekogc.com"
 
 def sub_link(email: str, school: str) -> str:
   return f"{base}/sub?email={email}&school={school}"
@@ -157,7 +157,7 @@ def ClearAsk(target: str):
       del db[a]
 
   if(len(cleared) > 0):
-    print(f"flask.request cleared:\n{cleared}")
+    print(f"request cleared:\n{cleared}")
 
 
 @app.route("/login", methods = ["POST", "GET"])
