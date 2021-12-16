@@ -16,7 +16,7 @@ We will send you the news letter at 6pm on every Monday and Thursday, containing
 Each letter we sent to you has a link to unsubscribe at the bottom of the mail.
 
 ## Where's my information stored? Are they safe?
-This service is hosted on [replit.com](http://replit.com), all of the data is stored in their built-in database. Only the developer of this replit project (me, nekogravitycat) can visit the database, we won't use or share any information anywhere.
+This service is hosted on [replit.com](https://replit.com), all of the data is stored in their built-in database. Only the developer of this replit project (me, nekogravitycat) can visit the database, we won't use or share any information anywhere.
 
 To use this service, you only have to provide your email address, and we'll automatically generate a password stored in our database. Without the password, no one can modify your subscription status. The password will be included in the unsubscribe link we send to you, so please don't worry anything about that.
 
