@@ -1,5 +1,6 @@
 import os
 import time
+import requests
 from datetime import datetime, timezone, timedelta
 import myemail
 import mydb
@@ -75,3 +76,17 @@ def ErrorReport(e: str):
   subject: str = "School Notify: An Error Occurred"
   content: str = f"Time: {today()}\n\nExpectionn:\n{e}"
   myemail.send(os.environ["email_admin"], subject, content, False)
+
+
+def log(data: str):
+  print(data)
+  try:
+    url = "https://UniLog.nekogravitycat.repl.co/log"
+    data = {
+      "cat": "sn",
+      "data": data,
+      "token": os.environ["unilog_token"]
+    }
+    requests.post(url, json=data)
+  except:
+    pass

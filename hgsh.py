@@ -31,7 +31,7 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
 
 
 def get_news() -> list:
-  print(f"hgsh runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0\n")
+  basic.log(f"hgsh runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0")
 
   next: bool = True
   page: int = 0
@@ -73,6 +73,5 @@ def get_news() -> list:
     return result
   
   except Exception as e:
-    print("hgsh failed")
-    print(repr(e) + "\n")
+    basic.log(f"hgsh failed: {repr(e)}")
     return None

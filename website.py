@@ -7,6 +7,7 @@ import random
 from replit import db
 import myemail
 import mydb
+from basic import log
 
 app = flask.Flask("")
 
@@ -35,22 +36,22 @@ def sub():
   email: str = flask.request.args.get("email", default = "", type = str)
   school: str = flask.request.args.get("school", default = "", type = str)
 
-  print(f"Ask to sub: {email}, {school}")
-
+  log(f"Ask to sub: {email}, {school}")
   if(email == "" or school == ""):
-    print("Bad flask.request: no email or school")
+    log("Bad flask.request: no email or school")
+    
     return show("請提供電子郵件和學校", "不完整的資訊")
 
   if(not myemail.is_vaild(email)):
-    print("Invaild email address")
+    log("Invaild email address")
     return show("無效的電子郵件", "無效的電子郵件")
 
   if(mydb.token.exist(school, email)):
-    print("Already subscribed")
+    log("Already subscribed")
     return show("您已訂閱至此服務", "已訂閱")
 
   if(mydb.ask.exist(school, email)):
-    print("Already sent email")
+    log("Already sent email")
     return show("一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送", "請進行身分驗證")
 
   token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k = 6)) #generates a six-characters-long token
@@ -60,11 +61,11 @@ def sub():
 
   if(myemail.send([email], r"Please verify your email", content, True)):
     mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
-    print(f"Passed: {school}, {token}")
+    log(f"Passed: {school}, {token}")
     return show(f"一封驗證電子郵件已送出至 {email}，請查收", "請進行身分驗證")
   
   else:
-    print(f"Passed: {token}, failed to send email")
+    log(f"Passed: {token}, failed to send email")
     return show("目前無法發送電子郵件，請稍後再試", "電子郵件系統錯誤")
 
 
@@ -74,24 +75,24 @@ def ver():
   school: str = flask.request.args.get("school", default = "", type = str)
   token: str = flask.request.args.get("token", default = "", type = str)
 
-  print(f"Verify: {email}, {school}, {token}")
+  log(f"Verify: {email}, {school}, {token}")
   
   if(email == "" or school == "" or token == ""):
-    print("Bad flask.request")
+    log("Bad flask.request")
     return show("無效的請求", "無效的請求")
 
   if(mydb.token.exist(school, email)):
-    print("Already subscribed")
+    log("Already subscribed")
     return show("您已訂閱至此服務", "已訂閱")
 
   if((not mydb.ask.exist(school, email)) or (token != mydb.ask.get(school, email).split(";")[1])):
-    print("Invalid email or token")
+    log("Invalid email or token")
     return show("無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）", "無效的資料")
 
   mydb.token.set(school, email, token)
   mydb.ask.delete(school, email)
   
-  print("Successfully subscribed!\n")
+  log("Successfully subscribed")
   return show("成功訂閱！", "成功訂閱！")
 
 
@@ -106,18 +107,18 @@ def unsub():
   school: str = flask.request.args.get("school", default = "", type = str)
   token: str = flask.request.args.get("token", default = "", type = str)
 
-  print(f"Unsub: {email}, {school}, {token}")
+  log(f"Unsub: {email}, {school}, {token}")
 
   if(email == "" or school == "" or token == ""):
-    print("Bad flask.request")
+    log("Bad flask.request")
     return show("無效的請求", "無效的請求")
 
   if((not mydb.token.exist(school, email)) or token != mydb.token.get(school, email)):
-    print("Invaild email or token")
+    log("Invaild email or token")
     return show("無效的電子郵件或令牌", "無效的資料")
 
   mydb.token.delete(school, email)
-  print("Successfully unsubscribed!\n")
+  log("Successfully unsubscribed")
   return show("成功取消訂閱！", "成功取消訂閱！")
 
 
@@ -157,7 +158,7 @@ def ClearAsk(target: str):
       del db[a]
 
   if(len(cleared) > 0):
-    print(f"request cleared:\n{cleared}")
+    log(f"request cleared: {cleared}")
 
 
 @app.route("/login", methods = ["POST", "GET"])
