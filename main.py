@@ -5,6 +5,7 @@ import basic
 import mydb
 import hchs
 import hgsh
+from unilog import log
 
 
 website.alive() #for uptimerobot
@@ -49,7 +50,7 @@ def ScheduleRun():
   scheduler.every().monday.at(time_to_send).do(Job)
   scheduler.every().thursday.at(time_to_send).do(Job)
 
-  print("tasks scheduled")
+  log("tasks scheduled")
 
   while(True):
     scheduler.run_pending()

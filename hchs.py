@@ -4,6 +4,7 @@ import bs4
 import re
 import basic
 import mydb
+from unilog import log
 
 
 class news_id:
@@ -39,7 +40,7 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
 
 
 def get_news() -> list:
-  basic.log(f"hchs runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0")
+  log(f"hchs runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0")
 
   next: bool = True
   page: int = 0
@@ -89,5 +90,5 @@ def get_news() -> list:
     return result
   
   except Exception as e:
-    basic.log(f"hchs failed: {repr(e)}")
+    log(f"hchs failed: {repr(e)}")
     return None

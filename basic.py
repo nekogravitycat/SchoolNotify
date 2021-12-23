@@ -1,9 +1,9 @@
 import os
 import time
-import requests
 from datetime import datetime, timezone, timedelta
 import myemail
 import mydb
+from unilog import log
 
 test_mail: bool = False
 
@@ -67,26 +67,12 @@ def push_email(school: str, result: list):
     myemail.send(recipients, subject, content, True, school)
 
   else:
-    print("Recipient list is empty\n")
+    log("Recipient list is empty\n")
 
-  print("done! waiting for next round!\n")
+  log("done! waiting for next round!\n")
 
 
 def ErrorReport(e: str):
   subject: str = "School Notify: An Error Occurred"
   content: str = f"Time: {today()}\n\nExpectionn:\n{e}"
   myemail.send(os.environ["email_admin"], subject, content, False)
-
-
-def log(data: str):
-  print(data)
-  try:
-    url = "https://UniLog.nekogravitycat.repl.co/log"
-    data = {
-      "cat": "sn",
-      "data": data,
-      "token": os.environ["unilog_token"]
-    }
-    requests.post(url, json=data)
-  except:
-    pass

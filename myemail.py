@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 import smtplib
 import website
 import re
+from unilog import log
 
 
 def is_vaild(email: str) -> bool:
@@ -46,11 +47,11 @@ def send(to: list, subject: str, content_base:str, is_html: bool, unsub_sch:str 
 
         smtp.send_message(msg)
 
-        print(f"email sent: {count}/{list_len}")
+        log(f"email sent: {r} ({count}/{list_len})")
         count += 1
       
     except Exception as e:
-      print("Error message: ", e)
+      log("Error message: ", e)
       return False
 
   return True

@@ -7,7 +7,7 @@ import random
 from replit import db
 import myemail
 import mydb
-from basic import log
+from unilog import log
 
 app = flask.Flask("")
 
