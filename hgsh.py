@@ -32,7 +32,7 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
 
 
 def get_news() -> list:
-  log(f"hgsh runned at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} UTC+0")
+  log(f"hgsh runned")
 
   next: bool = True
   page: int = 0

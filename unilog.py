@@ -1,6 +1,7 @@
 import os
 import requests
 
+
 def log(data: str):
   print(data)
   try:

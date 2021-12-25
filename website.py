@@ -9,9 +9,8 @@ import myemail
 import mydb
 from unilog import log
 
+
 app = flask.Flask("")
-
-
 base: str = "https://sn.nekogc.com"
 
 def sub_link(email: str, school: str) -> str:
