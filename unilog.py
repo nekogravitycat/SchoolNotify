@@ -5,7 +5,7 @@ import requests
 def log(data: str):
   print(data)
   try:
-    url = "https://UniLog.nekogravitycat.repl.co/log"
+    url = "https://log.nekogc.com/log"
     data = {
       "cat": "sn",
       "data": data,
@@ -13,4 +13,4 @@ def log(data: str):
     }
     requests.post(url, json=data)
   except:
-    pass
+    print("UniLog failed")

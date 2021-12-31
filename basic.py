@@ -68,9 +68,9 @@ def push_email(school: str, result: list):
     myemail.send(recipients, subject, content, True, school)
 
   else:
-    log("Recipient list is empty\n")
+    log("Recipient list is empty")
 
-  log("done! waiting for next round!\n")
+  log("done! waiting for next round!")
 
 
 def ErrorReport(e: str):
