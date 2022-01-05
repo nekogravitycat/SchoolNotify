@@ -58,7 +58,7 @@ def sub():
 
   content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘"
 
-  if(myemail.send([email], r"Please verify your email", content, True)):
+  if(myemail.send([email], r"請驗證您的電子郵件", content, True)):
     mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
     log(f"Passed: {school}, {token}")
     return show(f"一封驗證電子郵件已送出至 {email}，請查收", "請進行身分驗證")
@@ -185,7 +185,7 @@ def login():
 def ShowDB():
   token: str = flask.request.cookies.get("token")
 
-  if(token == ""):
+  if(token == "" or token is None):
     return flask.redirect("/login")
 
   elif(token != os.environ["db_token"]):
