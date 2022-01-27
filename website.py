@@ -28,8 +28,6 @@ def unsub_ask_link(email: str, school: str, token:str = "") -> str:
 @app.route("/")
 def home():
   return flask.render_template("sub.html")
-
-
 @app.route("/sub")
 def sub():
   email: str = flask.request.args.get("email", default = "", type = str)
@@ -58,14 +56,11 @@ def sub():
 
   content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘"
 
-  if(myemail.send([email], r"請驗證您的電子郵件", content, True)):
-    mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
-    log(f"Passed: {school}, {token}")
-    return show(f"一封驗證電子郵件已送出至 {email}，請查收", "請進行身分驗證")
-  
-  else:
-    log(f"Passed: {token}, failed to send email")
-    return show("目前無法發送電子郵件，請稍後再試", "電子郵件系統錯誤")
+  email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content, True))
+  email_thread.start()
+  mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
+  log(f"Passed: {school}, {token}")
+  return show(f"一封驗證電子郵件已送出至 {email}，請查收", "請進行身分驗證")
 
 
 @app.route("/verify")
