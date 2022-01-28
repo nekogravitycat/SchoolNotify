@@ -5,6 +5,7 @@ import basic
 import mydb
 import hchs
 import hgsh
+import whsh
 from unilog import log
 
 
@@ -30,14 +31,20 @@ def Job():
   if(send_email):
     basic.push_email("hchs", hchs.get_news())
     basic.push_email("hgsh", hgsh.get_news())
+    basic.push_email("whsh", whsh.get_news())
     
   else:
+    
     mydb.memory.remember("hchs", ischool_info)
     ShowResult(hchs.get_news())
     mydb.memory.recall("hchs", ischool_info)
 
     mydb.memory.remember("hgsh", ischool_info)
     ShowResult(hgsh.get_news())
+    mydb.memory.recall("hgsh", ischool_info)
+    
+    mydb.memory.remember("whsh", ischool_info)
+    ShowResult(whsh.get_news())
     mydb.memory.recall("hgsh", ischool_info)
 
 

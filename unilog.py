@@ -4,6 +4,7 @@ import requests
 
 def log(data: str):
   print(data)
+  return
   try:
     url = "https://log.nekogc.com/log"
     data = {

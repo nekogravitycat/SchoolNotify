@@ -104,7 +104,7 @@ def unsub():
   log(f"Unsub: {email}, {school}, {token}")
 
   if(email == "" or school == "" or token == ""):
-    log("Bad flask.request")
+    log("Bad request")
     return show("無效的請求", "無效的請求")
 
   if((not mydb.token.exist(school, email)) or token != mydb.token.get(school, email)):
