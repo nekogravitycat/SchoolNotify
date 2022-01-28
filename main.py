@@ -6,8 +6,8 @@ import mydb
 import hchs
 import hgsh
 import whsh
+import tcivs
 from unilog import log
-
 
 website.alive() #for uptimerobot
 
@@ -32,9 +32,9 @@ def Job():
     basic.push_email("hchs", hchs.get_news())
     basic.push_email("hgsh", hgsh.get_news())
     basic.push_email("whsh", whsh.get_news())
+    basic.push_email("tcivs", tcivs.get_news())
     
   else:
-    
     mydb.memory.remember("hchs", ischool_info)
     ShowResult(hchs.get_news())
     mydb.memory.recall("hchs", ischool_info)
@@ -46,6 +46,10 @@ def Job():
     mydb.memory.remember("whsh", ischool_info)
     ShowResult(whsh.get_news())
     mydb.memory.recall("hgsh", ischool_info)
+
+    mydb.memory.remember("tcivs", ischool_info)
+    ShowResult(tcivs.get_news())
+    mydb.memory.recall("tcivs", ischool_info)
 
 
 def ScheduleRun():
