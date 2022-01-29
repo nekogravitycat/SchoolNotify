@@ -18,9 +18,10 @@ sch_pin_list: list = [
 ]
 sch_allpin_list: list = [
   ["hgsh", "www.hgsh.hc.edu.tw", "WID_0_2_21b2de5a55209704d947481c9d16786c85145eca"],
-  ["tcivs", "w3.tcivs.tc.edu.tw", "WID_0_2_a18324d5b18f53971c1d32b13dcfe427c6c77ed4"]
+  ["tcivs", "w3.tcivs.tc.edu.tw", "WID_0_2_a18324d5b18f53971c1d32b13dcfe427c6c77ed4"],
+  ["dali", "www.dali.tc.edu.tw", "WID_0_2_377afa59cce9f22276e3f66e9d896cb97110c95d"]
 ]
-
+ischool_info: list = ["date", "id"]
 
 def ShowResult(result: list):
   if(len(result) == 0):
@@ -33,8 +34,6 @@ def ShowResult(result: list):
 
 
 def Job():
-  ischool_info: list = ["date", "id"]
-
   if(send_email):
     for sch in sch_pin_list:
       basic.push_email(sch[0], isch_pin.get_news(sch[0], sch[1], sch[2]))
