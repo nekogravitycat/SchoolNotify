@@ -3,16 +3,23 @@ import schedule
 import website
 import basic
 import mydb
-import hchs
-import hgsh
-import whsh
-import tcivs
+import isch_allpin
+import isch_pin
 from unilog import log
 
 website.alive() #for uptimerobot
 
 send_email: bool = True
 run_immediate: bool = False
+
+sch_pin_list: list = [
+  ["hchs", "www.hchs.hc.edu.tw", "WID_0_2_0516b5aba93b58b0547367faafb2f1dbe2ebba4c"],
+  ["whsh", "web.whsh.tc.edu.tw", "WID_0_2_518cd2a7e52b7f65fc750eded8b99ffcc2a7daca"]
+]
+sch_allpin_list: list = [
+  ["hgsh", "www.hgsh.hc.edu.tw", "WID_0_2_21b2de5a55209704d947481c9d16786c85145eca"],
+  ["tcivs", "w3.tcivs.tc.edu.tw", "WID_0_2_a18324d5b18f53971c1d32b13dcfe427c6c77ed4"]
+]
 
 
 def ShowResult(result: list):
@@ -29,27 +36,22 @@ def Job():
   ischool_info: list = ["date", "id"]
 
   if(send_email):
-    basic.push_email("hchs", hchs.get_news())
-    basic.push_email("hgsh", hgsh.get_news())
-    basic.push_email("whsh", whsh.get_news())
-    basic.push_email("tcivs", tcivs.get_news())
+    for sch in sch_pin_list:
+      basic.push_email(sch[0], isch_pin.get_news(sch[0], sch[1], sch[2]))
+    
+    for sch in sch_allpin_list:
+      basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
     
   else:
-    mydb.memory.remember("hchs", ischool_info)
-    ShowResult(hchs.get_news())
-    mydb.memory.recall("hchs", ischool_info)
+    for sch in sch_pin_list:
+      mydb.memory.remember(sch[0], ischool_info)
+      ShowResult(isch_pin.get_news(sch[0], sch[1], sch[2]))
+      mydb.memory.recall(sch[0], ischool_info)
 
-    mydb.memory.remember("hgsh", ischool_info)
-    ShowResult(hgsh.get_news())
-    mydb.memory.recall("hgsh", ischool_info)
-    
-    mydb.memory.remember("whsh", ischool_info)
-    ShowResult(whsh.get_news())
-    mydb.memory.recall("hgsh", ischool_info)
-
-    mydb.memory.remember("tcivs", ischool_info)
-    ShowResult(tcivs.get_news())
-    mydb.memory.recall("tcivs", ischool_info)
+    for sch in sch_allpin_list:
+      mydb.memory.remember(sch[0], ischool_info)
+      ShowResult(isch_allpin.get_news(sch[0], sch[1], sch[2]))
+      mydb.memory.recall(sch[0], ischool_info)
 
 
 def ScheduleRun():

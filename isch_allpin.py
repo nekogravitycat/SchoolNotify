@@ -7,19 +7,19 @@ import mydb
 from unilog import log
 
 
-def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
+def get_newsid(sch_url: str, sch_uid: str, pageNum: int = 0, maxRows: int = 15) -> list:
   send_data: dict = {
     "field" : "time",
     "order" : "DESC",
     "pageNum" : str(pageNum),
     "maxRows" : str(maxRows),
     "keyword" : "",
-    "uid" : "WID_0_2_a18324d5b18f53971c1d32b13dcfe427c6c77ed4",
+    "uid" : sch_uid,
     "tf" : "1", #"tf" means "the fuck?"
     "auth_type" : "user"
   }
 
-  responce: requests.Response = requests.post(url = "https://w3.tcivs.tc.edu.tw/ischool/widget/site_news/news_query_json.php", data = send_data)
+  responce: requests.Response = requests.post(url = f"https://{sch_url}/ischool/widget/site_news/news_query_json.php", data = send_data)
 
   result: list = []
 
@@ -31,8 +31,8 @@ def get_newsid(pageNum: int = 0, maxRows: int = 15) -> list:
   return result
 
 
-def get_news() -> list:
-  log(f"tcivs runned")
+def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list:
+  log(f"{sch_id} runned")
 
   next: bool = True
   page: int = 0
@@ -40,13 +40,13 @@ def get_news() -> list:
 
   try:
     while(next):
-      newsid: list = get_newsid(page)
+      newsid: list = get_newsid(sch_url, sch_uid, page)
 
       for id in newsid:
-        if(id == mydb.info.get("tcivs", "id")):
+        if(id == mydb.info.get(sch_id, "id")):
           break
 
-        link: str =  f"https://w3.tcivs.tc.edu.tw/ischool/public/news_view/show.php?nid={id}"
+        link: str =  f"https://{sch_url}/ischool/public/news_view/show.php?nid={id}"
 
         response: requests.Response = requests.get(link, headers = basic.header)
         response.encoding = response.apparent_encoding
@@ -56,7 +56,7 @@ def get_news() -> list:
 
         title: str = soup.title.string
         date: time.struct_time = time.strptime(soup.find(id = "info_time").text.strip(), "%Y-%m-%d %H:%M:%S")
-        latest_date: time.struct_time = time.strptime(mydb.info.get("tcivs", "date"), "%Y-%m-%d")
+        latest_date: time.struct_time = time.strptime(mydb.info.get(sch_id, "date"), "%Y-%m-%d")
 
         if(date >= latest_date):
           result.append(basic.msg(link, title, date))
@@ -68,11 +68,11 @@ def get_news() -> list:
       page += 1
 
     if(len(result) > 0):
-      mydb.info.set("tcivs", "date", time.strftime("%Y-%m-%d", result[0].date))
-      mydb.info.set("tcivs", "id", newsid[0])
+      mydb.info.set(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
+      mydb.info.set(sch_id, "id", newsid[0])
 
     return result
   
   except Exception as e:
-    log(f"tcivs failed: {repr(e)}")
+    log(f"{sch_id} failed: {repr(e)}")
     return None
