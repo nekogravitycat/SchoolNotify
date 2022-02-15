@@ -63,7 +63,7 @@ def push_email(school: str, result: list):
       
     else:
       for re in mydb.token.list(school):
-        recipients.append(re[11:])
+        recipients.append(re[(len(school)+7):])
 
     myemail.send(recipients, subject, content, True, school)
 

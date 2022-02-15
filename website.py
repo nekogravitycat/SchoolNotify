@@ -195,6 +195,17 @@ def ShowDB():
     return ls
 
 
+@app.route("/db/run")
+def ShowRunDB():
+  ls:str = ""
+
+  for k in sorted(db.keys()):
+    if("latest" in k):
+      ls += f"{k} : {db[k]}<br>"
+
+  return ls
+
+
 def show(msg: str, title: str = "") -> str:
   msg.replace("\n", "<br>")
   if(title != ""):
