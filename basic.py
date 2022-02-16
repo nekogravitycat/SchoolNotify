@@ -62,8 +62,9 @@ def push_email(school: str, result: list):
       recipients.append(os.environ["email_admin"])
       
     else:
+      perfix_len: int = len(school)+7
       for re in mydb.token.list(school):
-        recipients.append(re[(len(school)+7):])
+        recipients.append(re[perfix_len:])
 
     myemail.send(recipients, subject, content, True, school)
 

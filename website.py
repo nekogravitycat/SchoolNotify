@@ -8,6 +8,7 @@ from replit import db
 import myemail
 import mydb
 from unilog import log
+import re
 
 
 app = flask.Flask("")
@@ -28,6 +29,8 @@ def unsub_ask_link(email: str, school: str, token:str = "") -> str:
 @app.route("/")
 def home():
   return flask.render_template("sub.html")
+
+
 @app.route("/sub")
 def sub():
   email: str = flask.request.args.get("email", default = "", type = str)
@@ -116,11 +119,6 @@ def unsub():
   return show("成功取消訂閱！", "成功取消訂閱！")
 
 
-@app.route("/message")
-def message():
-  return flask.render_template("txt.html")
-
-
 @app.route("/uptimebot")
 def uptime():
   if(flask.request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]):
@@ -195,7 +193,7 @@ def ShowDB():
     return ls
 
 
-@app.route("/db/run")
+@app.route("/db/sys")
 def ShowRunDB():
   ls:str = ""
 
@@ -204,6 +202,52 @@ def ShowRunDB():
       ls += f"{k} : {db[k]}<br>"
 
   return ls
+
+
+@app.route("/db/edit", methods = ["POST", "GET"])
+def EditDB():
+  token: str = flask.request.cookies.get("token")
+  if(token == "" or token is None):
+    return flask.redirect("/login")
+  elif(token != os.environ["db_token"]):
+    return flask.redirect("/login?try-again=1")
+
+  if(flask.request.method == "GET"):
+    return flask.render_template("db.html")
+    
+  key: str = flask.request.form["key"]
+  value: str = flask.request.form["value"]
+  action: str = flask.request.form["action"]
+
+  action_vaild: bool = False
+  if(action == "delete"):
+    action_vaild = True
+  elif(action in ["edit", "add"] and value != "" and not value is None):
+    action_vaild = True
+    
+  if((key == "") or (key is None) or not action_vaild):
+    return flask.render_template("db.html", msg="Bad request")
+
+  if(action == "edit"):
+    if(key not in db.keys()):
+      return flask.render_template("db.html", msg="Key does not exist")
+      
+    db[key] = value
+    
+  elif(action == "add"):
+    if(key in db.keys()):
+      return flask.render_template("db.html", msg="Key already exists")
+    if(not re.match(r"^[\w-]+$", key)):
+      return flask.render_template("db.html", msg="Key name is illegle")
+      
+    db[key] = value
+
+  else:
+    if(key not in db.keys()):
+      return flask.render_template("db.html", msg="Key does not exist")
+    del db[key]
+    
+  return flask.render_template("db.html", msg="Successed!")
 
 
 def show(msg: str, title: str = "") -> str:
