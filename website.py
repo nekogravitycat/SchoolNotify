@@ -125,19 +125,15 @@ def uptime():
     return show("Hello, visitor!", "You found me!")
 
   timestamp: str = mydb.timestamp.get()
-
   if(timestamp == "A"):
     ClearAsk("B")
     mydb.timestamp.set("B")
-
   elif(timestamp == "B"):
     ClearAsk("C")
     mydb.timestamp.set("C")
-
   elif(timestamp == "C"):
     ClearAsk("A")
     mydb.timestamp.set("A")
-    
   return "Hello, uptimerobot!"
 
 
@@ -177,10 +173,8 @@ def login():
 @app.route("/db")
 def ShowDB():
   token: str = flask.request.cookies.get("token")
-
   if(token == "" or token is None):
     return flask.redirect("/login")
-
   elif(token != os.environ["db_token"]):
     return flask.redirect("/login?try-again=1") 
 
@@ -214,11 +208,12 @@ def EditDB():
 
   if(flask.request.method == "GET"):
     return flask.render_template("db.html")
-    
+
+  #For POST method
   key: str = flask.request.form["key"]
   value: str = flask.request.form["value"]
   action: str = flask.request.form["action"]
-
+  
   action_vaild: bool = False
   if(action == "delete"):
     action_vaild = True
@@ -231,7 +226,6 @@ def EditDB():
   if(action == "edit"):
     if(key not in db.keys()):
       return flask.render_template("db.html", msg="Key does not exist")
-      
     db[key] = value
     
   elif(action == "add"):
@@ -239,7 +233,6 @@ def EditDB():
       return flask.render_template("db.html", msg="Key already exists")
     if(not re.match(r"^[\w-]+$", key)):
       return flask.render_template("db.html", msg="Key name is illegle")
-      
     db[key] = value
 
   else:

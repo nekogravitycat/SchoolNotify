@@ -9,7 +9,7 @@ from unilog import log
 website.alive() #for uptimerobot
 
 send_email: bool = True
-run_immediate: bool = False
+run_immediate: bool = False  
 
 
 sch_list: list = [
@@ -35,7 +35,10 @@ def ShowResult(result: list):
 def Job():
   if(send_email):
     for sch in sch_list:
-      basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
+      try:
+        basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
+      except Exception as e:
+        log(f"{sch[0]} Runtime Error: ", e)
     
   else:
     for sch in sch_list:

@@ -25,33 +25,36 @@ def send(to: list, subject: str, content_base:str, is_html: bool, unsub_sch:str 
       list_len: int = len(to)
       count: int = 1
 
-      for r in to:
-        msg = MIMEMultipart()
-        msg["from"] = os.environ["smtp_account"]
-        msg["to"] = r
-        msg["subject"] = subject
-
-        if(unsub_sch != ""):
-          content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_sch)}">{"這裡"}</a> 來退訂此服務'
-
-        else:
-          content_all = content_base
-
-        if(is_html):
-          #msg.add_alternative(content_all, subtype = "html") #for html
-          msg.attach(MIMEText(content_all, "html"))
-
-        else:
-          #msg.set_content(content_all)
-          msg.attach(MIMEText(content_all))
-
-        smtp.send_message(msg)
-
-        log(f"email sent: {r} ({count}/{list_len})")
-        count += 1
-      
+      try:
+        for r in to:
+          msg = MIMEMultipart()
+          msg["from"] = os.environ["smtp_account"]
+          msg["to"] = r
+          msg["subject"] = subject
+  
+          if(unsub_sch != ""):
+            content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_sch)}">{"這裡"}</a> 來退訂此服務'
+  
+          else:
+            content_all = content_base
+  
+          if(is_html):
+            #msg.add_alternative(content_all, subtype = "html") #for html
+            msg.attach(MIMEText(content_all, "html"))
+  
+          else:
+            #msg.set_content(content_all)
+            msg.attach(MIMEText(content_all))
+  
+          smtp.send_message(msg)
+  
+          log(f"email sent: {r} ({count}/{list_len})")
+          count += 1
+      except Exception as ex:
+        log("Email Sending Error: ", ex)
+        
     except Exception as e:
-      log("Error message: ", e)
+      log("SMTP Error: ", e)
       return False
 
   return True
