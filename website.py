@@ -23,6 +23,7 @@ def verify_link(email: str, school:str, token:str) -> str:
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
   if token == "":
     token = mydb.token.get(school, email)
+    
   return f"{base}/unsub-ask?email={email}&school={school}&token={token}"
 
 
@@ -37,6 +38,7 @@ def sub():
   school: str = flask.request.args.get("school", default = "", type = str)
 
   log(f"Ask to sub: {email}, {school}")
+  
   if(email == "" or school == ""):
     log("Bad flask.request: no email or school")
     
@@ -123,28 +125,32 @@ def unsub():
 def uptime():
   if(flask.request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]):
     return show("Hello, visitor!", "You found me!")
-
+    
   timestamp: str = mydb.timestamp.get()
+  
   if(timestamp == "A"):
     ClearAsk("B")
     mydb.timestamp.set("B")
+    
   elif(timestamp == "B"):
     ClearAsk("C")
     mydb.timestamp.set("C")
+    
   elif(timestamp == "C"):
     ClearAsk("A")
     mydb.timestamp.set("A")
+    
   return "Hello, uptimerobot!"
 
 
 def ClearAsk(target: str):
   cleared: str = ""
-
+  
   for a in mydb.ask.list():
     if(db[a].split(";")[0] == target):
       cleared += f"{a[4:]}\n"
       del db[a]
-
+      
   if(len(cleared) > 0):
     log(f"request cleared: {cleared}")
 
@@ -153,19 +159,19 @@ def ClearAsk(target: str):
 def login():
   if(flask.request.method == "POST"):
     token = flask.request.form["token"]
-
+    
     if(token != ""):
       resp = flask.make_response(flask.redirect("/db"))
       sha: str = hashlib.sha256(token.encode()).hexdigest()
       resp.set_cookie("token", sha)
       return resp
-  
+      
   else:
     token: str = flask.request.cookies.get("token")
-
+    
     if(token == os.environ["db_token"]):
       return flask.redirect("/db")
-
+      
     else:
       return flask.render_template("login.html")
 
@@ -173,71 +179,77 @@ def login():
 @app.route("/db")
 def ShowDB():
   token: str = flask.request.cookies.get("token")
+  
   if(token == "" or token is None):
     return flask.redirect("/login")
+    
   elif(token != os.environ["db_token"]):
     return flask.redirect("/login?try-again=1") 
-
+    
   else:
     ls: str = ""
     
     for k in db.keys():
       ls += f"{k} : {db[k]}<br>"
-
+      
     return ls
 
 
 @app.route("/db/sys")
 def ShowRunDB():
   ls:str = ""
-
+  
   for k in sorted(db.keys()):
     if("latest" in k):
       ls += f"{k} : {db[k]}<br>"
-
+      
   return ls
 
 
 @app.route("/db/edit", methods = ["POST", "GET"])
 def EditDB():
   token: str = flask.request.cookies.get("token")
+  
   if(token == "" or token is None):
     return flask.redirect("/login")
+    
   elif(token != os.environ["db_token"]):
     return flask.redirect("/login?try-again=1")
-
+    
   if(flask.request.method == "GET"):
     return flask.render_template("db.html")
-
+    
   #For POST method
   key: str = flask.request.form["key"]
   value: str = flask.request.form["value"]
   action: str = flask.request.form["action"]
   
   action_vaild: bool = False
-  if(action == "delete"):
-    action_vaild = True
-  elif(action in ["edit", "add"] and value != "" and not value is None):
-    action_vaild = True
+  action_vaild = (action == "delete")
+  action_vaild = ((action in ["edit", "add"]) and (value != "") and (not value is None))
     
-  if((key == "") or (key is None) or not action_vaild):
+  if((key == "") or (key is None) or (not action_vaild)):
     return flask.render_template("db.html", msg="Bad request")
 
   if(action == "edit"):
     if(key not in db.keys()):
       return flask.render_template("db.html", msg="Key does not exist")
+      
     db[key] = value
     
   elif(action == "add"):
     if(key in db.keys()):
       return flask.render_template("db.html", msg="Key already exists")
+      
     if(not re.match(r"^[\w-]+$", key)):
       return flask.render_template("db.html", msg="Key name is illegle")
+      
     db[key] = value
 
-  else:
+  else: #For the deleting action
     if(key not in db.keys()):
       return flask.render_template("db.html", msg="Key does not exist")
+      
     del db[key]
     
   return flask.render_template("db.html", msg="Successed!")
@@ -245,9 +257,11 @@ def EditDB():
 
 def show(msg: str, title: str = "") -> str:
   msg.replace("\n", "<br>")
+  
   if(title != ""):
     title.replace("\n", "<br>")
     return flask.render_template("message.html", title=title, msg=msg)
+    
   else:
     return flask.render_template("message.html", msg=msg)
 

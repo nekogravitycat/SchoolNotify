@@ -5,7 +5,6 @@ import myemail
 import mydb
 from unilog import log
 
-
 test_mail: bool = False
 
 

@@ -50,11 +50,12 @@ def send(to: list, subject: str, content_base:str, is_html: bool, unsub_sch:str 
   
           log(f"email sent: {r} ({count}/{list_len})")
           count += 1
+          
       except Exception as ex:
-        log("Email Sending Error: ", ex)
+        log(f"Email Sending Error: {ex}")
         
     except Exception as e:
-      log("SMTP Error: ", e)
+      log(f"SMTP Error: {e}")
       return False
 
   return True

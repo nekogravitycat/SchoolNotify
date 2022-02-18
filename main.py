@@ -6,12 +6,8 @@ import mydb
 import isch_allpin
 from unilog import log
 
-website.alive() #for uptimerobot
-
 send_email: bool = True
 run_immediate: bool = False  
-
-
 sch_list: list = [
   ["hchs", "www.hchs.hc.edu.tw", "WID_0_2_0516b5aba93b58b0547367faafb2f1dbe2ebba4c"],
   ["whsh", "web.whsh.tc.edu.tw", "WID_0_2_518cd2a7e52b7f65fc750eded8b99ffcc2a7daca"],
@@ -24,12 +20,11 @@ ischool_info: list = ["date", "id"]
 
 def ShowResult(result: list):
   if(len(result) == 0):
-    print("No new announcements")
+    log("No new announcements")
 
   else:
     for re in result:
-      print(re.detail())
-      print()
+      log(re.detail())
 
 
 def Job():
@@ -38,7 +33,7 @@ def Job():
       try:
         basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
       except Exception as e:
-        log(f"{sch[0]} Runtime Error: ", e)
+        log(f"{sch[0]} Runtime Error: {e}", True)
     
   else:
     for sch in sch_list:
@@ -65,6 +60,6 @@ def ScheduleRun():
 
 if(run_immediate):
   Job()
-
-
+  
+website.alive()
 ScheduleRun()

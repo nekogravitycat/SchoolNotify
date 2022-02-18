@@ -39,7 +39,7 @@ def get_newsid(sch_url: str, sch_uid: str, pageNum: int = 0, maxRows: int = 15) 
 
 
 def get_news(sch_id: str, sch_url: str, sch_uid) -> list:
-  log(f"{sch_id} runned")
+  log(f"{sch_id} runned", True)
 
   next: bool = True
   page: int = 0
@@ -88,5 +88,5 @@ def get_news(sch_id: str, sch_url: str, sch_uid) -> list:
     return result
   
   except Exception as e:
-    log(f"{sch_id} failed: {repr(e)}")
+    log(f"{sch_id} failed: {repr(e)}", True)
     return None
