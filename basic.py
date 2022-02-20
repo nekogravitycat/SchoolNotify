@@ -25,8 +25,8 @@ class msg:
 
 
 header: dict = {
-	"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"
-} #pretend to be a browser
+	"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
+}
 
 
 def today() -> datetime.date:
@@ -53,7 +53,8 @@ def push_email(school: str, result: list):
 		else:
 			for r in result:
 				content += r.html()
-				content += "<br><br>" #<br> = new line in html
+				#<br> = new line in html
+				content += "<br><br>"
 
 		recipients: list = []
 

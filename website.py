@@ -55,13 +55,15 @@ def sub():
 		log("Already sent email")
 		return show("一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送", "請進行身分驗證")
 
-	token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k = 6)) #generates a six-characters-long token
+	#generates a six-characters-long token
+	token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k = 6))
 	hyperlink: str = verify_link(email, school, token)
 
 	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘"
 	
 	email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content, True))
 	email_thread.start()
+
 	mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
 	log(f"Passed: {school}, {token}")
 	return show(f"一封驗證電子郵件已送出至 {email}，請查收", "請進行身分驗證")
@@ -122,9 +124,13 @@ def unsub():
 
 @app.route("/uptimebot")
 def uptime():
-	if(flask.request.args.get("token", default = "", type = str) != os.environ["uptimerobot_token"]):
+	#For verifying
+	token: str = flask.request.args.get("token", default = "", type = str)
+	
+	if(token != os.environ["uptimerobot_token"]):
 		return show("Hello, visitor!", "You found me!")
-		
+
+	#The main part
 	timestamp: str = mydb.timestamp.get()
 	
 	if(timestamp == "A"):
@@ -168,11 +174,13 @@ def login():
 	#For POST method
 	token = flask.request.form["token"]
 	
-	if(token != ""):
+	if(token != "" or not token is None):
 		resp = flask.make_response(flask.redirect("/db"))
 		sha: str = hashlib.sha256(token.encode()).hexdigest()
 		resp.set_cookie("token", sha)
 		return resp
+
+	return flask.redirect("/login?try-again=1")
 
 
 @app.route("/db")
@@ -246,7 +254,8 @@ def EditDB():
 			
 		db[key] = value
 
-	else: #For the deleting action
+	#For the deleting action
+	else:
 		if(key not in db.keys()):
 			return flask.render_template("db.html", msg="Key does not exist")
 			
