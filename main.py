@@ -60,8 +60,9 @@ def ScheduleRun():
 		time.sleep(1)
 
 
+website.alive()
+
 if(run_immediate):
 	Job()
 	
-website.alive()
 ScheduleRun()

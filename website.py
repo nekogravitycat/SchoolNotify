@@ -115,7 +115,7 @@ def unsub():
 
 	if((not mydb.token.exist(school, email)) or token != mydb.token.get(school, email)):
 		log("Invaild email or token")
-		return show("無效的電子郵件或令牌", "無效的資料")
+		return show("無效的電子郵件或令牌（或已經取消訂閱）", "無效的資料")
 
 	mydb.token.delete(school, email)
 	log("Successfully unsubscribed")
