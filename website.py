@@ -61,7 +61,7 @@ def sub():
 
 	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘"
 	
-	email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content, True))
+	email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content))
 	email_thread.start()
 
 	mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)

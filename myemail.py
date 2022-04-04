@@ -14,7 +14,7 @@ def is_vaild(email: str) -> bool:
 
 #Retuen a boolean telling if the process ran successfully
 #"to" parameter must be an list rather than a single string
-def send(to: list, subject: str, content_base:str, is_html: bool, unsub_sch:str = "") -> bool:
+def send(to: list, subject: str, content_base: str, unsub_sch: str = "") -> bool:
 	content_all: str = content_base
 	
 	try:
@@ -34,21 +34,12 @@ def send(to: list, subject: str, content_base:str, is_html: bool, unsub_sch:str 
 					msg["subject"] = subject
 			
 					if(unsub_sch != ""):
-						content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_sch)}">{"這裡"}</a> 來退訂此服務'
+						content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_sch)}">這裡</a> 來退訂此服務'
 			
-					else:
-						content_all = content_base
-			
-					if(is_html):
-						#msg.add_alternative(content_all, subtype = "html") #for html
-						msg.attach(MIMEText(content_all, "html"))
-			
-					else:
-						#msg.set_content(content_all)
-						msg.attach(MIMEText(content_all))
+					msg.attach(MIMEText(content_all, "html"))
 			
 					smtp.send_message(msg)
-			
+					
 					log(f"email sent: {r} ({count}/{list_len})")
 					count += 1
 					

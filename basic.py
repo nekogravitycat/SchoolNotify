@@ -25,7 +25,7 @@ class msg:
 
 
 header: dict = {
-	"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
+	"User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36"
 }
 
 
@@ -68,9 +68,7 @@ def push_email(school: str, result: list):
 
 		else:
 			for r in result:
-				content += r.html()
-				#<br> = new line in html
-				content += "<br><br>"
+				content += f"{r.html()}<br><br>"
 
 		content += sys_msg()
 		
@@ -80,20 +78,14 @@ def push_email(school: str, result: list):
 			recipients.append(os.environ["email_admin"])
 			
 		else:
-			perfix_len: int = len(school)+7
+			perfix_len: int = len(school) + 7
 			
 			for re in mydb.token.list(school):
 				recipients.append(re[perfix_len:])
 
-		myemail.send(recipients, subject, content, True, school)
+		myemail.send(recipients, subject, content, school)
 
 	else:
 		log(f"The recipient list of {school} is empty", True)
 
 	log("Done! Waiting for next round!")
-
-
-def ErrorReport(e: str):
-	subject: str = "School Notify: An Error Occurred"
-	content: str = f"Time: {today()}\n\nExpectionn:\n{e}"
-	myemail.send(os.environ["email_admin"], subject, content, False)
