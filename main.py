@@ -18,7 +18,6 @@ sch_list: list = [
 	["dali", "www.dali.tc.edu.tw", "WID_0_2_377afa59cce9f22276e3f66e9d896cb97110c95d"]
 ]
 
-
 def ShowResult(result: list):
 	if(len(result) == 0):
 		log("No new announcements")

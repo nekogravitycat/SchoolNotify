@@ -33,11 +33,27 @@ def today() -> datetime.date:
 	return datetime.now(timezone(timedelta(hours=8))).date()
 
 
+def sys_msg() -> str:
+	try:
+		if(os.stat("sys_msg.txt").st_size == 0):
+			return ""
+
+		content: str = ""
+		with open("sys_msg.txt", "r+") as f:
+			content = f.read().replace("\n", "<br>")
+			f.truncate(0)
+			return f"～～系統公告～～<br>{content}<br><br>"
+			
+	except Exception as e:
+		log(f"SYS_MSG Runtime Error: {e}", True)
+		return ""
+
+
 def push_email(school: str, result: list):
 	is_empty: bool = len(result) == 0
 
 	if(is_empty):
-		log("No new announcemts\n")
+		log(f"No new announcemts for {school}\n")
 
 	else:
 		for r in result:
@@ -56,6 +72,8 @@ def push_email(school: str, result: list):
 				#<br> = new line in html
 				content += "<br><br>"
 
+		content += sys_msg()
+		
 		recipients: list = []
 
 		if(test_mail):
@@ -70,9 +88,9 @@ def push_email(school: str, result: list):
 		myemail.send(recipients, subject, content, True, school)
 
 	else:
-		log("Recipient list is empty")
+		log(f"The recipient list of {school} is empty", True)
 
-	log("done! waiting for next round!")
+	log("Done! Waiting for next round!")
 
 
 def ErrorReport(e: str):
