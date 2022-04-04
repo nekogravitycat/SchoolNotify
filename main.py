@@ -8,7 +8,6 @@ from unilog import log
 
 send_email: bool = True
 run_immediate: bool = False
-
 ischool_info: list = ["date", "id"]
 sch_list: list = [
 	["hchs", "www.hchs.hc.edu.tw", "WID_0_2_0516b5aba93b58b0547367faafb2f1dbe2ebba4c"],
@@ -28,19 +27,18 @@ def ShowResult(result: list):
 
 
 def Job():
-	if(send_email):
-		for sch in sch_list:
-			try:
-				basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
-				
-			except Exception as e:
-				log(f"{sch[0]} Runtime Error: {e}", True)
-		
-	else:
+	if(not send_email):
 		for sch in sch_list:
 			mydb.memory.remember(sch[0], ischool_info)
 			ShowResult(isch_allpin.get_news(sch[0], sch[1], sch[2]))
 			mydb.memory.recall(sch[0], ischool_info)
+		return
+	
+	for sch in sch_list:
+		try:
+			basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
+		except Exception as e:
+			log(f"{sch[0]} Runtime Error: {e}", True)
 
 
 def ScheduleRun():

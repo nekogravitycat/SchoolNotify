@@ -22,5 +22,6 @@ def log(data: str, write_log: bool = False):
 			"token": os.environ["unilog_token"]
 		}
 		requests.post(url, json=data)
+		
 	except:
 		print("UniLog failed")

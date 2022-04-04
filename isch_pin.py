@@ -25,10 +25,8 @@ def get_newsid(sch_url: str, sch_uid: str, pageNum: int = 0, maxRows: int = 15) 
 		"tf" : "1", #"tf" means "the fuck?"
 		"auth_type" : "user"
 	}
-
 	responce: requests.Response = requests.post(url = f"https://{sch_url}/ischool/widget/site_news/news_query_json.php", data = send_data)
 	result: list = []
-
 	id_pinned: list = re.findall(r'"newsId":"([0-9]*)","top":([01])', responce.text)
 
 	for i in id_pinned:
@@ -44,7 +42,6 @@ def get_news(sch_id: str, sch_url: str, sch_uid) -> list:
 	next: bool = True
 	page: int = 0
 	result: list = []
-
 	vaild_news: list = []
 
 	try:

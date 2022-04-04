@@ -71,7 +71,6 @@ def push_email(school: str, result: list):
 				content += f"{r.html()}<br><br>"
 
 		content += sys_msg()
-		
 		recipients: list = []
 
 		if(test_mail):

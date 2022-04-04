@@ -37,9 +37,7 @@ def send(to: list, subject: str, content_base: str, unsub_sch: str = "") -> bool
 						content_all = content_base + f'點擊 <a href="{website.unsub_ask_link(r, unsub_sch)}">這裡</a> 來退訂此服務'
 			
 					msg.attach(MIMEText(content_all, "html"))
-			
 					smtp.send_message(msg)
-					
 					log(f"email sent: {r} ({count}/{list_len})")
 					count += 1
 					
