@@ -21,9 +21,8 @@ def verify_link(email: str, school:str, token:str) -> str:
 	return f"{base}/verify?email={email}&school={school}&token={token}"
 
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
-	if token == "":
+	if(token == ""):
 		token = mydb.token.get(school, email)
-		
 	return f"{base}/unsub-ask?email={email}&school={school}&token={token}"
 
 
@@ -136,11 +135,11 @@ def uptime():
 	if(timestamp == "A"):
 		ClearAsk("B")
 		mydb.timestamp.set("B")
-		
+	
 	elif(timestamp == "B"):
 		ClearAsk("C")
 		mydb.timestamp.set("C")
-		
+	
 	elif(timestamp == "C"):
 		ClearAsk("A")
 		mydb.timestamp.set("A")

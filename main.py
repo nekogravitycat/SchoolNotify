@@ -14,13 +14,14 @@ sch_list: list = [
 	["whsh", "web.whsh.tc.edu.tw", "WID_0_2_518cd2a7e52b7f65fc750eded8b99ffcc2a7daca"],
 	["hgsh", "www.hgsh.hc.edu.tw", "WID_0_2_21b2de5a55209704d947481c9d16786c85145eca"],
 	["tcivs", "w3.tcivs.tc.edu.tw", "WID_0_2_a18324d5b18f53971c1d32b13dcfe427c6c77ed4"],
-	["dali", "www.dali.tc.edu.tw", "WID_0_2_377afa59cce9f22276e3f66e9d896cb97110c95d"]
+	["dali", "www.dali.tc.edu.tw", "WID_0_2_377afa59cce9f22276e3f66e9d896cb97110c95d"],
+	["hccvs", "www.hccvs.hc.edu.tw", "WID_0_2_53efb04eea75963e230f0fb0aeffe08107b41772"]
 ]
+
 
 def ShowResult(result: list):
 	if(len(result) == 0):
 		log("No new announcements")
-
 	else:
 		for re in result:
 			log(re.detail())
@@ -33,7 +34,6 @@ def Job():
 			ShowResult(isch_allpin.get_news(sch[0], sch[1], sch[2]))
 			mydb.memory.recall(sch[0], ischool_info)
 		return
-	
 	for sch in sch_list:
 		try:
 			basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
@@ -44,7 +44,6 @@ def Job():
 def ScheduleRun():
 	#replit uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
 	scheduler: schedule.Scheduler = schedule.Scheduler()
-
 	time_to_send: str = "10:00"
 
 	scheduler.every().monday.at(time_to_send).do(Job)
