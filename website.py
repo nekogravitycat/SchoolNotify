@@ -156,7 +156,7 @@ def ClearAsk(target: str):
 			del db[a]
 			
 	if(len(cleared) > 0):
-		log(f"request cleared: {cleared}")
+		log(f"request cleared:\n{cleared}")
 
 
 @app.route("/login", methods = ["POST", "GET"])
@@ -275,7 +275,7 @@ def show(msg: str, title: str = "") -> str:
 
 
 def run():
-	app.run(host = '0.0.0.0', port = 8080)
+	app.run(host = "0.0.0.0", port = 8080)
 
 
 def alive():
