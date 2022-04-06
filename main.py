@@ -3,7 +3,7 @@ import schedule
 import website
 import basic
 import mydb
-import isch_allpin
+import ischool
 from unilog import log
 
 send_email: bool = True
@@ -32,12 +32,12 @@ def Job():
 	if(not send_email):
 		for sch in sch_list:
 			mydb.memory.remember(sch[0], ischool_info)
-			ShowResult(isch_allpin.get_news(sch[0], sch[1], sch[2]))
+			ShowResult(ischool.get_news(sch[0], sch[1], sch[2]))
 			mydb.memory.recall(sch[0], ischool_info)
 		return
 	for sch in sch_list:
 		try:
-			basic.push_email(sch[0], isch_allpin.get_news(sch[0], sch[1], sch[2]))
+			basic.push_email(sch[0], ischool.get_news(sch[0], sch[1], sch[2]))
 		except Exception as e:
 			log(f"{sch[0]} Runtime Error: {e}", True)
 
