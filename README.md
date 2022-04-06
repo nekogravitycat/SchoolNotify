@@ -7,7 +7,7 @@ SchoolNotify is an online service, which can automaticity collect newest informa
 ## How can I use it?
 You can subscribe to this service [here](https://sn.nekogc.com). Please enter your email address and select your school. The system will then send you a confirmation email, please visit the link provided within 5 minutes (or the link will be invalid and need to subscribe again.)
 
-Please note that this service is still in an early stage of development, which means the number of supported schools is very limited and is waiting to be increased. For now, *新竹高中*, *新竹女中*, *文華高中*, *台中高工*, and *興大附中* are supported.
+Please note that this service is still in an early stage of development, which means the number of supported schools is very limited and is waiting to be increased.
 
 ## When will I receive the news letters?
 We will send you the news letter at 6pm on every Monday and Thursday, containing new announcements from your school.
