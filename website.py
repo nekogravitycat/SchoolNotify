@@ -194,7 +194,7 @@ def ShowDB():
 		
 	ls: str = ""
 		
-	for k in db.keys():
+	for k in sorted(db.keys()):
 		ls += f"{k} : {db[k]}<br>"
 		
 	return ls
