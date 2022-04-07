@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
-    <meta charset="utf-8">
-    <title>取消訂閱確認</title>
-  </head>
-  <script>
-    function ask() {
-      const url = new URL(location.href);
-      const email = url.searchParams.get("email");
-      const school = url.searchParams.get("school")
-      const token = url.searchParams.get("token");
+	<head>
+		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
+		<meta charset="utf-8">
+		<title>取消訂閱確認</title>
+	</head>
+	<script>
+		function ask() {
+			const url = new URL(location.href);
+			const email = url.searchParams.get("email");
+			const school = url.searchParams.get("school")
+			const token = url.searchParams.get("token");
 
-      if(email == null || school == null || token == null) {
-        alert("Bad request");
-        return;
-      }
+			if(email == null || school == null || token == null) {
+				alert("Bad request");
+				return;
+			}
 
-      var r = confirm("確定要取消訂閱此服務嗎？");
-      if(r == true) {
-        window.open(`https://sn.nekogc.com/unsub?email=${email}&school=${school}&token=${token}`,"_self");
-      }
-    }
-    window.onload = ask();
-  </script>
+			var r = confirm("確定要取消訂閱此服務嗎？");
+			if(r == true) {
+				window.open(`https://sn.nekogc.com/unsub?email=${email}&school=${school}&token=${token}`,"_self");
+			}
+		}
+		window.onload = ask();
+	</script>
 </html>
