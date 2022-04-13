@@ -1,6 +1,7 @@
 import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formataddr
 import smtplib
 import website
 import re
@@ -25,11 +26,13 @@ def send(to: list, subject: str, content_base: str, unsub_sch: str = "") -> bool
 			
 			list_len: int = len(to)
 			count: int = 1
+
+			from_addr: str = formataddr(("SchoolNotify", os.environ["smtp_account"]), "utf-8")
 			
 			try:
 				for r in to:
 					msg = MIMEMultipart()
-					msg["from"] = os.environ["smtp_account"]
+					msg["from"] = from_addr
 					msg["to"] = r
 					msg["subject"] = subject
 			
