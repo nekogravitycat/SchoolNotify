@@ -1,75 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW" data-scale="large">
 	<head>
-		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
 		<meta charset="utf-8">
+		<!-- import Tocas UI form CloudFlare CDN -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.0-beta.3/tocas.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.0-beta.3/tocas.min.js"></script>
+		<!-- import Noto Sans TC from Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+		<!-- other configurations -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
 		<title>SchoolNotify Subscription</title>
 	</head>
 	<body>
-		<h1 align="center">訂閱 SchoolNotify 服務</h1>
-		<form action="https://sn.nekogc.com/sub" method="get">
-			<input type="email" placeholder="請填寫您的電子郵件" name="email" class="email_text">
-			<select name="school" class="school_select">
-				<option value="" disabled selected hidden>請選擇學校</option>
-				<option value="hchs">新竹高中</option>
-				<option value="hgsh">新竹女中</option>
-				<option value="cpshs">竹北高中</option>
-				<option value="hccvs">新竹高商</option>
-				<option value="whsh">文華高中</option>
-				<option value="tcivs">台中高工</option>
-				<option value="dali">興大附中</option>
-			</select>
-			<input type="submit" value="訂閱" class="submit_button">
-		</form>
+		<!-- main container -->
+		<div class="ts-container is-fluid ts-center">
+			<!-- highlighted box -->
+			<div class="ts-box">
+				<!-- title -->
+				<div class="ts-content is-primary is-dense">
+					<div class="ts-text is-large ts-center is-heavy">
+						訂閱 SchoolNotify 服務
+					</div>
+				</div>
+				<!-- content -->
+				<div class="ts-content">
+					<!-- form -->
+					<form action="https://sn.nekogc.com/sub" method="get">
+						<div class="ts-wrap is-vertical">
+							<!-- email field -->
+							<div class="ts-text is-label is-medium">請填寫您的電子郵件</div>
+							<div class="ts-input is-fluid is-medium is-underlined is-start-icon">
+								<span class="ts-icon is-envelope-icon"></span>
+								<input type="email" name="email" class="email_text" placeholder="address@example.com">
+							</div>
+							<!-- school field -->
+							<div class="ts-text is-label is-medium">請選擇學校</div>
+							<div class="ts-select is-fluid is-medium is-underlined">
+								<select name="school" class="school_select">
+									<option value="hchs">新竹高中</option>
+									<option value="hgsh">新竹女中</option>
+									<option value="cpshs">竹北高中</option>
+									<option value="hccvs">新竹高商</option>
+									<option value="whsh">文華高中</option>
+									<option value="tcivs">台中高工</option>
+									<option value="dali">興大附中</option>
+								</select>	
+							</div>
+							<!-- submit button -->
+							<button class="ts-button is-fluid is-start-icon">
+								<span class="ts-icon is-check-icon"></span>
+								<div class="ts-text is-medium is-heavy">訂閱</div>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	</body>
-	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap');
-		* {
-			font-family: 'Noto Sans TC', sans-serif;
-			font-size: min(4vw, 30px);
-		}
-		h1 {
-			font-size: min(4.5vw, 35px);
-		}
-		body {
-			width: 75%;
-			max-width: 800px;
-			margin: 0;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			-ms-transform: translate(-50%, -50%);
-			transform: translate(-50%, -50%);
-		}
-		form {
-			display: flex;
-			flex-direction: column;
-			flex-wrap: nowrap;
-		}
-		.email_text {
-			color: #616161;
-			border-radius: 13px 13px 0px 0px;
-			padding: 7%;
-			border: 0;
-			background-color: #f5f5f5;
-		}
-		.school_select {
-			color: #616161;
-			border-radius: 0px 0px 0px 0px;
-			padding: 7%;
-			border: 0;
-			-webkit-appearance: none;
-			background-color: #fafafa;
-			cursor: pointer;
-		}
-		.submit_button {
-			color: #616161;
-			border-radius: 0px 0px 13px 13px;
-			padding: 7%;
-			border: 0;
-			background-color: #f5f5f5;
-			-webkit-appearance: none;
-			cursor: pointer;
-		}
-	</style>
 </html>
