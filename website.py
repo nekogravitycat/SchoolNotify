@@ -14,13 +14,11 @@ import re
 app = flask.Flask("")
 base: str = "https://sn.nekogc.com"
 
-def sub_link(email: str, school: str) -> str:
-	return f"{base}/sub?email={email}&school={school}"
 
 def verify_link(email: str, school:str, token:str) -> str:
 	return f"{base}/verify?email={email}&school={school}&token={token}"
 
-def unsub_ask_link(email: str, school: str, token:str = "") -> str:
+def unsub_link(email: str, school: str, token:str = "") -> str:
 	if(not token):
 		token = mydb.token.get(school, email)
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
@@ -130,7 +128,7 @@ def uptime():
 	token: str = flask.request.args.get("token", default = "", type = str)
 	
 	if(token != os.environ["uptimerobot_token"]):
-		return show("You found me!", "Hello, visitor!", "circle-check")
+		return show("You found me!", "Hello, visitor! This page is built for a service called UptimeRobot. The bot will visit here every 5 mins, triggering some special functions!", "circle-check")
 
 	#The main part
 	timestamp: str = mydb.timestamp.get()

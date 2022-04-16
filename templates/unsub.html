@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		<!-- main container -->
-		<div class="ts-container is-fluid ts-center">
+		<div class="ts-center">
 			<div class="ts-box" style="overflow-y: auto;">
 				<!-- header -->
 				<div class="ts-content  is-primary is-dense">
@@ -94,7 +94,7 @@
 			const yes_btn = document.getElementById("yes_btn")
 			yes_btn.classList.add("is-loading");
 			yes_btn.disabled = true;
-			let info = {
+			const info = {
 				"email" : email,
 				"school" : school,
 				"token" : token
