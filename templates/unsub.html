@@ -1,27 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW" data-scale="large">
 	<head>
-		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
 		<meta charset="utf-8">
-		<title>取消訂閱確認</title>
+		<!-- import Tocas UI form CloudFlare CDN -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.js"></script>
+		<!-- import Noto Sans TC from Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com"/>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+		<!-- other configurations -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
+		<title>取消訂閱 SchoolNotify</title>
 	</head>
+	<body>
+		<!-- main container -->
+		<div class="ts-container is-fluid ts-center">
+			<div class="ts-box" style="overflow-y: auto;">
+				<!-- header -->
+				<div class="ts-content  is-primary is-dense">
+					<div class="ts-header is-start-icon">
+						<span class="ts-icon is-triangle-exclamation-icon" id="pop_icon"></span>
+						<span class="ts-text is-large is-heavy" id="title">取消訂閱確認</span>
+					</div>
+				</div>
+				<div class="ts-divider"></div>
+				<!-- content -->
+				<div class="ts-content is-horizontally-padded" id="content">確定要取消訂閱此服務嗎？</div>
+				<div class="ts-content is-tertiary is-dense">
+					<div class="ts-wrap is-end-aligned">
+						<button class="ts-button is-negative" id="yes_btn" onclick="unsub()">確定</button>
+						<button class="ts-button is-outlined" id="no_btn" onclick="go_back()">返回首頁</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 	<script>
-		function ask() {
-			const url = new URL(location.href);
-			const email = url.searchParams.get("email");
-			const school = url.searchParams.get("school")
-			const token = url.searchParams.get("token");
-
-			if(email == null || school == null || token == null) {
-				alert("Bad request");
-				return;
-			}
-
-			var r = confirm("確定要取消訂閱此服務嗎？");
-			if(r == true) {
-				window.open(`https://sn.nekogc.com/unsub?email=${email}&school=${school}&token=${token}`,"_self");
+		var url;
+		var email;
+		var school;
+		var token;
+		function change_info(title, content, remove_yes_btn=true){
+			document.getElementById("title").innerText = title;
+			document.getElementById("content").innerText = content;
+			if(remove_yes_btn){
+				document.getElementById("yes_btn").remove();
 			}
 		}
-		window.onload = ask();
+		function succeed(){
+			document.getElementById("pop_icon").classList.remove("is-triangle-exclamation-icon");
+			document.getElementById("pop_icon").classList.add("is-circle-check-icon");
+			change_info("成功取消訂閱！", "您不會再收到來自此服務的電子報");
+		}
+		function already_unsub(){
+			change_info("已經取消訂閱", "您的電子郵件地址並未存在在我們的清單上");
+		}
+		function invalid_token(){
+			change_info("取消訂閱：無效的令牌", "請確認輸入的網址中包含正確的令牌");
+		}
+		function bad_request(){
+			change_info("取消訂閱：無效的請求", "請確認輸入的網址中包含完整的資訊");
+		}
+		function onload() {
+			if("{{state}}" == "succeed"){
+				succeed();
+				return;
+			}
+			else if("{{state}}" == "already_unsub"){
+				already_unsub();
+				return;
+			}
+			else if("{{state}}" == "invalid_token"){
+				invalid_token();
+				return;
+			}
+			else if("{{state}}" == "bad_request"){
+				bad_request();
+				return;
+			}
+			url = new URL(location.href);
+			email = url.searchParams.get("email");
+			school = url.searchParams.get("school");
+			token = url.searchParams.get("token");
+			if(email == null || school == null || token == null) {
+				bad_request();
+			}
+		}
+		function unsub(){
+			let info = {
+				"email" : email,
+				"school" : school,
+				"token" : token
+			};
+			const form = document.createElement("form");
+			form.method = "post"
+			form.action = "https://sn.nekogc.com/unsub";
+			for(const key in info){
+				const input = document.createElement("input");
+				input.type = "hidden";
+				input.name = key;
+      	input.value = info[key];
+				form.appendChild(input);
+			}
+			document.body.appendChild(form);
+			form.submit();
+		}
+		function go_back(){
+			window.open("https://sn.nekogc.com","_self");
+		}
+		window.onload = onload();
 	</script>
 </html>

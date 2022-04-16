@@ -21,7 +21,7 @@ def verify_link(email: str, school:str, token:str) -> str:
 	return f"{base}/verify?email={email}&school={school}&token={token}"
 
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
-	if(token == ""):
+	if(not token):
 		token = mydb.token.get(school, email)
 	return f"{base}/unsub-ask?email={email}&school={school}&token={token}"
 
@@ -38,7 +38,7 @@ def home():
 	
 	log(f"Ask to sub: {email}, {school}")
 	
-	if(email == "" or school == ""):
+	if(not email or not school):
 		log("Bad flask.request: no email or school")
 		return flask.render_template("sub.html", pop_type="error", pop_title="不完整的資訊", pop_msg="請提供電子郵件和學校")
 
@@ -65,7 +65,7 @@ def home():
 
 	mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
 	log(f"Passed: {school}, {token}")
-	return flask.render_template("sub.html", email=email, school=school, again="1", pop_type="ok", pop_title="請進行身分驗證", pop_msg=f"一封驗證電子郵件已送出至 {email}，請查收")
+	return flask.render_template("sub.html", email=email, school=school, again="1", pop_type="ok", pop_title="請進行身分驗證", pop_msg=f"一封驗證電子郵件已送出，請查收")
 
 
 @app.route("/verify")
@@ -76,7 +76,7 @@ def ver():
 
 	log(f"Verify: {email}, {school}, {token}")
 	
-	if(email == "" or school == "" or token == ""):
+	if(not email or not school or not token):
 		log("Bad flask.request")
 		return show("無效的請求", "無效的請求")
 
@@ -95,30 +95,33 @@ def ver():
 	return show("成功訂閱！", "成功訂閱！")
 
 
-@app.route("/unsub-ask")
-def unsub_ask():
-	return flask.render_template("unsub.html")
-
-
-@app.route("/unsub")
+@app.route("/unsub", methods = ["POST", "GET"])
 def unsub():
-	email: str = flask.request.args.get("email", default = "", type = str)
-	school: str = flask.request.args.get("school", default = "", type = str)
-	token: str = flask.request.args.get("token", default = "", type = str)
+	#for GET method
+	if(flask.request.method == "GET"):
+		return flask.render_template("unsub.html")
+
+	#for POST method
+	email: str = flask.request.form["email"]
+	school: str = flask.request.form["school"]
+	token: str = flask.request.form["token"]
 
 	log(f"Unsub: {email}, {school}, {token}")
 
-	if(email == "" or school == "" or token == ""):
+	if(not email or not school or not token):
 		log("Bad request")
-		return show("無效的請求", "無效的請求")
+		return flask.render_template("unsub.html", state="bad_request")
 
-	if((not mydb.token.exist(school, email)) or token != mydb.token.get(school, email)):
+	if(not mydb.token.exist(school, email)):
 		log("Invaild email or token")
-		return show("無效的電子郵件或令牌（或已經取消訂閱）", "無效的資料")
+		return flask.render_template("unsub.html", state="already_unsub")
+
+	if(token != mydb.token.get(school, email)):
+		return flask.render_template("unsub.html", state="invalid_token")
 
 	mydb.token.delete(school, email)
 	log("Successfully unsubscribed")
-	return show("成功取消訂閱！", "成功取消訂閱！")
+	return flask.render_template("unsub.html", state="succeed")
 
 
 @app.route("/uptimebot")
@@ -186,7 +189,7 @@ def login():
 def ShowDB():
 	token: str = flask.request.cookies.get("token")
 	
-	if(token == "" or token is None):
+	if(not token):
 		return flask.redirect("/login")
 		
 	elif(token != os.environ["db_token"]):
@@ -216,7 +219,7 @@ def EditDB():
 	#For verifying
 	token: str = flask.request.cookies.get("token")
 	
-	if(token == "" or token is None):
+	if(not token):
 		return flask.redirect("/login")
 		
 	elif(token != os.environ["db_token"]):
@@ -235,7 +238,7 @@ def EditDB():
 	action_vaild = (action == "delete")
 	action_vaild = ((action in ["edit", "add"]) and (value != "") and (not value is None))
 		
-	if((key == "") or (key is None) or (not action_vaild)):
+	if(not key or (not action_vaild)):
 		return flask.render_template("db.html", msg="Bad request")
 
 	if(action == "edit"):

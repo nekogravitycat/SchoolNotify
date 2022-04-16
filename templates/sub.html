@@ -6,9 +6,9 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.js"></script>
 		<!-- import Noto Sans TC from Google Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+		<link rel="preconnect" href="https://fonts.googleapis.com"/>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
 		<!-- other configurations -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
@@ -20,20 +20,26 @@
 			<!-- pop window -->
 			<div class="ts-modal" id="pop_window" style="overflow-y: auto;">
 				<div class="content">
+					<!-- header -->
 					<div class="ts-content is-dense">
 						<div class="ts-row">
+							<!-- title -->
 							<div class="column is-fluid">
 								<div class="ts-header is-start-icon">
 									<span class="ts-icon" id="pop_icon"></span>
 									<span class="ts-text">{{pop_title}}</span>
 								</div>
 							</div>
+							<!-- close button -->
 							<div class="column">
-								<button class="ts-close" onclick="pop_msg_close()"></button>
+								<div class="ts-center">
+									<button class="ts-close" onclick="pop_msg_close()"></button>
+								</div>
 							</div>
 						</div>
 					</div>
 					<div class="ts-divider"></div>
+					<!-- content -->
 					<div class="ts-content">{{pop_msg}}</div>
 				</div>
 			</div>
