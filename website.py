@@ -40,7 +40,7 @@ def home():
 	
 	if(not email or not school):
 		log("Bad flask.request: no email or school")
-		return flask.render_template("sub.html", pop_type="error", pop_title="不完整的資訊", pop_msg="請提供電子郵件和學校")
+		return flask.render_template("sub.html", pop_type="error", pop_title="不完整的資訊", pop_msg="請確認輸入的網址中包含完整的資訊")
 
 	if(not myemail.is_vaild(email)):
 		log("Invaild email address")
@@ -78,21 +78,21 @@ def ver():
 	
 	if(not email or not school or not token):
 		log("Bad flask.request")
-		return show("無效的請求", "無效的請求")
+		return show("無效的請求", "請確認輸入的網址中包含完整的資訊")
 
 	if(mydb.token.exist(school, email)):
 		log("Already subscribed")
-		return show("您已訂閱至此服務", "已訂閱")
+		return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
 
 	if((not mydb.ask.exist(school, email)) or (token != mydb.ask.get(school, email).split(";")[1])):
 		log("Invalid email or token")
-		return show("無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）", "無效的資料")
+		return show("無效的資料", "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）")
 
 	mydb.token.set(school, email, token)
 	mydb.ask.delete(school, email)
 	
 	log("Successfully subscribed")
-	return show("成功訂閱！", "成功訂閱！")
+	return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
 
 
 @app.route("/unsub", methods = ["POST", "GET"])
@@ -130,7 +130,7 @@ def uptime():
 	token: str = flask.request.args.get("token", default = "", type = str)
 	
 	if(token != os.environ["uptimerobot_token"]):
-		return show("Hello, visitor!", "You found me!")
+		return show("You found me!", "Hello, visitor!", "circle-check")
 
 	#The main part
 	timestamp: str = mydb.timestamp.get()
@@ -266,15 +266,8 @@ def EditDB():
 	return flask.render_template("db.html", msg="Successed!")
 
 
-def show(msg: str, title: str = "") -> str:
-	msg.replace("\n", "<br>")
-	
-	if(title != ""):
-		title.replace("\n", "<br>")
-		return flask.render_template("message.html", title=title, msg=msg)
-		
-	else:
-		return flask.render_template("message.html", msg=msg)
+def show(title: str, content, icon="") -> str:
+	return flask.render_template("message.html", title=title, content=content.replace("\n", "<br>"), icon=icon)
 
 
 def run():

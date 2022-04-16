@@ -1,31 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW" data-scale="large">
 	<head>
-		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
 		<meta charset="utf-8">
+		<!-- import Tocas UI form CloudFlare CDN -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.js"></script>
+		<!-- import Noto Sans TC from Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com"/>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+		<!-- other configurations -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
 		<title>{{title}}</title>
 	</head>
 	<body>
-		<h1 align="center" id="content">{{msg}}</h1>
+		<!-- main container -->
+		<div class="ts-container is-fluid ts-center">
+			<div class="ts-box" style="overflow-y: auto;">
+				<!-- header -->
+				<div class="ts-content  is-primary is-dense">
+					<div class="ts-header is-start-icon">
+						<span class="ts-icon is-triangle-exclamation-icon" id="pop_icon"></span>
+						<span class="ts-text is-large is-heavy"">{{title}}</span>
+					</div>
+				</div>
+				<div class="ts-divider"></div>
+				<!-- content -->
+				<div class="ts-content is-horizontally-padded">{{content}}</div>
+				<div class="ts-content is-tertiary is-dense is-end-aligned">
+					<button class="ts-button is-outlined" onclick="go_back()">返回首頁</button>
+				</div>
+			</div>
+		</div>
 	</body>
+	<script>
+		function onload(){
+			if("{{icon}}" != ""){
+				const pop_icon = document.getElementById("pop_icon");
+				pop_icon.classList.remove("is-triangle-exclamation-icon");
+				pop_icon.classList.add("is-{{icon}}-icon");
+			}
+		}
+		function go_back(){
+			window.open("https://sn.nekogc.com", "_self");
+		}
+		window.onload = onload();
+	</script>
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap');
-		* {
-			font-family: 'Noto Sans TC', sans-serif;
-			font-size: min(4vw, 30px);
-		}
-		h1 {
-			font-size: min(4.5vw, 35px);
-		}
-		body {
-			width: 75%;
-			max-width: 800px;
-			margin: 0;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			-ms-transform: translate(-50%, -50%);
-			transform: translate(-50%, -50%);
+		:root {
+		  color-scheme: dark;
 		}
 	</style>
 </html>
