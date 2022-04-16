@@ -18,7 +18,7 @@
 		<!-- main container -->
 		<div class="ts-container is-fluid ts-center">
 			<!-- pop window -->
-			<div class="ts-modal" id="pop_window">
+			<div class="ts-modal" id="pop_window" style="overflow-y: auto;">
 				<div class="content">
 					<div class="ts-content is-dense">
 						<div class="ts-row">
@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<!-- form -->
-			<div class="ts-box">
+			<div class="ts-box" style="overflow-y: auto;">
 				<!-- highlighted title -->
 				<div class="ts-content is-primary is-dense">
 					<div class="ts-text is-large ts-center is-heavy">
@@ -98,4 +98,9 @@
 		}
 		window.onload = onload();
 	</script>
+	<style>
+		:root {
+		  color-scheme: dark;
+		}
+	</style>
 </html>
