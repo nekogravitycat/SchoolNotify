@@ -28,6 +28,7 @@
 				<div class="ts-divider"></div>
 				<!-- content -->
 				<div class="ts-content is-horizontally-padded" id="content">確定要取消訂閱此服務嗎？</div>
+				<!-- buttons -->
 				<div class="ts-content is-tertiary is-dense">
 					<div class="ts-wrap is-end-aligned">
 						<button class="ts-button is-negative" id="yes_btn" onclick="unsub()">確定</button>
@@ -55,7 +56,7 @@
 			change_info("成功取消訂閱！", "您不會再收到來自此服務的電子報");
 		}
 		function already_unsub(){
-			change_info("已經取消訂閱", "您的電子郵件地址並未存在在我們的清單上");
+			change_info("取消訂閱：已經取消訂閱", "您的電子郵件地址並未存在在我們的清單上");
 		}
 		function invalid_token(){
 			change_info("取消訂閱：無效的令牌", "請確認輸入的網址中包含正確的令牌");

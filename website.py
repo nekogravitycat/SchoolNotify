@@ -23,7 +23,7 @@ def verify_link(email: str, school:str, token:str) -> str:
 def unsub_ask_link(email: str, school: str, token:str = "") -> str:
 	if(not token):
 		token = mydb.token.get(school, email)
-	return f"{base}/unsub-ask?email={email}&school={school}&token={token}"
+	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
 
 @app.route("/", methods = ["POST", "GET"])
@@ -78,7 +78,7 @@ def ver():
 	
 	if(not email or not school or not token):
 		log("Bad flask.request")
-		return show("無效的請求", "請確認輸入的網址中包含完整的資訊")
+		return show("身分驗證：無效的請求", "請確認輸入的網址中包含完整的資訊")
 
 	if(mydb.token.exist(school, email)):
 		log("Already subscribed")
@@ -86,7 +86,7 @@ def ver():
 
 	if((not mydb.ask.exist(school, email)) or (token != mydb.ask.get(school, email).split(";")[1])):
 		log("Invalid email or token")
-		return show("無效的資料", "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）")
+		return show("身分驗證：無效的資料", "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）")
 
 	mydb.token.set(school, email, token)
 	mydb.ask.delete(school, email)
