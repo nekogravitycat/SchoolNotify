@@ -15,74 +15,72 @@
 		<title>訂閱 SchoolNotify</title>
 	</head>
 	<body>
-		<div class="ts-center">
-			<!-- main container -->
-			<div class="ts-container">
-				<!-- pop window -->
-				<div class="ts-modal" id="pop_window" style="overflow-y: auto;">
-					<div class="content">
-						<!-- header -->
-						<div class="ts-content is-dense">
-							<div class="ts-row">
-								<!-- title -->
-								<div class="column is-fluid">
-									<div class="ts-header is-start-icon">
-										<span class="ts-icon" id="pop_icon"></span>
-										<span class="ts-text">{{pop_title}}</span>
-									</div>
+		<!-- main container -->
+		<div class="ts-center ts-container is-fluid">
+			<!-- pop window -->
+			<div class="ts-modal" id="pop_window" style="overflow-y: auto;">
+				<div class="content">
+					<!-- header -->
+					<div class="ts-content is-dense">
+						<div class="ts-row">
+							<!-- title -->
+							<div class="column is-fluid">
+								<div class="ts-header is-start-icon">
+									<span class="ts-icon" id="pop_icon"></span>
+									<span class="ts-text">{{pop_title}}</span>
 								</div>
-								<!-- close button -->
-								<div class="column">
-									<div class="ts-center">
-										<button class="ts-close" onclick="pop_msg_close()"></button>
-									</div>
+							</div>
+							<!-- close button -->
+							<div class="column">
+								<div class="ts-center">
+									<button class="ts-close" onclick="pop_msg_close()"></button>
 								</div>
 							</div>
 						</div>
-						<div class="ts-divider"></div>
-						<!-- content -->
-						<div class="ts-content">{{pop_msg}}</div>
 					</div>
-				</div>
-				<!-- form -->
-				<div class="ts-box" style="overflow-y: auto;">
-					<!-- highlighted title -->
-					<div class="ts-content is-primary is-dense">
-						<div class="ts-text is-large ts-center is-heavy">訂閱 SchoolNotify 服務</div>
-					</div>
+					<div class="ts-divider"></div>
 					<!-- content -->
-					<div class="ts-content">
-						<!-- form -->
-						<form action="https://sn.nekogc.com" method="post" onsubmit="form_submit()">
-							<div class="ts-wrap is-vertical">
-								<!-- email field -->
-								<div class="ts-text is-label is-medium">請填寫您的電子郵件</div>
-								<div class="ts-input is-fluid is-medium is-underlined is-start-icon">
-									<span class="ts-icon is-envelope-icon"></span>
-									<input type="email" name="email" class="email_text" placeholder="address@example.com" id="email_input" required>
-								</div>
-								<!-- school field -->
-								<div class="ts-text is-label is-medium">請選擇學校</div>
-								<div class="ts-select is-fluid is-medium is-underlined">
-									<select name="school" class="school_select" id="school_select" required>
-										<option value="" disabled selected hidden>請選擇學校</option>
-										<option value="hchs">新竹高中</option>
-										<option value="hgsh">新竹女中</option>
-										<option value="cpshs">竹北高中</option>
-										<option value="hccvs">新竹高商</option>
-										<option value="whsh">文華高中</option>
-										<option value="tcivs">台中高工</option>
-										<option value="dali">興大附中</option>
-									</select>	
-								</div>
-								<!-- submit button -->
-								<button class="ts-button is-fluid is-start-icon" id="submit_btn">
-									<span class="ts-icon is-check-icon"></span>
-									<span class="ts-text is-medium is-heavy" id="submit_btn_text">訂閱</span>
-								</button>
+					<div class="ts-content">{{pop_msg}}</div>
+				</div>
+			</div>
+			<!-- form -->
+			<div class="ts-box" style="overflow-y: auto;">
+				<!-- highlighted title -->
+				<div class="ts-content is-primary is-dense">
+					<div class="ts-text is-large ts-center is-heavy">訂閱 SchoolNotify 服務</div>
+				</div>
+				<!-- content -->
+				<div class="ts-content">
+					<!-- form -->
+					<form action="https://sn.nekogc.com" method="post" onsubmit="form_submit()">
+						<div class="ts-wrap is-vertical">
+							<!-- email field -->
+							<div class="ts-text is-label is-medium">請填寫您的電子郵件</div>
+							<div class="ts-input is-fluid is-medium is-underlined is-start-icon">
+								<span class="ts-icon is-envelope-icon"></span>
+								<input type="email" name="email" class="email_text" placeholder="address@example.com" id="email_input" required>
 							</div>
-						</form>
-					</div>
+							<!-- school field -->
+							<div class="ts-text is-label is-medium">請選擇學校</div>
+							<div class="ts-select is-fluid is-medium is-underlined">
+								<select name="school" class="school_select" id="school_select" required>
+									<option value="" disabled selected hidden>請選擇學校</option>
+									<option value="hchs">新竹高中</option>
+									<option value="hgsh">新竹女中</option>
+									<option value="cpshs">竹北高中</option>
+									<option value="hccvs">新竹高商</option>
+									<option value="whsh">文華高中</option>
+									<option value="tcivs">台中高工</option>
+									<option value="dali">興大附中</option>
+								</select>	
+							</div>
+							<!-- submit button -->
+							<button class="ts-button is-fluid is-start-icon" id="submit_btn">
+								<span class="ts-icon is-check-icon"></span>
+								<span class="ts-text is-medium is-heavy" id="submit_btn_text">訂閱</span>
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
