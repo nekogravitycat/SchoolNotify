@@ -17,29 +17,30 @@
 	<body>
 		<!-- main container -->
 		<div class="ts-container is-fluid ts-center">
+			<!-- pop window -->
+			<div class="ts-modal" id="pop_window">
+				<div class="content">
+					<div class="ts-content is-dense">
+						<div class="ts-row">
+							<div class="column is-fluid">
+								<div class="ts-header">{{pop_title}}</div>
+							</div>
+							<div class="column">
+								<button class="ts-close" onclick="pop_msg_close()"></button>
+							</div>
+						</div>
+					</div>
+					<div class="ts-divider"></div>
+					<div class="ts-content">{{pop_msg}}</div>
+				</div>
+			</div>
+			<!-- form -->
 			<div class="ts-box">
 				<!-- highlighted title -->
 				<div class="ts-content is-primary is-dense">
 					<div class="ts-text is-large ts-center is-heavy">
 						訂閱 SchoolNotify 服務
 					</div>
-				</div>
-				<!-- pop window -->
-				<div class="ts-modal" id="pop_msg">
-				    <div class="content">
-				        <div class="ts-content is-dense">
-				            <div class="ts-row">
-				                <div class="column is-fluid">
-				                    <div class="ts-header">{{pop_title}}</div>
-				                </div>
-				                <div class="column">
-				                    <button class="ts-close" onclick="pop_msg_close()"></button>
-				                </div>
-				            </div>
-				        </div>
-				        <div class="ts-divider"></div>
-				        <div class="ts-content">{{pop_msg}}</div>
-				    </div>
 				</div>
 				<!-- content -->
 				<div class="ts-content">
@@ -67,7 +68,7 @@
 								</select>	
 							</div>
 							<!-- submit button -->
-							<button class="ts-button is-fluid is-start-icon" id="submit_btn">
+							<button class="ts-button is-fluid is-start-icon">
 								<span class="ts-icon is-check-icon"></span>
 								<span class="ts-text is-medium is-heavy" id="submit_btn_text">訂閱</span>
 							</button>
@@ -80,7 +81,7 @@
 	<script>
 		function onload(){
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
-				document.getElementById("pop_msg").classList.add("is-visible");
+				document.getElementById("pop_window").classList.add("is-visible");
 			}
 			if("{{email}}" != ""){
 				document.getElementById("email_input").value = "{{email}}";
@@ -93,7 +94,7 @@
 			}
 		}
 		function pop_msg_close() {
-		  document.getElementById("pop_msg").classList.remove("is-visible");
+		  document.getElementById("pop_window").classList.remove("is-visible");
 		}
 		window.onload = onload();
 	</script>
