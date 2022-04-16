@@ -45,7 +45,7 @@
 				<!-- content -->
 				<div class="ts-content">
 					<!-- form -->
-					<form action="https://sn.nekogc.com" method="post">
+					<form action="https://sn.nekogc.com" method="post" onsubmit="form_submit()">
 						<div class="ts-wrap is-vertical">
 							<!-- email field -->
 							<div class="ts-text is-label is-medium">請填寫您的電子郵件</div>
@@ -68,7 +68,7 @@
 								</select>	
 							</div>
 							<!-- submit button -->
-							<button class="ts-button is-fluid is-start-icon">
+							<button class="ts-button is-fluid is-start-icon" id="submit_btn">
 								<span class="ts-icon is-check-icon"></span>
 								<span class="ts-text is-medium is-heavy" id="submit_btn_text">訂閱</span>
 							</button>
@@ -95,6 +95,11 @@
 		}
 		function pop_msg_close() {
 		  document.getElementById("pop_window").classList.remove("is-visible");
+		}
+		function form_submit(){
+			const submit_btn = document.getElementById("submit_btn")
+			submit_btn.classList.add("is-loading");
+			submit_btn.disabled = true;
 		}
 		window.onload = onload();
 	</script>
