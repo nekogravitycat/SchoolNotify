@@ -23,7 +23,10 @@
 					<div class="ts-content is-dense">
 						<div class="ts-row">
 							<div class="column is-fluid">
-								<div class="ts-header">{{pop_title}}</div>
+								<div class="ts-header is-start-icon">
+									<span class="ts-icon is-circle-info-icon" id="pop_icon"></span>
+									<span class="ts-text">{{pop_title}}</span>
+								</div>
 							</div>
 							<div class="column">
 								<button class="ts-close" onclick="pop_msg_close()"></button>
@@ -82,6 +85,17 @@
 		function onload(){
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
+			}
+			const pop_icon = document.getElementById("pop_icon")
+			if("{{pop_type}}" == "ok"){
+				pop_icon.classList.add("is-circle-check-icon");
+			}
+			else if("{{pop_type}}" == "error"){
+				pop_icon.classList.add("is-triangle-exclamation-icon");
+				
+			}
+			else{
+				pop_icon.remove();
 			}
 			if("{{email}}" != ""){
 				document.getElementById("email_input").value = "{{email}}";

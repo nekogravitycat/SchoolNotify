@@ -40,32 +40,32 @@ def home():
 	
 	if(email == "" or school == ""):
 		log("Bad flask.request: no email or school")
-		return flask.render_template("sub.html", pop_title="不完整的資訊", pop_msg="請提供電子郵件和學校")
+		return flask.render_template("sub.html", pop_type="error", pop_title="不完整的資訊", pop_msg="請提供電子郵件和學校")
 
 	if(not myemail.is_vaild(email)):
 		log("Invaild email address")
-		return flask.render_template("sub.html", pop_title="無效的電子郵件", pop_msg="請重新確認填寫的電子郵件是否正確")
+		return flask.render_template("sub.html", pop_type="error", pop_title="無效的電子郵件", pop_msg="請重新確認填寫的電子郵件是否正確")
 
 	if(mydb.token.exist(school, email)):
 		log("Already subscribed")
-		return flask.render_template("sub.html", pop_title="已訂閱", pop_msg="您已訂閱至此服務")
+		return flask.render_template("sub.html", pop_type="error", pop_title="已訂閱", pop_msg="您已訂閱至此服務")
 
 	if(mydb.ask.exist(school, email)):
 		log("Already sent email")
-		return flask.render_template("sub.html", pop_title="請進行身分驗證", pop_msg="一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送")
+		return flask.render_template("sub.html", pop_type="error", pop_title="請進行身分驗證", pop_msg="一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送")
 
 	#generates a six-characters-long token
 	token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k = 6))
 	hyperlink: str = verify_link(email, school, token)
 
-	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘"
+	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘。若您並未要求此動作，請忽略這封郵件"
 	
 	email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content))
 	email_thread.start()
 
 	mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
 	log(f"Passed: {school}, {token}")
-	return flask.render_template("sub.html", email=email, school=school, again="1", pop_title="請進行身分驗證", pop_msg=f"一封驗證電子郵件已送出至 {email}，請查收")
+	return flask.render_template("sub.html", email=email, school=school, again="1", pop_type="ok", pop_title="請進行身分驗證", pop_msg=f"一封驗證電子郵件已送出至 {email}，請查收")
 
 
 @app.route("/verify")
