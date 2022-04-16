@@ -51,8 +51,9 @@
 			}
 		}
 		function succeed(){
-			document.getElementById("pop_icon").classList.remove("is-triangle-exclamation-icon");
-			document.getElementById("pop_icon").classList.add("is-circle-check-icon");
+			const pop_icon = document.getElementById("pop_icon");
+			pop_icon.classList.remove("is-triangle-exclamation-icon");
+			pop_icon.classList.add("is-circle-check-icon");
 			change_info("成功取消訂閱！", "您不會再收到來自此服務的電子報");
 		}
 		function already_unsub(){
@@ -90,6 +91,9 @@
 			}
 		}
 		function unsub(){
+			const yes_btn = document.getElementById("yes_btn")
+			yes_btn.classList.add("is-loading");
+			yes_btn.disabled = true;
 			let info = {
 				"email" : email,
 				"school" : school,
