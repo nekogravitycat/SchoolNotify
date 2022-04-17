@@ -1,68 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW" data-scale="large">
 	<head>
-		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
 		<meta charset="utf-8">
+		<!-- import Tocas UI form CloudFlare CDN -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.min.js"></script>
+		<!-- import Noto Sans TC from Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com"/>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+		<!-- other configurations -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
 		<title>Admin Login</title>
 	</head>
 	<body>
-		<h1 align="center">Data Base Access</h1>
-		<form action="https://sn.nekogc.com/login" method="POST">
-			<input type="password" placeholder="Please enter the password" name="token" class="token">
-			<input type="submit" value="Submit" class="submit_button">
-		</form>
+		<!-- main container -->
+		<div class="ts-center ts-container">
+			<!-- pop window -->
+			<div class="ts-modal" id="pop_window" style="overflow-y: auto;">
+				<div class="content">
+					<!-- header -->
+					<div class="ts-content is-dense">
+						<div class="ts-row">
+							<!-- title -->
+							<div class="column is-fluid">
+								<div class="ts-header is-start-icon">
+									<span class="ts-icon is-triangle-exclamation-icon"></span>
+									<span class="ts-text">Wrong Token</span>
+								</div>
+							</div>
+							<!-- close button -->
+							<div class="column">
+								<div class="ts-center">
+									<button class="ts-close" onclick="pop_msg_close()"></button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="ts-divider"></div>
+					<!-- content -->
+					<div class="ts-content">The token is invaild, please try again</div>
+				</div>
+			</div>
+			<!-- form -->
+			<div class="ts-box" style="overflow-y: auto;">
+				<!-- highlighted title -->
+				<div class="ts-content is-primary is-dense">
+					<div class="ts-text is-large ts-center is-heavy">Admin Login</div>
+				</div>
+				<!-- content -->
+				<div class="ts-content">
+					<!-- form -->
+					<form action="https://sn.nekogc.com/login" method="post" onsubmit="form_submit()">
+						<div class="ts-wrap is-vertical">
+							<!-- email field -->
+							<div class="ts-text is-label is-medium">Secret Token</div>
+							<div class="ts-input is-fluid is-medium is-underlined is-start-icon">
+								<span class="ts-icon is-lock-icon"></span>
+								<input type="password" name="token"" required>
+							</div>
+							<!-- submit button -->
+							<button class="ts-button is-fluid is-start-icon" id="submit_btn">
+								<span class="ts-icon is-check-icon"></span>
+								<span class="ts-text is-medium is-heavy">Login</span>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	</body>
 	<script>
-		function ask() {
-			const href = location.href;
-			const url = new URL(href);
-			const again = url.searchParams.get("try-again");
-
-			if(again == "1"){
-				var r = alert("Invaild token");
-			} 
+		const pop_window = document.getElementById("pop_window")
+		function onload(){
+			if("{{wrong}}" != ""){
+				pop_window.classList.add("is-visible");
+			}
+			const url = new URL(location.href);
+			const wrong = url.searchParams.get("w");
+			if(wrong == "1"){
+				pop_window.classList.add("is-visible");
+			}
 		}
-		window.onload = ask();
+		function pop_msg_close() {
+		  pop_window.classList.remove("is-visible");
+		}
+		function form_submit(){
+			const submit_btn = document.getElementById("submit_btn")
+			submit_btn.classList.add("is-loading");
+			submit_btn.disabled = true;
+		}
+		window.onload = onload();
 	</script>
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap');
-		* {
-			font-family: 'Noto Sans TC', sans-serif;
-			font-size: min(4vw, 30px);
-		}
-		h1 {
-			font-size: min(4.5vw, 35px);
-		}
-		body {
-			width: 75%;
-			max-width: 800px;
-			margin: 0;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			-ms-transform: translate(-50%, -50%);
-			transform: translate(-50%, -50%);
-		}
-		form {
-			display: flex;
-			flex-direction: column;
-			flex-wrap: nowrap;
-		}
-		.token {
-			color: #616161;
-			border-radius: 13px 13px 0px 0px;
-			padding: 7%;
-			border: 0;
-			background-color: #fafafa;
-		}
-		.submit_button {
-			color: #616161;
-			border-radius: 0px 0px 13px 13px;
-			padding: 7%;
-			border: 0;
-			background-color: #f5f5f5;
-			-webkit-appearance: none;
-			cursor: pointer;
+		:root {
+		  color-scheme: dark;
 		}
 	</style>
 </html>

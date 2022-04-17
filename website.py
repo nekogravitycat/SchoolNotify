@@ -165,23 +165,42 @@ def login():
 	#For GET method
 	if(flask.request.method == "GET"):
 		token: str = flask.request.cookies.get("token")
-		
-		if(token != os.environ["db_token"]):
+
+		if(not token):
 			return flask.render_template("login.html")
+		
+		elif(token != os.environ["db_token"]):
+			return flask.render_template("login.html", wrong="1")
 			
-		return flask.redirect("/db")
+		return flask.redirect("/admin")
 
 	#For POST method
 	token = flask.request.form["token"]
+	sha: str = hashlib.sha256(token.encode()).hexdigest()
+
+	if(sha != os.environ["db_token"]):
+		return flask.render_template("login.html", wrong="1")
 	
-	if(token != "" or not token is None):
-		resp = flask.make_response(flask.redirect("/db"))
-		sha: str = hashlib.sha256(token.encode()).hexdigest()
+	elif(token):
+		resp = flask.make_response(flask.redirect("/admin"))
 		resp.set_cookie("token", sha)
 		return resp
 
-	return flask.redirect("/login?try-again=1")
+	return flask.render_template("login.html", wrong="1")
 
+
+@app.route("/admin")
+def admin():
+	token: str = flask.request.cookies.get("token")
+	
+	if(not token):
+		return flask.redirect("/login")
+		
+	elif(token != os.environ["db_token"]):
+		return flask.redirect("/login?w=1")
+
+	return flask.render_template("admin.html")
+		
 
 @app.route("/db")
 def ShowDB():
@@ -191,7 +210,7 @@ def ShowDB():
 		return flask.redirect("/login")
 		
 	elif(token != os.environ["db_token"]):
-		return flask.redirect("/login?try-again=1") 
+		return flask.redirect("/login?w=1")
 		
 	ls: str = ""
 		
@@ -221,7 +240,7 @@ def EditDB():
 		return flask.redirect("/login")
 		
 	elif(token != os.environ["db_token"]):
-		return flask.redirect("/login?try-again=1")
+		return flask.redirect("/login?w=1")
 
 	#For GET method
 	if(flask.request.method == "GET"):
