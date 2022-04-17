@@ -24,6 +24,11 @@ def unsub_link(email: str, school: str, token:str = "") -> str:
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
 
+@app.route("/test")
+def test():
+	return flask.render_template("db_edit.html")
+
+
 @app.route("/", methods = ["POST", "GET"])
 def home():
 	#for GET method
@@ -244,43 +249,41 @@ def EditDB():
 
 	#For GET method
 	if(flask.request.method == "GET"):
-		return flask.render_template("db.html")
+		return flask.render_template("db_edit.html")
 		
 	#For POST method
 	key: str = flask.request.form["key"]
 	value: str = flask.request.form["value"]
-	action: str = flask.request.form["action"]
+	method: str = flask.request.form["method"]
 	
-	action_vaild: bool = False
-	action_vaild = (action == "delete")
-	action_vaild = ((action in ["edit", "add"]) and (value != "") and (not value is None))
+	method_vaild: bool = (method == "delete") or ((method in ["edit", "add"]) and value)
 		
-	if(not key or (not action_vaild)):
-		return flask.render_template("db.html", msg="Bad request")
+	if(not key or not method_vaild):
+		return flask.render_template("db_edit.html", pop_title="Bad request", pop_msg="method is not vaild")
 
-	if(action == "edit"):
+	if(method == "edit"):
 		if(key not in db.keys()):
-			return flask.render_template("db.html", msg="Key does not exist")
+			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key does not exist")
 			
 		db[key] = value
 		
-	elif(action == "add"):
+	elif(method == "add"):
 		if(key in db.keys()):
-			return flask.render_template("db.html", msg="Key already exists")
+			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key already exists")
 			
 		if(not re.match(r"^[\w-]+$", key)):
-			return flask.render_template("db.html", msg="Key name is illegle")
+			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key name is illegle")
 			
 		db[key] = value
 
-	#For the deleting action
+	#For the deleting method
 	else:
 		if(key not in db.keys()):
-			return flask.render_template("db.html", msg="Key does not exist")
+			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key does not exist")
 			
 		del db[key]
 		
-	return flask.render_template("db.html", msg="Successed!")
+	return flask.render_template("db_edit.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
 
 
 def show(title: str, content, icon="") -> str:

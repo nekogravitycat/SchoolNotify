@@ -12,7 +12,7 @@
 		<!-- other configurations -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<link rel="shortcut icon" href="https://replit.com/public/icons/favicon-196.png" sizes="196x196" type="image/png"/>
-		<title>訂閱 SchoolNotify</title>
+		<title>Database Modification</title>
 	</head>
 	<body>
 		<!-- main container -->
@@ -47,37 +47,51 @@
 			<div class="ts-box" style="overflow-y: auto;">
 				<!-- highlighted title -->
 				<div class="ts-content is-primary is-dense">
-					<div class="ts-text is-large ts-center is-heavy">訂閱 SchoolNotify 服務</div>
+					<div class="ts-text is-large ts-center is-heavy">Add/Edit/Delete A Key</div>
 				</div>
 				<!-- content -->
 				<div class="ts-content">
 					<!-- form -->
-					<form action="https://sn.nekogc.com" method="post" onsubmit="form_submit()">
+					<form action="https://sn.nekogc.com/db/edit" method="post" onsubmit="form_submit()">
 						<div class="ts-wrap is-vertical">
-							<!-- email field -->
-							<div class="ts-text is-label is-medium">請填寫您的電子郵件</div>
-							<div class="ts-input is-fluid is-medium is-underlined is-start-icon">
-								<span class="ts-icon is-envelope-icon"></span>
-								<input type="email" name="email" placeholder="address@example.com" id="email_input" required>
+							<!-- key name field -->
+							<div class="ts-text is-label is-medium">Key Name</div>
+							<div class="ts-input is-fluid is-medium is-underlined">
+								<input class="ts-input is-fluid is-medium is-underlined" type="text" name="key" required>
 							</div>
-							<!-- school field -->
-							<div class="ts-text is-label is-medium">請選擇學校</div>
-							<div class="ts-select is-fluid is-medium is-underlined">
-								<select name="school" id="school_select" required>
-									<option value="" disabled selected hidden>請選擇學校</option>
-									<option value="hchs">新竹高中</option>
-									<option value="hgsh">新竹女中</option>
-									<option value="cpshs">竹北高中</option>
-									<option value="hccvs">新竹高商</option>
-									<option value="whsh">文華高中</option>
-									<option value="tcivs">台中高工</option>
-									<option value="dali">興大附中</option>
-								</select>	
+							<!-- key value field -->
+							<div class="ts-text is-label is-medium">Key Value</div>
+							<div class="ts-input is-fluid is-medium is-underlined" id="value_input">
+								<input type="text" name="value" onchange="on_value_change()" id="value" required>
+							</div>
+							<!-- method selection -->
+							<div class="ts-text is-label is-medium">Method</div>
+							<div class="ts-content is-dense is-horizontally-padded is-rounded is-secondary">
+								<div class="ts-row is-evenly-divided">
+									<span class="column">
+										<label class="ts-radio">
+											<input type="radio" name="method" value="edit" onclick="value_enable(true);" required>
+											<span class="ts-text">Edit</span>
+										</label>
+									</span>
+									<span class="column">
+										<label class="ts-radio">
+											<input type="radio" name="method" value="add" onclick="value_enable(true);" required>
+											<span class="ts-text">Add</span>
+										</label>
+									</span>
+									<span class="column">
+										<label class="ts-radio">
+											<input type="radio" name="method" value="delete" onclick="value_enable(false);" required>
+											<span class="ts-text">Delete</span>
+										</label>
+									</span>
+								</div>
 							</div>
 							<!-- submit button -->
 							<button class="ts-button is-fluid is-start-icon" id="submit_btn">
 								<span class="ts-icon is-check-icon"></span>
-								<span class="ts-text is-medium is-heavy" id="submit_btn_text">訂閱</span>
+								<span class="ts-text is-medium is-heavy">Submit</span>
 							</button>
 						</div>
 					</form>
@@ -86,6 +100,8 @@
 		</div>
 	</body>
 	<script>
+		const value = document.getElementById("value");
+		var value_value;
 		function onload(){
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
@@ -93,13 +109,7 @@
 			const pop_icon = document.getElementById("pop_icon");
 			switch("{{pop_type}}"){
 				case "ok": pop_icon.classList.add("is-circle-check-icon"); break;
-				case "error": pop_icon.classList.add("is-triangle-exclamation-icon"); break;
-				default: pop_icon.remove(); break;
-			}
-			document.getElementById("email_input").value = "{{email}}";
-			document.getElementById("school_select").value = "{{school}}";
-			if("{{again}}" != ""){
-				document.getElementById("submit_btn_text").innerText = "再次訂閱";
+				default: pop_icon.classList.add("is-triangle-exclamation-icon"); break;
 			}
 		}
 		function pop_msg_close() {
@@ -109,6 +119,23 @@
 			const submit_btn = document.getElementById("submit_btn");
 			submit_btn.classList.add("is-loading");
 			submit_btn.disabled = true;
+		}
+		function on_value_change(){
+			value_value = value.value;
+		}
+		function value_enable(is_enabled){
+			const value_input = document.getElementById("value_input");
+			value_input.disabled = !is_enabled;
+			if(!is_enabled){
+				value_input.classList.add("is-disabled");
+				value.value = "";
+				value.removeAttribute("required");
+			}
+			else{
+				value_input.classList.remove("is-disabled");
+				value.value = value_value;
+				value.setAttribute("required", "");
+			}
 		}
 		window.onload = onload();
 	</script>
