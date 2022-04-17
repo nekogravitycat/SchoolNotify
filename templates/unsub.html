@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		<!-- main container -->
-		<div class="ts-center">
+		<div class="ts-center ts-container is-very-narrow">
 			<div class="ts-box" style="overflow-y: auto;">
 				<!-- header -->
 				<div class="ts-content is-primary is-dense">
@@ -27,7 +27,7 @@
 				</div>
 				<div class="ts-divider"></div>
 				<!-- content -->
-				<div class="ts-content is-horizontally-padded" id="content">確定要取消訂閱此服務嗎？</div>
+				<div class="ts-content is-horizontally-padded" id="content">確定要取消訂閱此服務嗎？您將不會收到任何來自此學校的電子報</div>
 				<!-- buttons -->
 				<div class="ts-content is-tertiary is-dense">
 					<div class="ts-wrap is-end-aligned">
@@ -54,7 +54,7 @@
 			const pop_icon = document.getElementById("pop_icon");
 			pop_icon.classList.remove("is-triangle-exclamation-icon");
 			pop_icon.classList.add("is-circle-check-icon");
-			change_info("成功取消訂閱！", "您不會再收到來自此服務的電子報");
+			change_info("成功取消訂閱！", "您不會再收到來自此此學校的電子報");
 		}
 		function already_unsub(){
 			change_info("取消訂閱：已經取消訂閱", "您的電子郵件地址並未存在在我們的清單上");
