@@ -24,11 +24,6 @@ def unsub_link(email: str, school: str, token:str = "") -> str:
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
 
-@app.route("/test")
-def test():
-	return flask.render_template("db_edit.html")
-
-
 @app.route("/", methods = ["POST", "GET"])
 def home():
 	#for GET method
