@@ -90,22 +90,14 @@
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
 			}
-			const pop_icon = document.getElementById("pop_icon")
-			if("{{pop_type}}" == "ok"){
-				pop_icon.classList.add("is-circle-check-icon");
+			const pop_icon = document.getElementById("pop_icon");
+			switch("{{pop_type}}"){
+				case "ok": pop_icon.classList.add("is-circle-check-icon"); break;
+				case "error": pop_icon.classList.add("is-triangle-exclamation-icon"); break;
+				default: pop_icon.remove(); break;
 			}
-			else if("{{pop_type}}" == "error"){
-				pop_icon.classList.add("is-triangle-exclamation-icon");
-			}
-			else{
-				pop_icon.remove();
-			}
-			if("{{email}}" != ""){
-				document.getElementById("email_input").value = "{{email}}";
-			}
-			if("{{school}}" != ""){
-				document.getElementById("school_select").value = "{{school}}";
-			}
+			document.getElementById("email_input").value = "{{email}}";
+			document.getElementById("school_select").value = "{{school}}";
 			if("{{again}}" != ""){
 				document.getElementById("submit_btn_text").innerText = "再次訂閱";
 			}
@@ -114,7 +106,7 @@
 		  document.getElementById("pop_window").classList.remove("is-visible");
 		}
 		function form_submit(){
-			const submit_btn = document.getElementById("submit_btn")
+			const submit_btn = document.getElementById("submit_btn");
 			submit_btn.classList.add("is-loading");
 			submit_btn.disabled = true;
 		}

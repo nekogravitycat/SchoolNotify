@@ -27,24 +27,18 @@
 				</div>
 				<!-- buttons -->
 				<div class="ts-content is-tertiary">
-					<button class="ts-button is-outlined is-fluid" onclick="go_db()">Database</button>
+					<button class="ts-button is-outlined is-fluid" onclick="go('/db')">Database</button>
 					<div class="ts-space"></div>
-					<button class="ts-button is-outlined is-fluid" onclick="go_db_edit()">Edit Database</button>
+					<button class="ts-button is-outlined is-fluid" onclick="go('/db/edit')">Edit Database</button>
 					<div class="ts-space"></div>
-					<button class="ts-button is-outlined is-fluid" onclick="go_back()">Home Page</button>
+					<button class="ts-button is-outlined is-fluid" onclick="go()">Home Page</button>
 				</div>
 			</div>
 		</div>
 	</body>
 	<script>
-		function go_db(){
-			window.open("https://sn.nekogc.com/db", "_self");
-		}
-		function go_db_edit(){
-			window.open("https://sn.nekogc.com/db/edit", "_self");
-		}
-		function go_back(){
-			window.open("https://sn.nekogc.com", "_self");
+		function go(path = ""){
+			window.open(`https://sn.nekogc.com${path}`, "_self");
 		}
 	</script>
 	<style>
