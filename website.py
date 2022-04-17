@@ -217,7 +217,7 @@ def ShowDB():
 	for k in sorted(db.keys()):
 		ls += f"{k} : {db[k]}<br>"
 		
-	return ls
+	return ls + r"<style>:root{color-scheme:dark;}</style>"
 
 
 @app.route("/db/sys")
