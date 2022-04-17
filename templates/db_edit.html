@@ -61,8 +61,8 @@
 							</div>
 							<!-- key value field -->
 							<div class="ts-text is-label is-medium">Key Value</div>
-							<div class="ts-input is-fluid is-medium is-underlined" id="value_input">
-								<input type="text" name="value" onchange="on_value_change()" id="value" required>
+							<div class="ts-input is-fluid is-medium is-underlined" id="value_input_div">
+								<input type="text" name="value" onchange="on_value_change()" id="value_input" required>
 							</div>
 							<!-- method selection -->
 							<div class="ts-text is-label is-medium">Method</div>
@@ -100,8 +100,8 @@
 		</div>
 	</body>
 	<script>
-		const value = document.getElementById("value");
-		var value_value;
+		const value_input = document.getElementById("value_input");
+		var value_memory = "";
 		function onload(){
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
@@ -121,20 +121,20 @@
 			submit_btn.disabled = true;
 		}
 		function on_value_change(){
-			value_value = value.value;
+			value_memory = value_input.value;
 		}
 		function value_enable(is_enabled){
-			const value_input = document.getElementById("value_input");
-			value_input.disabled = !is_enabled;
+			const value_input_div = document.getElementById("value_input_div");
+			value_input_div.disabled = !is_enabled;
 			if(!is_enabled){
-				value_input.classList.add("is-disabled");
-				value.value = "";
-				value.removeAttribute("required");
+				value_input_div.classList.add("is-disabled");
+				value_input.value = "";
+				value_input.removeAttribute("required");
 			}
 			else{
-				value_input.classList.remove("is-disabled");
-				value.value = value_value;
-				value.setAttribute("required", "");
+				value_input_div.classList.remove("is-disabled");
+				value_input.value = value_memory;
+				value_input.setAttribute("required", "");
 			}
 		}
 		window.onload = onload();
