@@ -4,6 +4,7 @@ import threading
 import hashlib
 import string
 import random
+import json
 from replit import db
 import myemail
 import mydb
@@ -124,9 +125,8 @@ def unsub():
 
 @app.route("/uptimebot")
 def uptime():
-	#For verifying
+	#verifying the bot
 	token: str = flask.request.args.get("token", default = "", type = str)
-	
 	if(token != os.environ["uptimerobot_token"]):
 		return show("You found me!", "Hello, visitor! This page is built for a service called UptimeRobot. The bot will visit here every 5 mins, triggering some special functions!", "circle-check")
 
@@ -204,41 +204,40 @@ def admin():
 
 @app.route("/db")
 def ShowDB():
+	#verifying user
 	token: str = flask.request.cookies.get("token")
-	
 	if(not token):
 		return flask.redirect("/login")
-		
 	elif(token != os.environ["db_token"]):
 		return flask.redirect("/login?w=1")
-		
-	ls: str = ""
-		
-	for k in sorted(db.keys()):
-		ls += f"{k} : {db[k]}<br>"
-		
-	return ls + r"<style>:root{color-scheme:dark;}</style>"
+
+	#main function
+	data: dict = {}
+
+	for key in sorted(db.keys()):
+		data.update({key : db[key]})
+
+	return flask.render_template("db.html", data=data)
 
 
 @app.route("/db/sys")
 def ShowRunDB():
-	ls:str = ""
-	
-	for k in sorted(db.keys()):
-		if("latest" in k):
-			ls += f"{k} : {db[k]}<br>"
-			
-	return ls
+	data: dict = {}
+
+	for key in sorted(db.keys()):
+		if("latest" in key):
+			data.update({key : db[key]})
+
+	return flask.render_template("db.html", data=data)
+
 
 
 @app.route("/db/edit", methods = ["POST", "GET"])
 def EditDB():
-	#For verifying
+	#verifying user
 	token: str = flask.request.cookies.get("token")
-	
 	if(not token):
 		return flask.redirect("/login")
-		
 	elif(token != os.environ["db_token"]):
 		return flask.redirect("/login?w=1")
 
