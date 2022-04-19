@@ -19,7 +19,7 @@ def send(to: list, subject: str, content_base: str, unsub_sch: str = "") -> bool
 	content_all: str = content_base
 	
 	try:
-		with smtplib.SMTP(host="smtp.office365.com", port="587") as smtp:
+		with smtplib.SMTP(host="smtp.office365.com", port=587) as smtp:
 			smtp.ehlo()
 			smtp.starttls()
 			smtp.login(os.environ["smtp_account"], os.environ["smtp_password"])

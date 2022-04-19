@@ -214,7 +214,7 @@ def ShowDB():
 	#main function
 	data: dict = {}
 
-	for key in sorted(db.keys()):
+	for key in db.keys():
 		data.update({key : db[key]})
 
 	return flask.render_template("db.html", data=data)
@@ -223,8 +223,9 @@ def ShowDB():
 @app.route("/db/sys")
 def ShowRunDB():
 	data: dict = {}
+	data.update({"timestamp" : db["timestamp"]})
 
-	for key in sorted(db.keys()):
+	for key in db.keys():
 		if("latest" in key):
 			data.update({key : db[key]})
 
