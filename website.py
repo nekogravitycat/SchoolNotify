@@ -52,6 +52,7 @@ def home():
 		return sub_page_error("無效的電子郵件", "請重新確認填寫的電子郵件是否正確")
 
 	if(not schools.is_valid(school)):
+		log("Invaild school id")
 		return sub_page_error("無效的學校代碼", "請重新確認填寫的學校代碼是否正確")
 	
 	if(mydb.token.exist(school, email)):
@@ -287,6 +288,11 @@ def EditDB():
 		del db[key]
 		
 	return flask.render_template("db_edit.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
+
+
+@app.route("/spr")
+def supporter():
+	return flask.render_template("supporter.html")
 
 
 def run():
