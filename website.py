@@ -4,10 +4,10 @@ import threading
 import hashlib
 import string
 import random
-import json
 from replit import db
 import myemail
 import mydb
+import schools
 from unilog import log
 import re
 
@@ -24,6 +24,12 @@ def unsub_link(email: str, school: str, token:str = "") -> str:
 		token = mydb.token.get(school, email)
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
+def show(title: str, content, icon="") -> str:
+	return flask.render_template("message.html", title=title, content=content.replace("\n", "<br>"), icon=icon)
+
+def sub_page_error(title: str, msg: str):
+	return flask.render_template("sub.html", pop_type="error", pop_title=title, pop_msg=msg)
+
 
 @app.route("/", methods = ["POST", "GET"])
 def home():
@@ -39,19 +45,22 @@ def home():
 	
 	if(not email or not school):
 		log("Bad flask.request: no email or school")
-		return flask.render_template("sub.html", pop_type="error", pop_title="不完整的資訊", pop_msg="請確認輸入的網址中包含完整的資訊")
+		return sub_page_error("不完整的資訊", "請確認輸入的網址中包含完整的資訊")
 
 	if(not myemail.is_vaild(email)):
 		log("Invaild email address")
-		return flask.render_template("sub.html", pop_type="error", pop_title="無效的電子郵件", pop_msg="請重新確認填寫的電子郵件是否正確")
+		return sub_page_error("無效的電子郵件", "請重新確認填寫的電子郵件是否正確")
 
+	if(not schools.is_valid(school)):
+		return sub_page_error("無效的學校代碼", "請重新確認填寫的學校代碼是否正確")
+	
 	if(mydb.token.exist(school, email)):
 		log("Already subscribed")
-		return flask.render_template("sub.html", pop_type="error", pop_title="已訂閱", pop_msg="您已訂閱至此服務")
+		return sub_page_error("已訂閱", "您已訂閱至此服務")
 
 	if(mydb.ask.exist(school, email)):
 		log("Already sent email")
-		return flask.render_template("sub.html", pop_type="error", pop_title="請進行身分驗證", pop_msg="一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送")
+		return sub_page_error("請進行身分驗證", "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送")
 
 	#generates a six-characters-long token
 	token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k = 6))
@@ -271,18 +280,13 @@ def EditDB():
 			
 		db[key] = value
 
-	#For the deleting method
-	else:
+	elif(method == "delete"):
 		if(key not in db.keys()):
 			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key does not exist")
 			
 		del db[key]
 		
 	return flask.render_template("db_edit.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
-
-
-def show(title: str, content, icon="") -> str:
-	return flask.render_template("message.html", title=title, content=content.replace("\n", "<br>"), icon=icon)
 
 
 def run():
