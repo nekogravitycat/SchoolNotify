@@ -1,4 +1,9 @@
 from replit import db
+import re
+
+
+def is_leagal(key_name: str):
+	return re.match(r"^[\w-]+$", key_name)
 
 
 #users' token (password)

@@ -72,6 +72,7 @@
 									<option value="whsh">文華高中</option>
 									<option value="tcivs">台中高工</option>
 									<option value="dali">興大附中</option>
+									<option value="cnsh">竹南高中</option>
 								</select>	
 							</div>
 							<!-- submit button -->
@@ -87,6 +88,8 @@
 	</body>
 	<script>
 		function onload(){
+			const school_select = document.getElementById("school_select");
+			//pop window
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
 			}
@@ -96,8 +99,9 @@
 				case "error": pop_icon.classList.add("is-triangle-exclamation-icon"); break;
 				default: pop_icon.remove(); break;
 			}
+			//memory
 			document.getElementById("email_input").value = "{{email}}";
-			document.getElementById("school_select").value = "{{school}}";
+			school_select.value = "{{school}}";
 			if("{{again}}" != ""){
 				document.getElementById("submit_btn_text").innerText = "再次訂閱";
 			}
@@ -112,5 +116,4 @@
 		}
 		window.onload = onload();
 	</script>
-	
 </html>

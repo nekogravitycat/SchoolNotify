@@ -17,4 +17,11 @@ def is_valid(id: str) -> bool:
 	return (id in info.keys())
 
 
+def add(id: str, url: str, uid: str):
+	with open("school_info.txt", "a") as f:
+		f.write(f"{id};{url};{uid}\n")
+	info.clear()
+	read_schools()
+
+
 read_schools()

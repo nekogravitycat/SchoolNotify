@@ -290,9 +290,43 @@ def EditDB():
 	return flask.render_template("db_edit.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
 
 
-@app.route("/spr")
+@app.route("/spr", methods = ["POST", "GET"])
 def supporter():
-	return flask.render_template("supporter.html")
+	#verifying user
+	token: str = flask.request.cookies.get("token")
+	if(not token):
+		return flask.redirect("/login")
+	elif(token != os.environ["db_token"]):
+		return flask.redirect("/login?w=1")
+
+	#for get method
+	if(flask.request.method == "GET"):
+		return flask.render_template("supporter.html")
+	
+	#for post method
+	id: str = flask.request.form["id"]
+	url: str = flask.request.form["url"]
+	uid: str = flask.request.form["uid"]
+	latest_date = flask.request.form["latest_date"]
+	latest_id = flask.request.form["latest_id"]
+
+	if(not mydb.is_leagal(id)):
+		return flask.render_template("supporter.html", pop_title="School ID is invalid", pop_msg="The School ID contains illeagal characters")
+
+	if(schools.is_valid(id)):
+		return flask.render_template("supporter.html", pop_title="School ID is invalid", pop_msg="The School ID already exists")
+	
+	log(f"School_add: \n id={id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n")
+	
+	schools.add(id, url, uid)
+	mydb.info.set(id, "date", latest_date)
+	
+	if(latest_id):
+		mydb.info.set(id, "id", latest_id)
+	else:
+		mydb.info.set(id, "id", "0")
+		
+	return flask.render_template("supporter.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
 
 
 def run():
