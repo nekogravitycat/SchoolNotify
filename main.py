@@ -2,41 +2,10 @@ import time
 import schedule
 import website
 import basic
-import mydb
-import ischool
-import schools
 from unilog import log
 
-send_email: bool = True
+debug: bool = False
 run_immediate: bool = False
-
-
-def ShowResult(result: list):
-	if(len(result) == 0):
-		log("No new announcements")
-	else:
-		for re in result:
-			log(re.detail())
-
-
-def Job():
-	ischool_info: list = ["date", "id"]
-	#for debugging
-	if(not send_email):
-		for id in schools.info.keys():
-			info: dict = schools.info[id]
-			mydb.memory.remember(id, ischool_info)
-			ShowResult(ischool.get_news(id, info["url"], info["uid"]))
-			mydb.memory.recall(id, ischool_info)
-		return
-	#main function
-	for id in schools.info.keys():
-		try:
-			info: dict = schools.info[id]
-			news: list = ischool.get_news(id, info["url"], info["uid"])
-			basic.push_email(id, news)
-		except Exception as e:
-			log(f"{id} Runtime Error: {e}", True)
 
 
 def ScheduleRun():
@@ -44,8 +13,8 @@ def ScheduleRun():
 	scheduler: schedule.Scheduler = schedule.Scheduler()
 	time_to_send: str = "10:00"
 
-	scheduler.every().monday.at(time_to_send).do(Job)
-	scheduler.every().thursday.at(time_to_send).do(Job)
+	scheduler.every().monday.at(time_to_send).do(basic.run)
+	scheduler.every().thursday.at(time_to_send).do(basic.run)
 
 	log("tasks scheduled")
 
@@ -54,9 +23,17 @@ def ScheduleRun():
 		time.sleep(1)
 
 
-website.alive()
-
-if(run_immediate):
-	Job()
+def main():
+	website.alive()
 	
-ScheduleRun()
+	if(run_immediate):
+		if(debug):
+			basic.debug()
+		else:
+			basic.run()
+	
+	ScheduleRun()
+
+
+if(__name__ == "__main__"):
+	main()

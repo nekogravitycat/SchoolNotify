@@ -3,6 +3,9 @@ import time
 from datetime import datetime, timezone, timedelta
 import myemail
 import mydb
+import ischool
+import schools
+
 from unilog import log
 
 test_mail: bool = False
@@ -88,3 +91,33 @@ def push_email(school: str, result: list):
 		log(f"The recipient list of {school} is empty", True)
 
 	log("Done! Waiting for next round!")
+
+
+def ShowResult(result: list):
+	if(len(result) == 0):
+		log("No new announcements")
+	else:
+		for re in result:
+			log(re.detail())
+
+
+ischool_info: list = ["date", "id"]
+
+
+def run():
+	for id in schools.info.keys():
+		try:
+			info: dict = schools.info[id]
+			news: list = ischool.get_news(id, info["url"], info["uid"])
+			push_email(id, news)
+		except Exception as e:
+			log(f"{id} Runtime Error: {e}", True)
+
+
+def debug():
+	for id in schools.info.keys():
+		info: dict = schools.info[id]
+		mydb.memory.remember(id, ischool_info)
+		ShowResult(ischool.get_news(id, info["url"], info["uid"]))
+		mydb.memory.recall(id, ischool_info)
+	
