@@ -4,7 +4,7 @@ import threading
 import hashlib
 import string
 import random
-from replit import db
+from myredis import db
 import myemail
 import mydb
 import schools
@@ -162,9 +162,9 @@ def ClearAsk(target: str):
 	cleared: str = ""
 	
 	for a in mydb.ask.list():
-		if(db[a].split(";")[0] == target):
+		if(db.get(a).split(";")[0] == target):
 			cleared += f"{a[4:]}\n"
-			del db[a]
+			db.delete(a)
 			
 	if(len(cleared) > 0):
 		log(f"request cleared:\n{cleared}")
@@ -224,8 +224,8 @@ def ShowDB():
 	#main function
 	data: dict = {}
 
-	for key in db.keys():
-		data.update({key : db[key]})
+	for key in db.keys_iter():
+		data.update({key : db.get(key)})
 
 	return flask.render_template("db.html", data=data)
 
@@ -235,9 +235,9 @@ def ShowRunDB():
 	data: dict = {}
 	data.update({"timestamp" : db["timestamp"]})
 
-	for key in db.keys():
+	for key in db.keys_iter():
 		if("latest" in key):
-			data.update({key : db[key]})
+			data.update({key : db.get(key)})
 
 	return flask.render_template("db.html", data=data)
 
@@ -267,25 +267,25 @@ def EditDB():
 		return flask.render_template("db_edit.html", pop_title="Bad request", pop_msg="method is not vaild")
 
 	if(method == "edit"):
-		if(key not in db.keys()):
+		if(key not in db.keys_iter()):
 			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key does not exist")
 			
-		db[key] = value
+		db.set(key, value)
 		
 	elif(method == "add"):
-		if(key in db.keys()):
+		if(key in db.keys_iter()):
 			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key already exists")
 			
 		if(not re.match(r"^[\w-]+$", key)):
 			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key name is illegle")
 			
-		db[key] = value
+		db.set(key, value)
 
 	elif(method == "delete"):
-		if(key not in db.keys()):
+		if(key not in db.keys_iter()):
 			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key does not exist")
 			
-		del db[key]
+		db.delete(key)
 		
 	return flask.render_template("db_edit.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
 

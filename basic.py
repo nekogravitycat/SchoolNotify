@@ -5,7 +5,6 @@ import myemail
 import mydb
 import ischool
 import schools
-
 from unilog import log
 
 test_mail: bool = False
@@ -114,8 +113,10 @@ def run():
 			log(f"{id} Runtime Error: {e}", True)
 
 
-def debug():
-	for id in schools.info.keys():
+def debug(school_ids = []):
+	if(not school_ids):
+		school_ids = schools.info.keys()
+	for id in school_ids:
 		info: dict = schools.info[id]
 		mydb.memory.remember(id, ischool_info)
 		ShowResult(ischool.get_news(id, info["url"], info["uid"]))

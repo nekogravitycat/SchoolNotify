@@ -29,7 +29,7 @@
 				<div class="ts-content is-horizontally-padded">{{content}}</div>
 				<!-- buttons -->
 				<div class="ts-content is-tertiary is-dense is-end-aligned">
-					<button class="ts-button is-outlined" onclick="go_back()">返回首頁</button>
+					<button class="ts-button is-outlined" onclick="go_home()">返回首頁</button>
 				</div>
 			</div>
 		</div>
@@ -42,7 +42,7 @@
 				pop_icon.classList.add("is-{{icon}}-icon");
 			}
 		}
-		function go_back(){
+		function go_home(){
 			window.open("https://sn.nekogc.com", "_self");
 		}
 		window.onload = onload();

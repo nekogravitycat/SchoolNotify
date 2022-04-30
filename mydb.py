@@ -1,6 +1,5 @@
-from replit import db
 import re
-
+from myredis import db
 
 def is_leagal(key_name: str):
 	return re.match(r"^[\w-]+$", key_name)
@@ -9,10 +8,10 @@ def is_leagal(key_name: str):
 #users' token (password)
 class token:
 	def get(school: str, email: str) -> str:
-		return db[f"{school}_email_{email}"]
+		return db.get(f"{school}_email_{email}")
 
 	def set(school: str, email:str, token: str):
-		db[f"{school}_email_{email}"] = token
+		db.set(f"{school}_email_{email}", token)
 
 	def list(school: str) -> tuple:
 		return db.prefix(f"{school}_email")
@@ -21,25 +20,25 @@ class token:
 		return (f"{school}_email_{email}" in token.list(school))
 
 	def delete(school: str, email: str):
-		del db[f"{school}_email_{email}"]
+		db.delete(f"{school}_email_{email}")
 
 
 #latest infomation from schools
 class info:
 	def get(school: str, info: str) -> str:
-		return db[f"{school}_latest_{info}"]
+		return db.get(f"{school}_latest_{info}")
 
 	def set(school: str, info: str, context: str):
-		db[f"{school}_latest_{info}"] = context
+		db.set(f"{school}_latest_{info}", context)
 
 
 #subscribtion requests
 class ask:
 	def get(school: str, email: str) -> str:
-		return db[f"ask_{school}_{email}"]
+		return db.get(f"ask_{school}_{email}")
 
 	def set(school: str, email: str, token: str):
-		db[f"ask_{school}_{email}"] = token
+		db.set(f"ask_{school}_{email}", token)
 
 	def list(school: str = "") -> tuple:
 		if(school == ""):
@@ -51,15 +50,15 @@ class ask:
 		return (f"ask_{school}_{email}" in ask.list(school))
 
 	def delete(school: str, email: str):
-		del db[f"ask_{school}_{email}"]
+		db.delete(f"ask_{school}_{email}")
 
 
 class timestamp:
 	def get() -> str:
-		return db["timestamp"]
+		return db.get("timestamp")
 
 	def set(stamp: str):
-		db["timestamp"] = stamp
+		db.set("timestamp", stamp)
 
 
 temp: dict = {}

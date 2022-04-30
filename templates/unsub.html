@@ -32,7 +32,7 @@
 				<div class="ts-content is-tertiary is-dense">
 					<div class="ts-wrap is-end-aligned">
 						<button class="ts-button is-negative" id="yes_btn" onclick="unsub()">確定</button>
-						<button class="ts-button is-outlined" id="no_btn" onclick="go_back()">返回首頁</button>
+						<button class="ts-button is-outlined" id="no_btn" onclick="go_home()">返回首頁</button>
 					</div>
 				</div>
 			</div>
@@ -112,7 +112,7 @@
 			document.body.appendChild(form);
 			form.submit();
 		}
-		function go_back(){
+		function go_home(){
 			window.open("https://sn.nekogc.com", "_self");
 		}
 		window.onload = onload();
