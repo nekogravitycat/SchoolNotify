@@ -29,12 +29,13 @@
 		function onload(){
 			let data = {};
 			fetch("https://sn.nekogc.com/api/db")
-				.then((responce) => {
-					data = responce.json();
+				.then(responce => response.json())
+				.then(json => {
+					data = json;
 				})
 				.catch((error) => {
 					window.alert("Something went wrong when fetching the data");
-					window.alert(error)
+					window.alert(error);
 				})
 			if(Object.keys(data).length != 0){
 				//the div which keys are appended to
