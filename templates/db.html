@@ -28,7 +28,12 @@
 		}
 		function onload(){
 			let mydata = {};
-			fetch("https://sn.nekogc.com/api/db")
+			fetch("https://sn.nekogc.com/api/db", {
+					headers : {
+						"Content-Type" : "application/json",
+						"Accept" : "application/json"
+					}
+				})
 				.then(response => response.json())
 				.then(data => {
 					mydata = data;
