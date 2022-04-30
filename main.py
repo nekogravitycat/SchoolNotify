@@ -24,8 +24,6 @@ def ScheduleRun():
 
 
 def main():
-	website.alive()
-	
 	if(run_immediate):
 		if(debug):
 			basic.debug()
