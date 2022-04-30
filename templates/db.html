@@ -29,7 +29,7 @@
 		function onload(){
 			let data = {};
 			fetch("https://sn.nekogc.com/api/db")
-				.then(responce => response.json())
+				.then(response => response.json())
 				.then(json => {
 					data = json;
 				})
