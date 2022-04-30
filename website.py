@@ -225,7 +225,7 @@ def ShowDB():
 	return flask.render_template("db.html")
 
 
-@app.route("/api/db", methods=["POST"])
+@app.route("/api/db", methods=["POST", "GET"])
 def AIP_DB():
 	#verifying user
 	token: str = flask.request.cookies.get("token")
