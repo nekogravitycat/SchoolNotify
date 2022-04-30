@@ -27,7 +27,14 @@
     	existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 		}
 		function onload(){
-			const data = JSON.parse('{{data | tojson | safe}}');
+			const data = {};
+			fetch("https://sn.nekogc.com/api/db")
+				.then((responce) => {
+					data = responce.json();
+				})
+				.catch((error) => {
+					window.alert("Something went wrong when fetching the data");
+				})
 			if(Object.keys(data).length != 0){
 				//the div which keys are appended to
 				const key_place = document.getElementById("key_place");

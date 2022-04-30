@@ -222,12 +222,25 @@ def ShowDB():
 		return flask.redirect("/login?w=1")
 
 	#main function
+	return flask.render_template("db.html")
+
+
+@app.route("/api/db")
+def AIP_DB():
+	#verifying user
+	token: str = flask.request.cookies.get("token")
+	if(not token):
+		return {"state":"token_is_empty"}
+	elif(token != os.environ["db_token"]):
+		return {"state":"token_is_invaild"}
+
+	#main function
 	data: dict = {}
 
 	for key in db.keys_iter():
 		data.update({key : db.get(key)})
 
-	return flask.render_template("db.html", data=data)
+	return data
 
 
 @app.route("/db/sys")
