@@ -27,7 +27,7 @@
     	existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 		}
 		function onload(){
-			const data = {};
+			let data = {};
 			fetch("https://sn.nekogc.com/api/db")
 				.then((responce) => {
 					data = responce.json();
