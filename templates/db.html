@@ -27,27 +27,27 @@
     	existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 		}
 		function onload(){
-			let data = {};
+			let mydata = {};
 			fetch("https://sn.nekogc.com/api/db")
 				.then(response => response.json())
-				.then(json => {
-					data = json;
+				.then(data => {
+					mydata = json;
 				})
 				.catch((error) => {
 					window.alert("Something went wrong when fetching the data");
 					window.alert(error);
 				})
-			if(Object.keys(data).length != 0){
+			if(Object.keys(mydata).length != 0){
 				//the div which keys are appended to
 				const key_place = document.getElementById("key_place");
-				for(const key in data){
+				for(const key in mydata){
 					let space = document.createElement("div");
 					space.classList.add("ts-space");
 					space.classList.add("is-small")
 					//div for keys
 					let item = document.createElement("div");
 					//text content for the div
-					const text = document.createTextNode(`${key} : ${data[key]}`);
+					const text = document.createTextNode(`${key} : ${mydata[key]}`);
 					item.appendChild(text);
 					item.classList.add("ts-segment");
 					item.classList.add("is-secondary");
