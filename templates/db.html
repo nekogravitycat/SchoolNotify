@@ -31,7 +31,7 @@
 			fetch("https://sn.nekogc.com/api/db")
 				.then(response => response.json())
 				.then(data => {
-					mydata = json;
+					mydata = data;
 				})
 				.catch((error) => {
 					window.alert("Something went wrong when fetching the data");
