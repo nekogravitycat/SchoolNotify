@@ -240,7 +240,7 @@ def AIP_DB():
 	for key in db.keys_iter():
 		data.update({key : db.get(key)})
 
-	return flask.make_response(data)
+	return flask.jsonify(data)
 
 
 @app.route("/db/sys")
