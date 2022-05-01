@@ -33,14 +33,14 @@
 					<div class="ts-space"></div>
 					<button class="ts-button is-outlined is-fluid" onclick="go('/db/edit')">Edit Database</button>
 					<div class="ts-space"></div>
-					<button class="ts-button is-outlined is-fluid" onclick="go()">Home Page</button>
+					<button class="ts-button is-outlined is-fluid" onclick="go('/')">Home Page</button>
 				</div>
 			</div>
 		</div>
 	</body>
 	<script>
 		function go(path = ""){
-			window.open(`https://sn.nekogc.com${path}`, "_self");
+			window.open(path, "_self");
 		}
 	</script>
 	<style>

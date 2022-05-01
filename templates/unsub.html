@@ -101,7 +101,7 @@
 			};
 			const form = document.createElement("form");
 			form.method = "post"
-			form.action = "https://sn.nekogc.com/unsub";
+			form.action = "/unsub";
 			for(const key in info){
 				const input = document.createElement("input");
 				input.type = "hidden";
@@ -113,7 +113,7 @@
 			form.submit();
 		}
 		function go_home(){
-			window.open("https://sn.nekogc.com", "_self");
+			window.open("/", "_self");
 		}
 		window.onload = onload();
 	</script>
