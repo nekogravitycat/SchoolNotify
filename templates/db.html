@@ -26,15 +26,17 @@
 		function insertAfter(newNode, existingNode) {
     	existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 		}
-		function onload(){
-			let mydata = {};
+		function fetchData(){
 			fetch("https://sn.nekogc.com/api/db")
-				.then(res => res.json())
-				.then(data => mydata = data)
+				.then(res => {return res.json();})
 				.catch((error) => {
 					window.alert("Something went wrong when fetching the data");
 					window.alert(error);
+					return null;
 				})
+		}
+		function onload(){
+			let mydata = fetchData();
 			if(Object.keys(mydata).length != 0){
 				//the div which keys are appended to
 				const key_place = document.getElementById("key_place");
