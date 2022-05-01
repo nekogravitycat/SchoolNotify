@@ -36,7 +36,31 @@
 				})
 		}
 		function onload(){
-			let mydata = fetchData();
+			fetch("https://sn.nekogc.com/api/db")
+				.then(response => response.json())
+				.then(data => {
+					const key_place = document.getElementById("key_place");
+					for(const key in data){
+						let space = document.createElement("div");
+						space.classList.add("ts-space");
+						space.classList.add("is-small")
+						//div for keys
+						let item = document.createElement("div");
+						//text content for the div
+						const text = document.createTextNode(`${key} : ${data[key]}`);
+						item.appendChild(text);
+						item.classList.add("ts-segment");
+						item.classList.add("is-secondary");
+						insertAfter(item, key_place.lastElementChild);
+						insertAfter(space, key_place.lastElementChild);
+					}
+				})
+				.catch((error) => {
+					window.alert("Something went wrong when fetching the data");
+					window.alert(error);
+				})
+			/*
+			const mydata = fetchData();
 			if(Object.keys(mydata).length != 0){
 				//the div which keys are appended to
 				const key_place = document.getElementById("key_place");
@@ -58,6 +82,7 @@
 			else{
 				window.alert("Database is empty");
 			}
+			*/
 		}
 		window.onload = onload();
 	</script>
