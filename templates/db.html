@@ -30,7 +30,7 @@
 			let mydata = {};
 			fetch("https://sn.nekogc.com/api/db")
 				.then(res => res.json())
-				.then(data => console.log(data))
+				.then(data => mydata = data)
 				.catch((error) => {
 					window.alert("Something went wrong when fetching the data");
 					window.alert(error);
