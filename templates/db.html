@@ -49,12 +49,12 @@
 						insertAfter(item, key_place.lastElementChild);
 						insertAfter(space, key_place.lastElementChild);
 					}
+					document.getElementById("loading_screen").classList.remove("is-visible");
 				})
 				.catch((error) => {
 					window.alert("Something went wrong when fetching the data");
 					window.alert(error);
 				})
-			document.getElementById("loading_screen").classList.remove("is-visible");
 		}
 		window.onload = onload();
 	</script>
