@@ -10,6 +10,7 @@ import mydb
 import schools
 from unilog import log
 import re
+import mycmd
 
 
 app = flask.Flask("")
@@ -340,6 +341,17 @@ def supporter():
 		mydb.info.set(id, "id", "0")
 		
 	return flask.render_template("supporter.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
+
+
+@app.route("/cmd", methods = ["POST"])
+def cmd():
+	token = flask.request.values.get("token")
+	cmd = flask.request.values.get("cmd")
+	#verifying user
+	if(token != os.environ["db_token"]):
+		return flask.abort(401, "token is invaild")	
+	#main function
+	return mycmd.run(cmd)
 
 
 def run():
