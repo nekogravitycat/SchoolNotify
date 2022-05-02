@@ -3,6 +3,7 @@ import time
 import schedule
 import basic
 from unilog import log
+import os
 
 debug: bool = False
 run_immediate: bool = False
@@ -10,7 +11,7 @@ run_flask_wsgi: bool = False
 
 
 def ScheduleRun():
-	#replit uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
+	#heroku uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
 	scheduler: schedule.Scheduler = schedule.Scheduler()
 	time_to_send: str = "10:00"
 
@@ -34,8 +35,11 @@ def main():
 			basic.debug()
 		else:
 			basic.run()
-	
-	ScheduleRun()
+			
+	if(os.environ.get("production")):
+		ScheduleRun()
+	else:
+		log("running on debug platform mode")
 
 
 if(__name__ == "__main__"):
