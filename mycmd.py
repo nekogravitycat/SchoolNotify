@@ -1,8 +1,12 @@
 from unilog import log
 import basic
+import schools
 
-def show_sch(school: str):
-	return
+def show_sch(id: str):
+	if(not schools.is_valid(id)):
+		return f"error: invaild school id '{id}'"
+	basic.debug([id])
+	return "done!"
 
 def run(line: str):
 	split = line.split()
@@ -14,7 +18,7 @@ def run(line: str):
 	args: list = split
 	
 	if(cmd == "show-sch"):
-		show_sch(args[0])
+		return show_sch(args[0])
 	else:
 		return f'error: unknown command {cmd}'
 	
