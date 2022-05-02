@@ -1,6 +1,5 @@
 import os
 
-local_test: bool = False
 env_file: str = "myenv.txt"
 
 #set environment variable if not exists
