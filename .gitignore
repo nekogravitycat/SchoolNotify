@@ -1,10 +1,10 @@
-#replit files
 poetry.lock
 pyproject.toml
 .breakpoints
 .replit
 log.txt
 sys_msg.txt
+myenv.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,3 +1,4 @@
+import local_test
 import time
 import schedule
 import basic
@@ -5,6 +6,7 @@ from unilog import log
 
 debug: bool = False
 run_immediate: bool = False
+run_flask_wsgi: bool = False
 
 
 def ScheduleRun():
@@ -23,6 +25,10 @@ def ScheduleRun():
 
 
 def main():
+	if(run_flask_wsgi):
+		import website
+		website.alive()
+	
 	if(run_immediate):
 		if(debug):
 			basic.debug()
