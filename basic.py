@@ -1,5 +1,6 @@
 import os
 import time
+import pyotp
 from datetime import datetime, timezone, timedelta
 import myemail
 import mydb
@@ -122,3 +123,7 @@ def debug(school_ids = []):
 		ShowResult(ischool.get_news(id, info["url"], info["uid"]))
 		mydb.memory.recall(id, ischool_info)
 	
+
+def verify_totp(code: str) -> bool:
+	t = pyotp.TOTP(os.environ["totp"])
+	return t.verify(code)

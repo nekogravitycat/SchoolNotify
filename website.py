@@ -347,13 +347,7 @@ def supporter():
 def cmd():
 	token = flask.request.values.get("token")
 	cmd = flask.request.values.get("cmd")
-	log(f"received cmd: {cmd}")
-	#verifying user
-	if(token != os.environ["db_token"]):
-		log(f"cmd: invaild token: {token}")
-		return flask.abort(401, "token is invaild")	
-	#main function
-	return mycmd.run(cmd)
+	return mycmd.run(cmd, token)
 
 
 def run():

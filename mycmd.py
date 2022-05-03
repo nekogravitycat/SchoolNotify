@@ -10,7 +10,11 @@ def debug_sch(id: str):
 	return "done!"
 
 
-def run(line: str):
+def run(line: str, token: str):
+	#verifying user
+	if(not basic.verify_totp(token)):
+		return "error: token is invaild"
+	
 	split = line.split()
 	
 	if(len(split) == 0):
