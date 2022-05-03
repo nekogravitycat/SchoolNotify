@@ -11,8 +11,10 @@ def debug_sch(id: str):
 
 
 def run(line: str, token: str):
+	log(f"received cmd:\n'{line}'\ntoken:'{token}'")
 	#verifying user
 	if(not basic.verify_totp(token)):
+		log(f"error: token '{token}' is invaild")
 		return "error: token is invaild"
 	
 	split = line.split()
@@ -25,5 +27,10 @@ def run(line: str, token: str):
 	
 	if(cmd == "debug-sch"):
 		return show_sch(args[0])
+		
+	elif(cmd == "help"):
+		return "1. debug-sch [id]: run a school without sending mails"
+	
 	else:
-		return f'error: unknown command {cmd}'
+		log(f"error: unknown command '{cmd}'")
+		return f"error: unknown command '{cmd}'"
