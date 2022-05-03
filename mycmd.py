@@ -11,7 +11,7 @@ def debug_sch(id: str):
 
 
 def run(line: str, token: str):
-	log(f"received cmd:\n'{line}'\ntoken:'{token}'")
+	log(f"received cmd: '{line}'\ntoken: '{token}'")
 	#verifying user
 	if(not basic.verify_totp(token)):
 		log(f"error: token '{token}' is invaild")
