@@ -1,6 +1,7 @@
 from unilog import log
 import basic
 import schools
+import mydb
 
 
 def debug_sch(id: str):
@@ -15,7 +16,7 @@ def run(line: str, token: str):
 	#verifying user
 	if(not basic.verify_totp(token)):
 		log(f"error: token '{token}' is invaild")
-		return "error: token is invaild"
+		return f"error: token '{token}' is invaild"
 	
 	split = line.split()
 	
@@ -26,6 +27,8 @@ def run(line: str, token: str):
 	args: list = split
 	
 	if(cmd == "debug-sch"):
+		if(len(args) != 1):
+			return "error: invaild arg"
 		return show_sch(args[0])
 		
 	elif(cmd == "help"):
@@ -34,3 +37,4 @@ def run(line: str, token: str):
 	else:
 		log(f"error: unknown command '{cmd}'")
 		return f"error: unknown command '{cmd}'"
+		

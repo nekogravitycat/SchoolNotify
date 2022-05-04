@@ -71,3 +71,47 @@ class memory:
 	def recall(school: str, info_list: list):
 		for i in info_list:
 			info.set(school, i, temp[i])
+			
+
+class edit:
+	def cmd(method: str, key: str, value: str = "") -> dict:
+		res: dict = {
+			"status" : "error",
+			"title" : "Cannot perfrom the method",
+			"msg" : "Operation successed!"
+		}
+		
+		method_vaild: bool = (method == "delete") or ((method in ["edit", "add"]) and value)
+		
+		if(not key or not method_vaild):
+			res["msg"] = "Method is invaild"
+			return res
+
+		if(method == "edit"):
+			if(key not in db.keys_iter()):
+				res["msg"] = "Key does not exist"
+				return res
+				
+			db.set(key, value)
+			
+		elif(method == "add"):
+			if(key in db.keys_iter()):
+				res["msg"] = "Key already exists"
+				return res
+				
+			if(not re.match(r"^[\w-]+$", key)):
+				res["msg"] = "Key name is illeagle"
+				return res
+				
+			db.set(key, value)
+
+		elif(method == "delete"):
+			if(key not in db.keys_iter()):
+				res["msg"] = "Key does not exist"
+				return res
+				
+			db.delete(key)
+			
+		res["status"] = "ok"
+		res["title"] = "Successed!"
+		return res

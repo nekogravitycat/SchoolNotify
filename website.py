@@ -275,33 +275,8 @@ def EditDB():
 	value: str = flask.request.form["value"]
 	method: str = flask.request.form["method"]
 	
-	method_vaild: bool = (method == "delete") or ((method in ["edit", "add"]) and value)
-		
-	if(not key or not method_vaild):
-		return flask.render_template("db_edit.html", pop_title="Bad request", pop_msg="method is not vaild")
-
-	if(method == "edit"):
-		if(key not in db.keys_iter()):
-			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key does not exist")
-			
-		db.set(key, value)
-		
-	elif(method == "add"):
-		if(key in db.keys_iter()):
-			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key already exists")
-			
-		if(not re.match(r"^[\w-]+$", key)):
-			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key name is illegle")
-			
-		db.set(key, value)
-
-	elif(method == "delete"):
-		if(key not in db.keys_iter()):
-			return flask.render_template("db_edit.html", pop_title="Cannot perfrom the method", pop_msg="Key does not exist")
-			
-		db.delete(key)
-		
-	return flask.render_template("db_edit.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
+	res: dict = mydb.edit.cmd(method, key, value)
+	return flask.render_template("db_edit.html", pop_type=res["status"], pop_title=res["title"], pop_msg=res["msg"])
 
 
 @app.route("/spr", methods = ["POST", "GET"])
