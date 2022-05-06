@@ -9,7 +9,7 @@ from unilog import log
 
 
 def is_vaild(email: str) -> bool:
-	email_regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
+	email_regex: re.Pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
 	return email_regex.match(email) != None
 
 

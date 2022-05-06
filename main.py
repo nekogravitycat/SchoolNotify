@@ -6,7 +6,7 @@ from unilog import log
 import os
 
 
-def ScheduleRun():
+def ScheduleRun() -> None:
 	#heroku uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
 	scheduler: schedule.Scheduler = schedule.Scheduler()
 	time_to_send: str = "10:00"
@@ -21,7 +21,7 @@ def ScheduleRun():
 		time.sleep(1)
 
 
-def main():
+def main() -> None:
 	if(os.environ.get("run_flask_wsgi")):
 		import website
 		website.alive()

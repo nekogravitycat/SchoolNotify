@@ -1,9 +1,8 @@
 import os
 
-env_file: str = "myenv.txt"
-
 #set environment variable if not exists
-def set_env():
+def set_env() -> None:
+	env_file: str = "myenv.txt"
 	#detect the existence env var
 	if(os.environ.get("db_token")):
 		return
@@ -15,7 +14,7 @@ def set_env():
 			if(not line):
 				break
 			#format: key=value
-			kv = line.split("=")
+			kv: list = line.split("=")
 			os.environ[kv[0]] = kv[1]
 			print(f"set: {kv[0]}={kv[1]}")
 			

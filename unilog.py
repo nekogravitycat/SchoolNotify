@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, timezone, timedelta
 
 
-def log(data: str, write_log: bool = False):
+def log(data: str, write_log: bool = False) -> None:
 	print(data)
 	
 	if(write_log):
@@ -15,8 +15,8 @@ def log(data: str, write_log: bool = False):
 
 	#disable the unilog function
 	try:
-		url = "https://log.nekogc.com/log"
-		data = {
+		url: str = "https://log.nekogc.com/log"
+		data: dict = {
 			"cat": "sn",
 			"data": data,
 			"token": os.environ["unilog_token"]

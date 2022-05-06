@@ -1,7 +1,7 @@
 info: dict = {}
 
 
-def read_schools():
+def read_schools() -> None:
 	with open("school_info.txt") as f:
 		for line in f.readlines():
 			#format: id;url;uid
@@ -17,7 +17,7 @@ def is_valid(id: str) -> bool:
 	return (id in info.keys())
 
 
-def add(id: str, url: str, uid: str):
+def add(id: str, url: str, uid: str) -> None:
 	with open("school_info.txt", "a") as f:
 		f.write(f"{id};{url};{uid}\n")
 	info.clear()

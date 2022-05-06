@@ -1,7 +1,7 @@
 import re
 from myredis import db
 
-def is_leagal(key_name: str):
+def is_leagal(key_name: str) -> re.Match:
 	return re.match(r"^[\w-]+$", key_name)
 
 
@@ -10,7 +10,7 @@ class token:
 	def get(school: str, email: str) -> str:
 		return db.get(f"{school}_email_{email}")
 
-	def set(school: str, email:str, token: str):
+	def set(school: str, email:str, token: str) -> None:
 		db.set(f"{school}_email_{email}", token)
 
 	def list(school: str) -> tuple:
@@ -19,7 +19,7 @@ class token:
 	def exist(school: str, email: str) -> bool:
 		return (f"{school}_email_{email}" in token.list(school))
 
-	def delete(school: str, email: str):
+	def delete(school: str, email: str) -> None:
 		db.delete(f"{school}_email_{email}")
 
 
@@ -28,7 +28,7 @@ class info:
 	def get(school: str, info: str) -> str:
 		return db.get(f"{school}_latest_{info}")
 
-	def set(school: str, info: str, context: str):
+	def set(school: str, info: str, context: str) -> None:
 		db.set(f"{school}_latest_{info}", context)
 
 
@@ -37,7 +37,7 @@ class ask:
 	def get(school: str, email: str) -> str:
 		return db.get(f"ask_{school}_{email}")
 
-	def set(school: str, email: str, token: str):
+	def set(school: str, email: str, token: str) -> None:
 		db.set(f"ask_{school}_{email}", token)
 
 	def list(school: str = "") -> tuple:
@@ -57,18 +57,18 @@ class timestamp:
 	def get() -> str:
 		return db.get("timestamp")
 
-	def set(stamp: str):
+	def set(stamp: str) -> None:
 		db.set("timestamp", stamp)
 
 
 temp: dict = {}
 
 class memory:
-	def remember(school: str, info_list: list):
+	def remember(school: str, info_list: list) -> None:
 		for i in info_list:
 			temp[i] = info.get(school, i)
 
-	def recall(school: str, info_list: list):
+	def recall(school: str, info_list: list) -> None:
 		for i in info_list:
 			info.set(school, i, temp[i])
 			

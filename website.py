@@ -9,11 +9,10 @@ import myemail
 import mydb
 import schools
 from unilog import log
-import re
 import mycmd
 
 
-app = flask.Flask("")
+app: flask.Flask = flask.Flask("")
 base: str = "https://sn.nekogc.com"
 
 
@@ -28,12 +27,12 @@ def unsub_link(email: str, school: str, token:str = "") -> str:
 def show(title: str, content, icon="") -> str:
 	return flask.render_template("message.html", title=title, content=content.replace("\n", "<br>"), icon=icon)
 
-def sub_page_error(title: str, msg: str):
+def sub_page_error(title: str, msg: str) -> str:
 	return flask.render_template("sub.html", pop_type="error", pop_title=title, pop_msg=msg)
 
 
 @app.route("/", methods = ["POST", "GET"])
-def home():
+def home() -> str:
 	#for GET method
 	if(flask.request.method == "GET"):
 		return flask.render_template("sub.html")
@@ -79,7 +78,7 @@ def home():
 
 
 @app.route("/verify")
-def ver():
+def ver() -> str:
 	email: str = flask.request.args.get("email", default = "", type = str)
 	school: str = flask.request.args.get("school", default = "", type = str)
 	token: str = flask.request.args.get("token", default = "", type = str)
@@ -106,7 +105,7 @@ def ver():
 
 
 @app.route("/unsub", methods = ["POST", "GET"])
-def unsub():
+def unsub() -> str:
 	#for GET method
 	if(flask.request.method == "GET"):
 		return flask.render_template("unsub.html")
@@ -135,7 +134,7 @@ def unsub():
 
 
 @app.route("/uptimebot")
-def uptime():
+def uptime() -> str:
 	#verifying the bot
 	token: str = flask.request.args.get("token", default = "", type = str)
 	if(token != os.environ["uptimerobot_token"]):
@@ -172,7 +171,7 @@ def ClearAsk(target: str):
 
 
 @app.route("/login", methods = ["POST", "GET"])
-def login():
+def login() -> str:
 	#For GET method
 	if(flask.request.method == "GET"):
 		token: str = flask.request.cookies.get("token")
@@ -201,7 +200,7 @@ def login():
 
 
 @app.route("/admin")
-def admin():
+def admin() -> str:
 	token: str = flask.request.cookies.get("token")
 	
 	if(not token):
@@ -214,7 +213,7 @@ def admin():
 		
 
 @app.route("/db")
-def ShowDB():
+def ShowDB() -> str:
 	#verifying user
 	token: str = flask.request.cookies.get("token")
 	if(not token):
@@ -227,25 +226,25 @@ def ShowDB():
 
 
 @app.route("/api/db")
-def AIP_DB():
+def AIP_DB() -> flask.Response:
+	res: dict = {}
+	
 	#verifying user
 	token: str = flask.request.cookies.get("token")
 	if(not token):
-		return {"state":"token_is_empty"}
+		res = {"state":"token_is_empty"}
 	elif(token != os.environ["db_token"]):
-		return {"state":"token_is_invaild"}
+		res = {"state":"token_is_invaild"}
 
 	#main function
-	data: dict = {}
-
 	for key in db.keys_iter():
-		data.update({key : db.get(key)})
+		res.update({key : db.get(key)})
 
-	return flask.jsonify(data)
+	return flask.jsonify(res)
 
 
 @app.route("/db/sys")
-def ShowRunDB():
+def ShowRunDB() -> str:
 	data: dict = {}
 	data.update({"timestamp" : db["timestamp"]})
 
@@ -258,7 +257,7 @@ def ShowRunDB():
 
 
 @app.route("/db/edit", methods = ["POST", "GET"])
-def EditDB():
+def EditDB() -> str:
 	#verifying user
 	token: str = flask.request.cookies.get("token")
 	if(not token):
@@ -280,7 +279,7 @@ def EditDB():
 
 
 @app.route("/spr", methods = ["POST", "GET"])
-def supporter():
+def supporter() -> str:
 	#verifying user
 	token: str = flask.request.cookies.get("token")
 	if(not token):
@@ -319,16 +318,16 @@ def supporter():
 
 
 @app.route("/cmd", methods = ["POST"])
-def cmd():
+def cmd() -> str:
 	token = flask.request.values.get("token")
 	cmd = flask.request.values.get("cmd")
 	return mycmd.run(cmd, token)
 
 
-def run():
+def run() -> None:
 	app.run(host = "0.0.0.0", port = 8080)
 
 
-def alive():
+def alive() -> None:
 	t = threading.Thread(target = run)
 	t.start()

@@ -52,7 +52,7 @@ def sys_msg() -> str:
 		return ""
 
 
-def push_email(school: str, result: list):
+def push_email(school: str, result: list) -> None:
 	is_empty: bool = len(result) == 0
 
 	if(is_empty):
@@ -93,7 +93,7 @@ def push_email(school: str, result: list):
 	log("Done! Waiting for next round!")
 
 
-def ShowResult(result: list):
+def ShowResult(result: list) -> None:
 	if(len(result) == 0):
 		log("No new announcements")
 	else:
@@ -104,7 +104,7 @@ def ShowResult(result: list):
 ischool_info: list = ["date", "id"]
 
 
-def run():
+def run() -> None:
 	for id in schools.info.keys():
 		try:
 			info: dict = schools.info[id]
@@ -114,7 +114,7 @@ def run():
 			log(f"{id} Runtime Error: {e}", True)
 
 
-def debug(school_ids = []):
+def debug(school_ids = []) -> None:
 	if(not school_ids):
 		school_ids = schools.info.keys()
 	for id in school_ids:

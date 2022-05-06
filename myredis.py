@@ -9,13 +9,13 @@ r = redis.Redis(
 )
 
 class db:
-	def set(key, value):
+	def set(key: str, value: str) -> None:
 		r.set(key, value)
 
-	def get(key):
+	def get(key: str) -> str:
 		return r.get(key)
 	
-	def delete(key):
+	def delete(key: str) -> None:
 		r.delete(key)
 		
 	def keys(return_list: bool = False):
@@ -26,8 +26,8 @@ class db:
 	def keys_iter():
 		return r.scan_iter()
 		
-	def prefix(prefix):
-		matches = []
+	def prefix(prefix: str) -> list:
+		matches: list = []
 		for key in r.scan_iter(f"{prefix}*"):
 			matches.append(key)
 		return matches

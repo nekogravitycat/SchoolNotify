@@ -4,26 +4,26 @@ import schools
 import mydb
 
 
-def debug_sch(id: str):
+def debug_sch(id: str) -> str:
 	if(not schools.is_valid(id)):
 		return f"error: invaild school id '{id}'"
 	basic.debug([id])
 	return "done!"
 
 
-def run(line: str, token: str):
+def run(line: str, token: str) -> str:
 	log(f"received cmd: '{line}'\ntoken: '{token}'")
 	#verifying user
 	if(not basic.verify_totp(token)):
 		log(f"error: token '{token}' is invaild")
 		return f"error: token '{token}' is invaild"
 	
-	split = line.split()
+	split: list = line.split()
 	
 	if(len(split) == 0):
 		return "error: empty input"
 		
-	cmd = split.pop(0)
+	cmd: str = split.pop(0)
 	args: list = split
 	
 	if(cmd == "debug-sch"):
