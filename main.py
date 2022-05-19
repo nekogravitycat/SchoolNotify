@@ -1,24 +1,15 @@
 import myenv
 import time
-import schedule
 import basic
 from unilog import log
 import os
 
 
 def ScheduleRun() -> None:
-	#heroku uses UTC+0, so schedule the tasks 8 hours earlier, using 24-hour clock
-	scheduler: schedule.Scheduler = schedule.Scheduler()
-	time_to_send: str = "10:00"
-
-	scheduler.every().monday.at(time_to_send).do(basic.run)
-	scheduler.every().thursday.at(time_to_send).do(basic.run)
-
-	log("tasks scheduled")
-
-	while(True):
-		scheduler.run_pending()
-		time.sleep(1)
+	weekday: int = basic.today().weekday()
+	#monday = 0, thursday = 3
+	if(weekday == 0 or weekday == 3):
+		basic.run()
 
 
 def main() -> None:

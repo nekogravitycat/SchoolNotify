@@ -36,9 +36,11 @@ class info:
 class ask:
 	def get(school: str, email: str) -> str:
 		return db.get(f"ask_{school}_{email}")
+		#return db.get(f"ask{token}")
 
 	def set(school: str, email: str, token: str) -> None:
 		db.set(f"ask_{school}_{email}", token)
+		#db.set(f"ask_{token}", f"{school};{email}")
 
 	def list(school: str = "") -> tuple:
 		if(school == ""):

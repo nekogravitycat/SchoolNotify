@@ -1,5 +1,4 @@
 Flask
-schedule
 bs4
 gunicorn
 redis
