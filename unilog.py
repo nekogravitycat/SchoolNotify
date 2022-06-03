@@ -12,16 +12,3 @@ def log(data: str, write_log: bool = False) -> None:
 			f.write(f"[{now}] {data}\n")
 			
 	return
-
-	#disable the unilog function
-	try:
-		url: str = "https://log.nekogc.com/log"
-		data: dict = {
-			"cat": "sn",
-			"data": data,
-			"token": os.environ["unilog_token"]
-		}
-		requests.post(url, json=data)
-		
-	except:
-		print("UniLog failed")
