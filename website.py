@@ -4,6 +4,7 @@ import threading
 import hashlib
 import string
 import random
+from datetime import date, timedelta
 from myredis import db
 import myemail
 import mydb
@@ -193,7 +194,7 @@ def login() -> str:
 	
 	elif(token):
 		resp = flask.make_response(flask.redirect("/admin"))
-		resp.set_cookie("token", sha)
+		resp.set_cookie("token", value = sha, expires = (date.today()+timedelta(days=7)))
 		return resp
 
 	return flask.render_template("login.html", wrong="1")
