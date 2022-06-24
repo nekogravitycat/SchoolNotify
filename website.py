@@ -47,10 +47,6 @@ def home() -> str:
 		log("Bad flask.request: no email or school")
 		return sub_page_error("不完整的資訊", "請確認輸入的網址中包含完整的資訊")
 
-	if(not myemail.is_vaild(email)):
-		log("Invaild email address")
-		return sub_page_error("無效的電子郵件", "請重新確認填寫的電子郵件是否正確")
-
 	if(not schools.is_valid(school)):
 		log("Invaild school id")
 		return sub_page_error("無效的學校代碼", "請重新確認填寫的學校代碼是否正確")
