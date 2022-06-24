@@ -10,7 +10,6 @@ import myemail
 import mydb
 import schools
 from unilog import log
-import mycmd
 
 
 app: flask.Flask = flask.Flask("")
@@ -316,13 +315,6 @@ def supporter() -> str:
 		mydb.info.set(id, "id", "0")
 		
 	return flask.render_template("supporter.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
-
-
-@app.route("/cmd", methods = ["POST"])
-def cmd() -> str:
-	token = flask.request.values.get("token")
-	cmd = flask.request.values.get("cmd")
-	return mycmd.run(cmd, token)
 
 
 def run() -> None:

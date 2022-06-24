@@ -1,5 +1,4 @@
-import myenv
-import time
+import myenv #environment setup
 import basic
 from unilog import log
 import os
