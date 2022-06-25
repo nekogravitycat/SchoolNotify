@@ -74,12 +74,9 @@
 	<script>
 		const pop_window = document.getElementById("pop_window")
 		function onload(){
-			if("{{wrong}}" != ""){
-				pop_window.classList.add("is-visible");
-			}
 			const url = new URL(location.href);
 			const wrong = url.searchParams.get("w");
-			if(wrong == "1"){
+			if("{{wrong}}" != "" || wrong == "1"){
 				pop_window.classList.add("is-visible");
 			}
 		}
