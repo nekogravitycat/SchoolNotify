@@ -20,6 +20,7 @@ on:
   schedule:
     - cron: '16 19 * * 6'
 
+# Cancel any running actions on new commit
 concurrency: 
   group: ${{ github.head_ref }}"codeql"
   cancel-in-progress: true
