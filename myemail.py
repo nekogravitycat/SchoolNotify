@@ -4,13 +4,7 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 import smtplib
 import website
-import re
 from unilog import log
-
-
-def is_vaild(email: str) -> bool:
-	email_regex: re.Pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
-	return email_regex.match(email) != None
 
 
 #Retuen a boolean telling if the process ran successfully

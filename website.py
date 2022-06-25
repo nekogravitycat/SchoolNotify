@@ -10,7 +10,6 @@ import myemail
 import mydb
 import schools
 from unilog import log
-import mycmd
 
 
 app: flask.Flask = flask.Flask("")
@@ -47,10 +46,6 @@ def home() -> str:
 	if(not email or not school):
 		log("Bad flask.request: no email or school")
 		return sub_page_error("不完整的資訊", "請確認輸入的網址中包含完整的資訊")
-
-	if(not myemail.is_vaild(email)):
-		log("Invaild email address")
-		return sub_page_error("無效的電子郵件", "請重新確認填寫的電子郵件是否正確")
 
 	if(not schools.is_valid(school)):
 		log("Invaild school id")
@@ -316,13 +311,6 @@ def supporter() -> str:
 		mydb.info.set(id, "id", "0")
 		
 	return flask.render_template("supporter.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
-
-
-@app.route("/cmd", methods = ["POST"])
-def cmd() -> str:
-	token = flask.request.values.get("token")
-	cmd = flask.request.values.get("cmd")
-	return mycmd.run(cmd, token)
 
 
 def run() -> None:
