@@ -104,7 +104,8 @@ def ver() -> str:
 def unsub() -> str:
 	#for GET method
 	if(flask.request.method == "GET"):
-		return flask.render_template("unsub.html")
+		school: str = flask.request.args.get("school", default = "", type = str)
+		return flask.render_template("unsub.html", school=schools.get_name(school))
 
 	#for POST method
 	email: str = flask.request.form["email"]

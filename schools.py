@@ -7,8 +7,10 @@ def read_schools() -> None:
 			#format: id;url;uid
 			item: list = line.split(";")
 			temp: dict = {
+				#id (item[0]) as key name
 				"url" : item[1].strip(),
-				"uid" : item[2].strip()
+				"uid" : item[2].strip(),
+				"name" : item[3].strip()
 			}
 			info.update({item[0] : temp})
 
@@ -22,6 +24,10 @@ def add(id: str, url: str, uid: str) -> None:
 		f.write(f"{id};{url};{uid}\n")
 	info.clear()
 	read_schools()
+
+
+def get_name(id: str) -> str:
+	return info[id].name
 
 
 read_schools()
