@@ -27,6 +27,8 @@ def add(id: str, url: str, uid: str) -> None:
 
 
 def get_name(id: str) -> str:
+	if(not id in info):
+		return "*此學校不存在*"
 	return info[id]["name"]
 
 
