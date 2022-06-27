@@ -27,7 +27,7 @@ def add(id: str, url: str, uid: str) -> None:
 
 
 def get_name(id: str) -> str:
-	return info[id][name]
+	return info[id]["name"]
 
 
 read_schools()
