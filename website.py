@@ -129,10 +129,10 @@ def unsub() -> str:
 	return flask.render_template("unsub.html", state="succeed")
 
 
-@app.route("/uptimebot")
+@app.route("/uptime")
 def uptime() -> str:
 	#verifying the bot
-	token: str = flask.request.args.get("token", default = "", type = str)
+	token: str = flask.request.args.get("bot", default = "", type = str)
 	if(token != os.environ["uptimerobot_token"]):
 		return show("You found me!", "Hello, visitor! This page is built for a service called UptimeRobot. The bot will visit here every 5 mins, triggering some special functions!", "circle-check")
 
