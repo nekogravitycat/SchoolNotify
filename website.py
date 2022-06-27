@@ -223,19 +223,22 @@ def ShowDB() -> str:
 
 
 @app.route("/api/db")
-def AIP_DB() -> flask.Response:
+def API_DB() -> flask.Response:
 	res: dict = {}
 	
 	#verifying user
 	token: str = flask.request.cookies.get("token")
+	
 	if(not token):
 		res = {"state":"token_is_empty"}
+		
 	elif(token != os.environ["db_token"]):
 		res = {"state":"token_is_invaild"}
-
-	#main function
-	for key in db.keys_iter():
-		res.update({key : db.get(key)})
+		
+	else:
+		#main function
+		for key in db.keys_iter():
+			res.update({key : db.get(key)})
 
 	return flask.jsonify(res)
 
