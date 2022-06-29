@@ -64,7 +64,7 @@
 							<div class="ts-text is-label is-medium">請選擇學校</div>
 							<div class="ts-select is-fluid is-medium is-solid">
 								<select name="school" id="school_select" required>
-									<option value="" disabled selected hidden id="choose">請選擇學校</option>
+									<option value="" disabled selected hidden>請選擇學校</option>
 									<option value="hchs">新竹高中</option>
 									<option value="hgsh">新竹女中</option>
 									<option value="cpshs">竹北高中</option>
@@ -87,19 +87,16 @@
 		</div>
 	</body>
 	<script>
-		function insertAfter(newNode, existingNode){
-			existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-		}
+		const school_select = document.getElementById("school_select");
 		function loadInfo(){
 			fetch("/api/sch")
 				.then(response => response.json())
 				.then(data => {
-					const list = document.getElementById("choose");
 					for (const key in data) {
 						let option = document.createElement("option");
 						option.value = key;
 						option.innerHTML = data[key];
-						insertAfter(option, list.lastElementChild);
+						school_select.appendChild(option);
 					}
 				})
 				.catch((error) => {
@@ -109,7 +106,6 @@
 		}
 		function onload(){
 			loadInfo();
-			const school_select = document.getElementById("school_select");
 			//pop window
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
