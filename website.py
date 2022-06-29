@@ -231,7 +231,7 @@ def API_School() -> flask.Response:
 	for id in schools.info:
 		res.update({id : schools.info[id]["name"]})
 		
-	return res
+	return flask.jsonify(res)
 
 
 @app.route("/api/db")

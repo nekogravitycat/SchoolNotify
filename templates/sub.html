@@ -84,10 +84,10 @@
 			fetch("/api/sch")
 				.then(response => response.json())
 				.then(data => {
-					for (const key in data) {
+					for (const id in data) {
 						let option = document.createElement("option");
-						option.value = key;
-						option.innerHTML = data[key];
+						option.value = id;
+						option.innerHTML = data[id];
 						school_select.appendChild(option);
 					}
 				})
