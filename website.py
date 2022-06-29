@@ -32,6 +32,17 @@ def show(title: str, content, icon="") -> str:
 def sub_page_error(title: str, msg: str) -> str:
 	return flask.render_template("sub.html", pop_type="error", pop_title=title, pop_msg=msg)
 
+def ClearAsk(target: str):
+	cleared: str = ""
+	
+	for a in mydb.ask.list():
+		if(db.get(a).split(";")[0] == target):
+			cleared += f"{a[4:]}\n"
+			db.delete(a)
+			
+	if(len(cleared) > 0):
+		log(f"request cleared:\n{cleared}")
+
 
 @app.route("/", methods = ["POST", "GET"])
 def home() -> str:
@@ -157,18 +168,6 @@ def uptime() -> str:
 	return "Hello, uptimerobot!"
 
 
-def ClearAsk(target: str):
-	cleared: str = ""
-	
-	for a in mydb.ask.list():
-		if(db.get(a).split(";")[0] == target):
-			cleared += f"{a[4:]}\n"
-			db.delete(a)
-			
-	if(len(cleared) > 0):
-		log(f"request cleared:\n{cleared}")
-
-
 @app.route("/login", methods = ["POST", "GET"])
 def login() -> str:
 	#For GET method
@@ -222,50 +221,6 @@ def ShowDB() -> str:
 
 	#main function
 	return flask.render_template("db.html")
-
-
-@app.route("/api/sch")
-def API_School() -> flask.Response:
-	res: dict = {}
-	
-	for id in schools.info:
-		res.update({id : schools.info[id]["name"]})
-		
-	return flask.jsonify(res)
-
-
-@app.route("/api/db")
-def API_DB() -> flask.Response:
-	res: dict = {}
-	
-	#verifying user
-	token: str = flask.request.cookies.get("token")
-	
-	if(not token):
-		res = {"state":"token_is_empty"}
-		
-	elif(token != os.environ["db_token"]):
-		res = {"state":"token_is_invaild"}
-		
-	else:
-		#main function
-		for key in db.keys_iter():
-			res.update({key : db.get(key)})
-
-	return flask.jsonify(res)
-
-
-@app.route("/db/sys")
-def ShowRunDB() -> str:
-	data: dict = {}
-	data.update({"timestamp" : db["timestamp"]})
-
-	for key in db.keys_iter():
-		if("latest" in key):
-			data.update({key : db.get(key)})
-
-	return flask.render_template("db.html", data=data)
-
 
 
 @app.route("/db/edit", methods = ["POST", "GET"])
@@ -327,6 +282,37 @@ def supporter() -> str:
 		mydb.info.set(id, "id", "0")
 		
 	return flask.render_template("supporter.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
+
+
+@app.route("/api/sch")
+def API_School() -> flask.Response:
+	res: dict = {}
+	
+	for id in schools.info:
+		res.update({id : schools.info[id]["name"]})
+		
+	return flask.jsonify(res)
+
+
+@app.route("/api/db")
+def API_DB() -> flask.Response:
+	res: dict = {}
+	
+	#verifying user
+	token: str = flask.request.cookies.get("token")
+	
+	if(not token):
+		res = {"state":"token_is_empty"}
+		
+	elif(token != os.environ["db_token"]):
+		res = {"state":"token_is_invaild"}
+		
+	else:
+		#main function
+		for key in db.keys_iter():
+			res.update({key : db.get(key)})
+
+	return flask.jsonify(res)
 
 
 def run() -> None:
