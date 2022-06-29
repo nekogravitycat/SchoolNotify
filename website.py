@@ -13,6 +13,8 @@ from unilog import log
 
 
 app: flask.Flask = flask.Flask("")
+app.config['JSON_AS_ASCII'] = False
+
 base: str = "https://sn.nekogc.com"
 
 
