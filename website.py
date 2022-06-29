@@ -224,7 +224,7 @@ def ShowDB() -> str:
 	return flask.render_template("db.html")
 
 
-@app.route("/api/schools")
+@app.route("/api/sch")
 def API_School() -> flask.Response:
 	res: dict = {}
 	
