@@ -222,6 +222,16 @@ def ShowDB() -> str:
 	return flask.render_template("db.html")
 
 
+@app.route("/api/schools")
+def API_School() -> flask.Response:
+	res: dict = {}
+	
+	for id in schools.info:
+		res.update({id : schools.info[id]["name"]})
+		
+	return res
+
+
 @app.route("/api/db")
 def API_DB() -> flask.Response:
 	res: dict = {}
