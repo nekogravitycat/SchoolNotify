@@ -19,7 +19,6 @@ base: str = "https://sn.nekogc.com"
 
 
 def verify(token: str) -> flask.Response:
-	token: str = flask.request.cookies.get("token")
 	if(not token):
 		return flask.redirect("/login")
 	elif(token != os.environ["db_token"]):
