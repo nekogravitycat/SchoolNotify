@@ -18,6 +18,15 @@ app.config["JSON_AS_ASCII"] = False
 base: str = "https://sn.nekogc.com"
 
 
+def verify(token: str) -> flask.Response:
+	token: str = flask.request.cookies.get("token")
+	if(not token):
+		return flask.redirect("/login")
+	elif(token != os.environ["db_token"]):
+		return flask.redirect("/login?w=1")
+	return None
+
+
 def verify_link(email: str, school:str, token:str) -> str:
 	return f"{base}/verify?email={email}&school={school}&token={token}"
 
@@ -213,11 +222,9 @@ def admin() -> str:
 @app.route("/db")
 def ShowDB() -> str:
 	#verifying user
-	token: str = flask.request.cookies.get("token")
-	if(not token):
-		return flask.redirect("/login")
-	elif(token != os.environ["db_token"]):
-		return flask.redirect("/login?w=1")
+	result = verify(flask.request.cookies.get("token"))
+	if(not result is None):
+		return result
 
 	#main function
 	return flask.render_template("db.html")
@@ -226,11 +233,9 @@ def ShowDB() -> str:
 @app.route("/db/edit", methods = ["POST", "GET"])
 def EditDB() -> str:
 	#verifying user
-	token: str = flask.request.cookies.get("token")
-	if(not token):
-		return flask.redirect("/login")
-	elif(token != os.environ["db_token"]):
-		return flask.redirect("/login?w=1")
+	result = verify(flask.request.cookies.get("token"))
+	if(not result is None):
+		return result
 
 	#For GET method
 	if(flask.request.method == "GET"):
@@ -248,11 +253,9 @@ def EditDB() -> str:
 @app.route("/spr", methods = ["POST", "GET"])
 def supporter() -> str:
 	#verifying user
-	token: str = flask.request.cookies.get("token")
-	if(not token):
-		return flask.redirect("/login")
-	elif(token != os.environ["db_token"]):
-		return flask.redirect("/login?w=1")
+	result = verify(flask.request.cookies.get("token"))
+	if(not result is None):
+		return result
 
 	#for get method
 	if(flask.request.method == "GET"):
