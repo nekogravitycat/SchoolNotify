@@ -50,27 +50,26 @@
 				document.getElementById("yes_btn").remove();
 			}
 		}
-		function succeed(){
-			const pop_icon = document.getElementById("pop_icon");
-			pop_icon.classList.remove("is-triangle-exclamation-icon");
-			pop_icon.classList.add("is-circle-check-icon");
-			change_info("成功取消訂閱！", "您不會再收到來自此此學校的電子報");
-		}
-		function already_unsub(){
-			change_info("取消訂閱：已經取消訂閱", "您的電子郵件地址並未存在在我們的清單上");
-		}
-		function invalid_token(){
-			change_info("取消訂閱：無效的令牌", "請確認輸入的網址中包含正確的令牌");
-		}
 		function bad_request(){
 			change_info("取消訂閱：無效的請求", "請確認輸入的網址中包含完整的資訊");
 		}
 		function onload() {
 			switch("{{state}}"){
-				case "succeed": succeed(); return;
-				case "already_unsub": already_unsub(); return;
-				case "invalid_token": invalid_token(); return;
-				case "bad_request": bad_request(); return;
+				case "succeed": 
+					const pop_icon = document.getElementById("pop_icon");
+					pop_icon.classList.remove("is-triangle-exclamation-icon");
+					pop_icon.classList.add("is-circle-check-icon");
+					change_info("成功取消訂閱！", "您不會再收到來自此此學校的電子報");
+					return;
+				case "already_unsub":
+					change_info("取消訂閱：已經取消訂閱", "您的電子郵件地址並未存在在我們的清單上");
+					return;
+				case "invalid_token":
+					change_info("取消訂閱：無效的令牌", "請確認輸入的網址中包含正確的令牌");
+					return;
+				case "bad_request":
+					bad_request();
+					return;
 			}
 			url = new URL(location.href);
 			email = url.searchParams.get("email");
