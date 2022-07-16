@@ -1,6 +1,7 @@
 import re
 from myredis import db
 
+
 def is_leagal(key_name: str) -> re.Match:
 	return re.match(r"^[\w-]+$", key_name)
 
@@ -117,3 +118,13 @@ class edit:
 		res["status"] = "ok"
 		res["title"] = "Successed!"
 		return res
+
+
+class temp:
+	def __init__(self, data: dict):
+		self.data = data
+
+	def update(self) -> None:
+		for key in db.keys_iter():
+			self.data[key] = db.get(key)
+			

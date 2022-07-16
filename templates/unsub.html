@@ -66,21 +66,11 @@
 			change_info("取消訂閱：無效的請求", "請確認輸入的網址中包含完整的資訊");
 		}
 		function onload() {
-			if("{{state}}" == "succeed"){
-				succeed();
-				return;
-			}
-			else if("{{state}}" == "already_unsub"){
-				already_unsub();
-				return;
-			}
-			else if("{{state}}" == "invalid_token"){
-				invalid_token();
-				return;
-			}
-			else if("{{state}}" == "bad_request"){
-				bad_request();
-				return;
+			switch("{{state}}"){
+				case "succeed": succeed(); return;
+				case "already_unsub": already_unsub(); return;
+				case "invalid_token"： invalid_token(); return;
+				case "bad_request": bad_request(); return;
 			}
 			url = new URL(location.href);
 			email = url.searchParams.get("email");
