@@ -17,5 +17,3 @@ def set_env() -> None:
 			kv: list = line.split("=")
 			os.environ[kv[0]] = kv[1]
 			print(f"set: {kv[0]}={kv[1]}")
-			
-set_env()

@@ -1,5 +1,5 @@
 import re
-from myredis import db
+from src.myredis import db
 
 
 def is_leagal(key_name: str) -> re.Match:

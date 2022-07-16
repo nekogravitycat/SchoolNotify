@@ -2,11 +2,9 @@ import os
 import time
 import pyotp
 from datetime import datetime, timezone, timedelta
-import myemail
-import mydb
-import ischool
-import schools
-from unilog import log
+from src import myemail, mydb, ischool, schools
+from src.unilog import log
+
 
 test_mail: bool = False
 
@@ -36,22 +34,6 @@ def today() -> datetime.date:
 	return datetime.now(timezone(timedelta(hours=8))).date()
 
 
-def sys_msg() -> str:
-	try:
-		if(os.stat("sys_msg.txt").st_size == 0):
-			return ""
-
-		content: str = ""
-		with open("sys_msg.txt", "r+") as f:
-			content = f.read().replace("\n", "<br>")
-			f.truncate(0)
-			return f"～～系統公告～～<br>{content}<br><br>"
-			
-	except Exception as e:
-		log(f"SYS_MSG Runtime Error: {e}", True)
-		return ""
-
-
 def push_email(school: str, result: list) -> None:
 	is_empty: bool = len(result) == 0
 
@@ -72,8 +54,7 @@ def push_email(school: str, result: list) -> None:
 		else:
 			for r in result:
 				content += f"{r.html()}<br><br>"
-
-		content += sys_msg()
+				
 		recipients: list = []
 
 		if(test_mail):

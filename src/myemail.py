@@ -3,8 +3,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
 import smtplib
-import website
-from unilog import log
+from src import website
+from src.unilog import log
 
 
 #Retuen a boolean telling if the process ran successfully

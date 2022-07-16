@@ -2,9 +2,8 @@ import time
 import requests
 import bs4
 import re
-import basic
-import mydb
-from unilog import log
+from src import basic, mydb
+from src.unilog import log
 
 
 def get_newsid(sch_url: str, sch_uid: str, pageNum: int = 0, maxRows: int = 15) -> list:

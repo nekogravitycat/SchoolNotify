@@ -1,6 +1,5 @@
-import myenv #environment setup
-import basic
-from unilog import log
+from src import myenv, basic #environment setup
+from src.unilog import log
 import os
 
 
@@ -29,4 +28,5 @@ def main() -> None:
 
 
 if(__name__ == "__main__"):
+	myenv.set_env()
 	main()

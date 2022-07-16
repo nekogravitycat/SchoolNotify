@@ -2,7 +2,7 @@ info: dict = {}
 
 
 def read_schools() -> None:
-	with open("school_info.txt") as f:
+	with open(r"assets/school_info.txt") as f:
 		for line in f.readlines():
 			#format: id;url;uid
 			item: list = line.split(";")

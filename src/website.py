@@ -5,11 +5,9 @@ import hashlib
 import string
 import random
 from datetime import date, timedelta
-from myredis import db
-import myemail
-import mydb
-import schools
-from unilog import log
+from src import myemail, mydb, schools
+from src.myredis import db
+from src.unilog import log
 
 
 app: flask.Flask = flask.Flask("")
