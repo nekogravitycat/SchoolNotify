@@ -80,7 +80,8 @@
 	</body>
 	<script>
 		const school_select = document.getElementById("school_select");
-		function loadInfo(){
+		function onload(){
+			//load info
 			fetch("/api/sch")
 				.then(response => response.json())
 				.then(data => {
@@ -95,9 +96,6 @@
 					window.alert("Something went wrong when fetching the data");
 					window.alert(error);
 				})
-		}
-		function onload(){
-			loadInfo();
 			//pop window
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
