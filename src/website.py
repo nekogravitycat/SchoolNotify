@@ -16,11 +16,15 @@ app.config["JSON_AS_ASCII"] = False
 base: str = "https://sn.nekogc.com"
 
 
+#return the login page if the token is invaild, and None if vaild
 def verify(token: str) -> flask.Response:
+	#empty token
 	if(not token):
 		return flask.redirect("/login")
+	#wrong token
 	elif(token != os.environ["db_token"]):
 		return flask.redirect("/login?w=1")
+	#vaild token (pass)
 	return None
 
 
@@ -151,12 +155,12 @@ def unsub() -> str:
 
 @app.route("/uptime")
 def uptime() -> str:
-	#verifying the bot
+	#verify the bot
 	token: str = flask.request.args.get("bot", default = "", type = str)
 	if(token != os.environ["uptimerobot_token"]):
 		return show("You found me!", "Hello, visitor! This page is built for a service called UptimeRobot. The bot will visit here every 5 mins, triggering some special functions!", "circle-check")
 
-	#The main part
+	#main function
 	timestamp: str = mydb.timestamp.get()
 	
 	if(timestamp == "A"):
@@ -176,19 +180,17 @@ def uptime() -> str:
 
 @app.route("/login", methods = ["POST", "GET"])
 def login() -> str:
-	#For GET method
+	#for GET method
 	if(flask.request.method == "GET"):
-		token: str = flask.request.cookies.get("token")
-
-		if(not token):
-			return flask.render_template("login.html")
-		
-		elif(token != os.environ["db_token"]):
-			return flask.render_template("login.html", wrong="1")
+		#verify user
+		result = verify(flask.request.cookies.get("token"))
+		if(not result in None):
+			return result
 			
+		#main function
 		return flask.redirect("/admin")
 
-	#For POST method
+	#for POST method
 	token = flask.request.form["token"]
 	sha: str = hashlib.sha256(token.encode()).hexdigest()
 
@@ -205,40 +207,38 @@ def login() -> str:
 
 @app.route("/admin")
 def admin() -> str:
-	token: str = flask.request.cookies.get("token")
-	
-	if(not token):
-		return flask.redirect("/login")
+	#verify user
+	result = verify(flask.request.cookies.get("token"))
+	if(not result in None):
+		return result
 		
-	elif(token != os.environ["db_token"]):
-		return flask.redirect("/login?w=1")
-
+	#main function
 	return flask.render_template("admin.html")
 		
 
 @app.route("/db")
 def ShowDB() -> str:
-	#verifying user
+	#verify user
 	result = verify(flask.request.cookies.get("token"))
 	if(not result is None):
 		return result
-
+		
 	#main function
 	return flask.render_template("db.html")
 
 
 @app.route("/db/edit", methods = ["POST", "GET"])
 def EditDB() -> str:
-	#verifying user
+	#verify user
 	result = verify(flask.request.cookies.get("token"))
 	if(not result is None):
 		return result
 
-	#For GET method
+	#for GET method
 	if(flask.request.method == "GET"):
 		return flask.render_template("db_edit.html")
 		
-	#For POST method
+	#for POST method
 	key: str = flask.request.form["key"]
 	value: str = flask.request.form["value"]
 	method: str = flask.request.form["method"]
@@ -249,16 +249,16 @@ def EditDB() -> str:
 
 @app.route("/spr", methods = ["POST", "GET"])
 def supporter() -> str:
-	#verifying user
+	#verify user
 	result = verify(flask.request.cookies.get("token"))
 	if(not result is None):
 		return result
 
-	#for get method
+	#for GET method
 	if(flask.request.method == "GET"):
 		return flask.render_template("supporter.html")
 	
-	#for post method
+	#for POST method
 	id: str = flask.request.form["id"]
 	url: str = flask.request.form["url"]
 	uid: str = flask.request.form["uid"]
@@ -298,23 +298,26 @@ def API_School() -> flask.Response:
 def API_DB() -> flask.Response:
 	res: dict = {}
 	
-	#verifying user
+	#verify user
 	token: str = flask.request.cookies.get("token")
 	
+	#token empty
 	if(not token):
 		res = {"state":"token_is_empty"}
 		
+	#token wrong
 	elif(token != os.environ["db_token"]):
 		res = {"state":"token_is_invaild"}
 		
+	#token vaild (pass)
 	else:
-		#main function
 		for key in db.keys_iter():
 			res.update({key : db.get(key)})
 
 	return flask.jsonify(res)
 
 
+#the following functions are for testing porpuse
 def run() -> None:
 	app.run(host = "0.0.0.0", port = 8080)
 
