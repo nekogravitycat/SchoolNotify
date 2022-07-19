@@ -209,7 +209,7 @@ def login() -> str:
 def admin() -> str:
 	#verify user
 	result = verify(flask.request.cookies.get("token"))
-	if(not result in None):
+	if(not result is None):
 		return result
 		
 	#main function
