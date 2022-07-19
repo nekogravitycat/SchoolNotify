@@ -185,8 +185,7 @@ def login() -> str:
 		#verify user
 		result = verify(flask.request.cookies.get("token"))
 		if(not result is None):
-			log(result)
-			return result
+			return flask.render_template("/login.html")
 			
 		#main function
 		return flask.redirect("/admin")
