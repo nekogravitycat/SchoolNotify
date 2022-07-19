@@ -184,7 +184,7 @@ def login() -> str:
 	if(flask.request.method == "GET"):
 		#verify user
 		result = verify(flask.request.cookies.get("token"))
-		if(not result in None):
+		if(not result is None):
 			return result
 			
 		#main function
