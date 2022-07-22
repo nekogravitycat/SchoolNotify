@@ -317,6 +317,11 @@ def API_DB() -> flask.Response:
 	return flask.jsonify(res)
 
 
+@app.route("/api/icon.ico")
+def icon():
+	return flask.send_file(f"assets/icon.ico")
+	
+
 #the following functions are for testing porpuse
 def run() -> None:
 	app.run(host = "0.0.0.0", port = 8080)
