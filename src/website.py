@@ -317,9 +317,9 @@ def API_DB() -> flask.Response:
 	return flask.jsonify(res)
 
 
-@app.route("/api/icon.ico")
+@app.route("/api/icon.png")
 def icon():
-	return flask.send_file(f"assets/icon.ico")
+	return flask.send_file(f"assets/icon.png")
 	
 
 #the following functions are for testing porpuse
