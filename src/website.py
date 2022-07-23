@@ -295,6 +295,11 @@ def API_School() -> flask.Response:
 	return flask.jsonify(res)
 
 
+@app.route("/api/sch-orig")
+def API_School_Orig() -> flask.Response:
+	return open(r"/assets/school_info.txt").readlines()
+
+
 @app.route("/api/db")
 def API_DB() -> flask.Response:
 	res: dict = {}
