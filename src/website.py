@@ -295,37 +295,36 @@ def API_School() -> flask.Response:
 	return flask.jsonify(res)
 
 
-@app.route("/api/school_info.txt")
-def API_School_Orig() -> flask.Response:
-	return flask.send_file(r"assets/school_info.txt")
-
-
 @app.route("/api/db")
 def API_DB() -> flask.Response:
-	res: dict = {}
-	
 	#verify user
 	token: str = flask.request.cookies.get("token")
 	
 	#token empty
 	if(not token):
-		res = {"state":"token_is_empty"}
+		return flask.jsonify({"state":"token_is_empty"})
 		
 	#token wrong
 	elif(token != os.environ["db_token"]):
-		res = {"state":"token_is_invaild"}
+		return flask.jsonify({"state":"token_is_invaild"})
 		
 	#token vaild (pass)
-	else:
-		for key in db.keys_iter():
-			res.update({key : db.get(key)})
+	res: dict = {}
+	
+	for key in db.keys_iter():
+		res.update({key : db.get(key)})
 
 	return flask.jsonify(res)
 
 
+@app.route("/api/school_info.txt")
+def API_School_Orig() -> flask.Response:
+	return flask.send_file(r"assets/school_info.txt")
+
+
 @app.route("/api/icon.png")
 def icon():
-	return flask.send_file(f"assets/icon.png")
+	return flask.send_file(r"assets/icon.png")
 	
 
 #the following functions are for testing porpuse
