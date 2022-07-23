@@ -260,6 +260,7 @@ def supporter() -> str:
 	
 	#for POST method
 	id: str = flask.request.form["id"]
+	name: str = flask.request.form["name"]
 	url: str = flask.request.form["url"]
 	uid: str = flask.request.form["uid"]
 	latest_date = flask.request.form["latest_date"]
@@ -273,7 +274,7 @@ def supporter() -> str:
 	
 	log(f"School_add: \n id={id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n")
 	
-	schools.add(id, url, uid)
+	schools.add(id, url, uid, name)
 	mydb.info.set(id, "date", latest_date)
 	
 	if(latest_id):
