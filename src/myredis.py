@@ -28,6 +28,8 @@ class db:
 		
 	def prefix(prefix: str) -> list:
 		matches: list = []
+		
 		for key in r.scan_iter(f"{prefix}*"):
 			matches.append(key)
+			
 		return matches

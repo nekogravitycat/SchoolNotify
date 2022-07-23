@@ -22,7 +22,7 @@ def verify(token: str) -> flask.Response:
 	if(not token):
 		return flask.redirect("/login")
 	#wrong token
-	elif(token != os.environ["db_token"]):
+	if(token != os.environ["db_token"]):
 		return flask.redirect("/login?w=1")
 	#vaild token (pass)
 	return None
@@ -197,7 +197,7 @@ def login() -> str:
 	if(sha != os.environ["db_token"]):
 		return flask.render_template("login.html", wrong="1")
 	
-	elif(token):
+	if(token):
 		resp = flask.make_response(flask.redirect("/admin"))
 		resp.set_cookie("token", value = sha, expires = (date.today()+timedelta(days=7)))
 		return resp
@@ -305,7 +305,7 @@ def API_DB() -> flask.Response:
 		return flask.jsonify({"state":"token_is_empty"})
 		
 	#token wrong
-	elif(token != os.environ["db_token"]):
+	if(token != os.environ["db_token"]):
 		return flask.jsonify({"state":"token_is_invaild"})
 		
 	#token vaild (pass)

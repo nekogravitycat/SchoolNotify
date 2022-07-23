@@ -18,11 +18,13 @@ def main() -> None:
 	if(os.environ.get("run_immediate")):
 		if(os.environ.get("debug")):
 			basic.debug()
+			
 		else:
 			basic.run()
 			
 	if(os.environ.get("production")):
 		ScheduleRun()
+		
 	else:
 		log("running on debug platform mode")
 

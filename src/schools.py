@@ -22,6 +22,7 @@ def is_valid(id: str) -> bool:
 def add(id: str, url: str, uid: str, name: str) -> None:
 	with open("school_info.txt", "a") as f:
 		f.write(f"{id};{url};{uid};{name}\n")
+		
 	info.clear()
 	read_schools()
 
@@ -29,6 +30,7 @@ def add(id: str, url: str, uid: str, name: str) -> None:
 def get_name(id: str) -> str:
 	if(not id in info):
 		return "*此學校不存在*"
+		
 	return info[id]["name"]
 
 

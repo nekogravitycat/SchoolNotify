@@ -84,12 +84,14 @@ class edit:
 			"msg" : "Operation successed!"
 		}
 		
+		#check if the command is vaild
 		method_vaild: bool = (method == "delete") or ((method in ["edit", "add"]) and value)
 		
 		if(not key or not method_vaild):
 			res["msg"] = "Method is invaild"
 			return res
-
+		
+		#run the command
 		if(method == "edit"):
 			if(key not in db.keys_iter()):
 				res["msg"] = "Key does not exist"

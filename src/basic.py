@@ -77,6 +77,7 @@ def push_email(school: str, result: list) -> None:
 def ShowResult(result: list) -> None:
 	if(len(result) == 0):
 		log("No new announcements")
+		
 	else:
 		for re in result:
 			log(re.detail())
@@ -91,6 +92,7 @@ def run() -> None:
 			info: dict = schools.info[id]
 			news: list = ischool.get_news(id, info["url"], info["uid"])
 			push_email(id, news)
+			
 		except Exception as e:
 			log(f"{id} Runtime Error: {e}", True)
 
@@ -98,6 +100,7 @@ def run() -> None:
 def debug(school_ids = []) -> None:
 	if(not school_ids):
 		school_ids = schools.info.keys()
+		
 	for id in school_ids:
 		info: dict = schools.info[id]
 		mydb.memory.remember(id, ischool_info)
