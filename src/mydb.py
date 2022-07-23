@@ -11,7 +11,7 @@ class token:
 	def get(school: str, email: str) -> str:
 		return db.get(f"{school}_email_{email}")
 
-	def set(school: str, email:str, token: str) -> None:
+	def set(school: str, email: str, token: str) -> None:
 		db.set(f"{school}_email_{email}", token)
 
 	def list(school: str) -> tuple:
@@ -123,7 +123,7 @@ class edit:
 
 
 class temp:
-	def __init__(self, data: dict):
+	def __init__(self, data: dict) -> None:
 		self.data = data
 
 	def update(self) -> None:

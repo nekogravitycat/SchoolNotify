@@ -28,19 +28,19 @@ def verify(token: str) -> flask.Response:
 	return None
 
 
-def verify_link(email: str, school:str, token:str) -> str:
+def verify_link(email: str, school: str, token: str) -> str:
 	return f"{base}/verify?email={email}&school={school}&token={token}"
 
-def unsub_link(email: str, school: str, token:str = "") -> str:
+def unsub_link(email: str, school: str, token: str = "") -> str:
 	if(not token):
 		token = mydb.token.get(school, email)
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
 def show(title: str, content, icon="") -> str:
-	return flask.render_template("message.html", title=title, content=content.replace("\n", "<br>"), icon=icon)
+	return flask.render_template("message.html", title = title, content = content.replace("\n", "<br>"), icon = icon)
 
 def sub_page_error(title: str, msg: str) -> str:
-	return flask.render_template("sub.html", pop_type="error", pop_title=title, pop_msg=msg)
+	return flask.render_template("sub.html", pop_type = "error", pop_title = title, pop_msg = msg)
 
 def ClearAsk(target: str):
 	cleared: str = ""
@@ -88,12 +88,12 @@ def home() -> str:
 
 	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘。若您並未要求此動作，請忽略這封郵件"
 	
-	email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content))
+	email_thread = threading.Thread(target = myemail.send, args = ([email], r"請驗證您的電子郵件", content))
 	email_thread.start()
 
 	mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
 	log(f"Passed: {school}, {token}")
-	return flask.render_template("sub.html", email=email, school=school, again="1", pop_type="ok", pop_title="請進行身分驗證", pop_msg=f"一封驗證電子郵件已送出，請查收")
+	return flask.render_template("sub.html", email = email, school = school, again = "1", pop_type = "ok", pop_title = "請進行身分驗證", pop_msg = f"一封驗證電子郵件已送出，請查收")
 
 
 @app.route("/verify")
@@ -128,7 +128,7 @@ def unsub() -> str:
 	#for GET method
 	if(flask.request.method == "GET"):
 		school: str = flask.request.args.get("school", default = "", type = str)
-		return flask.render_template("unsub.html", school=schools.get_name(school))
+		return flask.render_template("unsub.html", school = schools.get_name(school))
 
 	#for POST method
 	email: str = flask.request.form["email"]
@@ -195,14 +195,14 @@ def login() -> str:
 	sha: str = hashlib.sha256(token.encode()).hexdigest()
 
 	if(sha != os.environ["db_token"]):
-		return flask.render_template("login.html", wrong="1")
+		return flask.render_template("login.html", wrong = "1")
 	
 	if(token):
 		resp = flask.make_response(flask.redirect("/admin"))
-		resp.set_cookie("token", value = sha, expires = (date.today()+timedelta(days=7)))
+		resp.set_cookie("token", value = sha, expires = (date.today()+timedelta(days = 7)))
 		return resp
 
-	return flask.render_template("login.html", wrong="1")
+	return flask.render_template("login.html", wrong = "1")
 
 
 @app.route("/admin")
@@ -244,7 +244,7 @@ def EditDB() -> str:
 	method: str = flask.request.form["method"]
 	
 	res: dict = mydb.edit.cmd(method, key, value)
-	return flask.render_template("db_edit.html", pop_type=res["status"], pop_title=res["title"], pop_msg=res["msg"])
+	return flask.render_template("db_edit.html", pop_type = res["status"], pop_title = res["title"], pop_msg = res["msg"])
 
 
 @app.route("/spr", methods = ["POST", "GET"])
@@ -267,10 +267,10 @@ def supporter() -> str:
 	latest_id = flask.request.form["latest_id"]
 
 	if(not mydb.is_leagal(id)):
-		return flask.render_template("supporter.html", pop_title="School ID is invalid", pop_msg="The School ID contains illeagal characters")
+		return flask.render_template("supporter.html", pop_title = "School ID is invalid", pop_msg = "The School ID contains illeagal characters")
 
 	if(schools.is_valid(id)):
-		return flask.render_template("supporter.html", pop_title="School ID is invalid", pop_msg="The School ID already exists")
+		return flask.render_template("supporter.html", pop_title = "School ID is invalid", pop_msg = "The School ID already exists")
 	
 	log(f"School_add: \n id={id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n")
 	
@@ -282,7 +282,7 @@ def supporter() -> str:
 	else:
 		mydb.info.set(id, "id", "0")
 		
-	return flask.render_template("supporter.html", pop_title="Successed", pop_msg="Successed!", pop_type="ok")
+	return flask.render_template("supporter.html", pop_title = "Successed", pop_msg = "Successed!", pop_type = "ok")
 
 
 @app.route("/api/sch")
@@ -302,11 +302,11 @@ def API_DB() -> flask.Response:
 	
 	#token empty
 	if(not token):
-		return flask.jsonify({"state":"token_is_empty"})
+		return flask.jsonify({"state" : "token_is_empty"})
 		
 	#token wrong
 	if(token != os.environ["db_token"]):
-		return flask.jsonify({"state":"token_is_invaild"})
+		return flask.jsonify({"state" : "token_is_invaild"})
 		
 	#token vaild (pass)
 	res: dict = {}
@@ -323,7 +323,7 @@ def API_School_Orig() -> flask.Response:
 
 
 @app.route("/api/icon.png")
-def icon():
+def icon() -> flask.Response:
 	return flask.send_file(r"assets/icon.png")
 	
 

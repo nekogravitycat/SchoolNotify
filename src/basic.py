@@ -10,7 +10,7 @@ test_mail: bool = False
 
 
 class msg:
-	def __init__(self, link: str, title: str, date: time.struct_time):
+	def __init__(self, link: str, title: str, date: time.struct_time) -> None:
 		self.link: str = link
 		self.title: str = title
 		self.date: time.struct_time = date

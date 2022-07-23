@@ -9,5 +9,3 @@ def log(data: str, write_log: bool = False) -> None:
 		
 		with open("log.txt", "a") as f:
 			f.write(f"[{now}] {data}\n")
-			
-	return
