@@ -295,9 +295,9 @@ def API_School() -> flask.Response:
 	return flask.jsonify(res)
 
 
-@app.route("/api/sch-orig")
+@app.route("/api/school_info.txt")
 def API_School_Orig() -> flask.Response:
-	return open(r"assets/school_info.txt").readlines()
+	return flask.send_file(r"assets/school_info.txt")
 
 
 @app.route("/api/db")
