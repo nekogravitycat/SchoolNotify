@@ -3,4 +3,3 @@ bs4
 gunicorn
 redis
 requests
-pyotp
