@@ -177,7 +177,8 @@ def uptime() -> str:
 	if token != os.environ["uptimerobot_token"]:
 		return show(
 			"You found me!",
-			"Hello, visitor! This page is built for a service called UptimeRobot. The bot will visit here every 5 mins, triggering some special functions!",
+			"Hello, visitor! This page is built for a service called UptimeRobot. The bot will visit here every 5 mins, "
+			"triggering some special functions!",
 			"circle-check",
 		)
 
