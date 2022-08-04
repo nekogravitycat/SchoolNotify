@@ -3,23 +3,23 @@ import os
 
 # set environment variable if not exists
 def set_env() -> None:
-    env_file: str = "myenv.txt"
+	env_file: str = "myenv.txt"
 
-    # detect the existence env var
-    if os.environ.get("db_token"):
-        return
+	# detect the existence env var
+	if os.environ.get("db_token"):
+		return
 
-    print("Environment variables not exist, setting it from myenv.txt")
+	print("Environment variables not exist, setting it from myenv.txt")
 
-    # set env var
-    with open(env_file, "r") as f:
-        while True:
-            line = f.readline()
+	# set env var
+	with open(env_file, "r") as f:
+		while True:
+			line = f.readline()
 
-            if not line:
-                break
+			if not line:
+				break
 
-            # format: key=value
-            kv: list = line.split("=")
-            os.environ[kv[0]] = kv[1]
-            print(f"set: {kv[0]}={kv[1]}")
+			# format: key=value
+			kv: list = line.split("=")
+			os.environ[kv[0]] = kv[1]
+			print(f"set: {kv[0]}={kv[1]}")
