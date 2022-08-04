@@ -5,6 +5,7 @@ pyproject.toml
 log.txt
 sys_msg.txt
 myenv.txt
+.idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
