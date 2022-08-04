@@ -43,8 +43,9 @@ def push_email(school: str, result: list) -> None:
 		for r in result:
 			log(r.detail() + "\n")
 
-	if len(mydb.Token.list(school)) > 0:
-		subject: str = f"{school} 學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
+	# if there is at least one subscriber in the list
+	if mydb.Token.list(school):
+		subject: str = f"{schools.get_name(school)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
 		content: str = ""
 
 		if is_empty:
@@ -60,6 +61,7 @@ def push_email(school: str, result: list) -> None:
 			recipients.append(os.environ["email_admin"])
 
 		else:
+			# prefix format: schid_email_address@example.com
 			prefix_len: int = len(school) + 7
 
 			for re in mydb.Token.list(school):
