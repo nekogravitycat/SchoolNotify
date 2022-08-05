@@ -1,7 +1,7 @@
 import os
 import time
 from datetime import datetime, timezone, timedelta
-from src import myemail, mydb, ischool, schools
+from src import myemail, ischool, database as db
 from src.unilog import log
 
 test_mail: bool = False
@@ -44,8 +44,8 @@ def push_email(school: str, result: list) -> None:
 			log(r.detail() + "\n")
 
 	# if there is at least one subscriber in the list
-	if mydb.Token.list(school):
-		subject: str = f"{schools.get_name(school)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
+	if db.user_token.list_keys(school):
+		subject: str = f"{db.schools.get_name(school)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
 		content: str = ""
 
 		if is_empty:
@@ -64,7 +64,7 @@ def push_email(school: str, result: list) -> None:
 			# prefix format: schid_email_address@example.com
 			prefix_len: int = len(school) + 7
 
-			for re in mydb.Token.list(school):
+			for re in db.user_token.list_keys(school):
 				recipients.append(re[prefix_len:])
 
 		myemail.send(recipients, subject, content, school)
@@ -88,9 +88,9 @@ ischool_info: list = ["date", "id"]
 
 
 def run() -> None:
-	for ID in schools.info.keys():
+	for ID in db.schools.info.keys():
 		try:
-			info: dict = schools.info[ID]
+			info: dict = db.schools.info[ID]
 			news: list = ischool.get_news(ID, info["url"], info["uid"])
 			push_email(ID, news)
 
@@ -100,10 +100,10 @@ def run() -> None:
 
 def debug(school_ids: None | list = None) -> None:
 	if not school_ids:
-		school_ids = schools.info.keys()
+		school_ids = db.schools.info.keys()
 
 	for ID in school_ids:
-		info: dict = schools.info[ID]
-		mydb.memory.remember(ID, ischool_info)
+		info: dict = db.schools.info[ID]
+		db.memory.remember_school(ID, ischool_info)
 		show_result(ischool.get_news(ID, info["url"], info["uid"]))
-		mydb.memory.recall(ID, ischool_info)
+		db.memory.recall_school(ID, ischool_info)

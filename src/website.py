@@ -5,8 +5,7 @@ import hashlib
 import string
 import random
 import datetime
-from src import myemail, mydb, schools
-from src.myredis import Db
+from src import myemail, database as db
 from src.unilog import log
 
 app: flask.Flask = flask.Flask("")
@@ -33,7 +32,7 @@ def verify_link(email: str, school: str, token: str) -> str:
 
 def unsub_link(email: str, school: str, token: str = "") -> str:
 	if not token:
-		token = mydb.Token.get(school, email)
+		token = db.user_token.get_key(school, email)
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
 
@@ -52,10 +51,10 @@ def sub_page_error(title: str, msg: str) -> str:
 def clear_ask(target: str):
 	cleared: str = ""
 
-	for a in mydb.ask.list():
-		if Db.get(a).split(";")[0] == target:
+	for a in db.ask.list_keys():
+		if db.myredis.get_key(a).split(";")[0] == target:
 			cleared += f"{a[4:]}\n"
-			Db.delete(a)
+			db.myredis.delete_key(a)
 
 	if len(cleared) > 0:
 		log(f"request cleared:\n{cleared}")
@@ -77,15 +76,15 @@ def home() -> str:
 		log("Bad flask.request: no email or school")
 		return sub_page_error("不完整的資訊", "請確認輸入的網址中包含完整的資訊")
 
-	if not schools.is_valid(school):
+	if not db.schools.is_exist(school):
 		log("Invalid school id")
 		return sub_page_error("無效的學校代碼", "請重新確認填寫的學校代碼是否正確")
 
-	if mydb.Token.exist(school, email):
+	if db.user_token.is_exist(school, email):
 		log("Already subscribed")
 		return sub_page_error("已訂閱", "您已訂閱至此服務")
 
-	if mydb.ask.exist(school, email):
+	if db.ask.is_exist(school, email):
 		log("Already sent email")
 		return sub_page_error("請進行身分驗證", "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送")
 
@@ -100,7 +99,7 @@ def home() -> str:
 	)
 	email_thread.start()
 
-	mydb.ask.set(school, email, mydb.timestamp.get() + ";" + token)
+	db.ask.set_key(school, email, db.timestamp.get_key() + ";" + token)
 	log(f"Passed: {school}, {token}")
 	return flask.render_template(
 		"sub.html",
@@ -125,16 +124,16 @@ def ver() -> str:
 		log("Bad flask.request")
 		return show("身分驗證：無效的請求", "請確認輸入的網址中包含完整的資訊")
 
-	if mydb.Token.exist(school, email):
+	if db.user_token.is_exist(school, email):
 		log("Already subscribed")
 		return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
 
-	if (not mydb.ask.exist(school, email)) or (token != mydb.ask.get(school, email).split(";")[1]):
+	if (not db.ask.is_exist(school, email)) or (token != db.ask.get_key(school, email).split(";")[1]):
 		log("Invalid email or token")
 		return show("身分驗證：無效的資料", "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）")
 
-	mydb.Token.set(school, email, token)
-	mydb.ask.delete(school, email)
+	db.user_token.set_key(school, email, token)
+	db.ask.delete_key(school, email)
 
 	log("Successfully subscribed")
 	return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
@@ -145,7 +144,7 @@ def unsub() -> str:
 	# for GET method
 	if flask.request.method == "GET":
 		school: str = flask.request.args.get("school", default="", type=str)
-		return flask.render_template("unsub.html", school=schools.get_name(school))
+		return flask.render_template("unsub.html", school=db.schools.get_name(school))
 
 	# for POST method
 	email: str = flask.request.form["email"]
@@ -158,14 +157,14 @@ def unsub() -> str:
 		log("Bad request")
 		return flask.render_template("unsub.html", state="bad_request")
 
-	if not mydb.Token.exist(school, email):
+	if not db.user_token.is_exist(school, email):
 		log("Invalid email or token")
 		return flask.render_template("unsub.html", state="already_unsub")
 
-	if token != mydb.Token.get(school, email):
+	if token != db.user_token.get_key(school, email):
 		return flask.render_template("unsub.html", state="invalid_token")
 
-	mydb.Token.delete(school, email)
+	db.user_token.delete_key(school, email)
 	log("Successfully unsubscribed")
 	return flask.render_template("unsub.html", state="succeed")
 
@@ -183,19 +182,19 @@ def uptime() -> str:
 		)
 
 	# main function
-	timestamp: str = mydb.timestamp.get()
+	timestamp: str = db.timestamp.get_key()
 
 	if timestamp == "A":
 		clear_ask("B")
-		mydb.timestamp.set("B")
+		db.timestamp.set_key("B")
 
 	elif timestamp == "B":
 		clear_ask("C")
-		mydb.timestamp.set("C")
+		db.timestamp.set_key("C")
 
 	elif timestamp == "C":
 		clear_ask("A")
-		mydb.timestamp.set("A")
+		db.timestamp.set_key("A")
 
 	return "Hello, uptimerobot!"
 
@@ -269,7 +268,7 @@ def edit_db() -> str | flask.Response:
 	value: str = flask.request.form["value"]
 	method: str = flask.request.form["method"]
 
-	res: dict = mydb.edit.cmd(method, key, value)
+	res: dict = db.operate.edit_key(method, key, value)
 	return flask.render_template(
 		"db_edit.html",
 		pop_type=res["status"],
@@ -297,14 +296,14 @@ def supporter() -> str | flask.Response:
 	latest_date = flask.request.form["latest_date"]
 	latest_id = flask.request.form["latest_id"]
 
-	if not mydb.is_legal(sch_id):
+	if not db.operate.is_legal_name(sch_id):
 		return flask.render_template(
 			"supporter.html",
 			pop_title="School ID is invalid",
 			pop_msg="The School ID contains illegal characters",
 		)
 
-	if schools.is_valid(sch_id):
+	if db.schools.is_exist(sch_id):
 		return flask.render_template(
 			"supporter.html",
 			pop_title="School ID is invalid",
@@ -315,13 +314,13 @@ def supporter() -> str | flask.Response:
 		f"School_add: \n id={sch_id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n"
 	)
 
-	schools.add(sch_id, url, uid, name)
-	mydb.Info.set(sch_id, "date", latest_date)
+	db.schools.add_school(sch_id, url, uid, name)
+	db.info.set_key(sch_id, "date", latest_date)
 
 	if latest_id:
-		mydb.Info.set(sch_id, "id", latest_id)
+		db.info.set_key(sch_id, "id", latest_id)
 	else:
-		mydb.Info.set(sch_id, "id", "0")
+		db.info.set_key(sch_id, "id", "0")
 
 	return flask.render_template(
 		"supporter.html", pop_title="Succeed", pop_msg="Succeed!", pop_type="ok"
@@ -332,8 +331,8 @@ def supporter() -> str | flask.Response:
 def api_school() -> flask.Response:
 	res: dict = {}
 
-	for ID in schools.info:
-		res.update({ID: schools.info[ID]["name"]})
+	for ID in db.schools.info:
+		res.update({ID: db.schools.info[ID]["name"]})
 
 	return flask.jsonify(res)
 
@@ -354,8 +353,8 @@ def api_db() -> flask.Response:
 	# token valid (pass)
 	res: dict = {}
 
-	for key in Db.keys_iter():
-		res.update({key: Db.get(key)})
+	for key in db.myredis.keys():
+		res.update({key: db.myredis.get_key(key)})
 
 	return flask.jsonify(res)
 

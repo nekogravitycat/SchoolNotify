@@ -15,11 +15,11 @@ def read_schools() -> None:
 			info.update({item[0]: temp})
 
 
-def is_valid(sch_id: str) -> bool:
+def is_exist(sch_id: str) -> bool:
 	return sch_id in info.keys()
 
 
-def add(sch_id: str, url: str, uid: str, name: str) -> None:
+def add_school(sch_id: str, url: str, uid: str, name: str) -> None:
 	with open("school_info.txt", "a") as f:
 		f.write(f"{sch_id};{url};{uid};{name}\n")
 
@@ -32,6 +32,3 @@ def get_name(sch_id: str) -> str:
 		return "*此學校不存在*"
 
 	return info[sch_id]["name"]
-
-
-read_schools()

@@ -2,7 +2,7 @@ import time
 import requests
 import bs4
 import re
-from src import basic, mydb
+from src import basic, database as db
 from src.unilog import log
 
 
@@ -19,16 +19,16 @@ def get_newsid(sch_url: str, sch_uid: str, page_num: int = 0, max_rows: int = 15
 		"tf": "1",  # "tf" means "the fuck?"
 		"auth_type": "user",
 	}
-	responce: requests.Response = requests.post(
+	response: requests.Response = requests.post(
 		url=f"https://{sch_url}/ischool/widget/site_news/news_query_json.php",
 		data=send_data,
 	)
-	return re.findall(r'"newsId":"([0-9]*)"', responce.text)
+	return re.findall(r'"newsId":"([0-9]*)"', response.text)
 
 
 # get a list of detail info from a given newsids list
 def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
-	log(f"{sch_id} runned", True)
+	log(f"{sch_id} run", True)
 
 	next_: bool = True
 	page: int = 0
@@ -40,7 +40,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 
 			for ID in newsid:
 				# break the loop if the news was already got by us
-				if ID == mydb.Info.get(sch_id, "id"):
+				if ID == db.info.get_key(sch_id, "id"):
 					break
 
 				# the link to the news detail page
@@ -64,7 +64,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 					soup.find(id="info_time").text.strip(), "%Y-%m-%d %H:%M:%S"
 				)
 				latest_date: time.struct_time = time.strptime(
-					mydb.Info.get(sch_id, "date"), "%Y-%m-%d"
+					db.info.get_key(sch_id, "date"), "%Y-%m-%d"
 				)
 
 				# prevent it from getting outdated news
@@ -81,8 +81,8 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 
 		# if the result is not empty, update the latest info
 		if len(result) > 0:
-			mydb.Info.set(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
-			mydb.Info.set(sch_id, "id", newsid[0])
+			db.info.set_key(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
+			db.info.set_key(sch_id, "id", newsid[0])
 
 		return result
 
