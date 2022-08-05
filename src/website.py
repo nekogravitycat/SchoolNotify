@@ -383,5 +383,4 @@ def alive() -> None:
 	t.start()
 
 
-if __name__ == "__main__":
-	main()
+main()
