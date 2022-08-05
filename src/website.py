@@ -14,6 +14,10 @@ app.config["JSON_AS_ASCII"] = False
 base: str = "https://sn.nekogc.com"
 
 
+def main():
+	db.schools.read_schools()
+
+
 # return the login page if the token is invalid, and None if valid
 def verify(token: str) -> flask.Response | None:
 	# empty token
@@ -377,3 +381,7 @@ def run() -> None:
 def alive() -> None:
 	t = threading.Thread(target=run)
 	t.start()
+
+
+if __name__ == "__main__":
+	main()
