@@ -1,4 +1,4 @@
-import info
+from src.database import info
 
 temp: dict = {}
 
