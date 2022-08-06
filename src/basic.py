@@ -31,6 +31,7 @@ header: dict = {
 
 def today() -> datetime.date:
 	""" Get the current date in GMT+8 """
+
 	return datetime.now(timezone(timedelta(hours=8))).date()
 
 
@@ -51,7 +52,7 @@ def push_email(sch_id: str, news: list) -> None:
 			log(n.detail() + "\n")
 
 	# if there is at least one subscriber in the list
-	if db.user_token.list_keys(sch_id):
+	if db.user.list_keys(sch_id):
 		subject: str = f"{db.schools.get_name(sch_id)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
 		content: str = ""
 
@@ -71,7 +72,7 @@ def push_email(sch_id: str, news: list) -> None:
 			# prefix format: schid_email_address@example.com
 			prefix_len: int = len(sch_id) + 7
 
-			for re in db.user_token.list_keys(sch_id):
+			for re in db.user.list_keys(sch_id):
 				# re[prefix_len:] is for removing the prefix (schid_email_)
 				recipients.append(re[prefix_len:])
 

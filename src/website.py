@@ -58,7 +58,7 @@ def unsub_link(email: str, school: str, token: str = "") -> str:
 		"""
 
 	if not token:
-		token = db.user_token.get_key(school, email)
+		token = db.user.get_key(school, email)
 
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
@@ -127,7 +127,7 @@ def home() -> str:
 		log("Invalid school id")
 		return sub_page_error("無效的學校代碼", "請重新確認填寫的學校代碼是否正確")
 
-	if db.user_token.exists(school, email):
+	if db.user.exists(school, email):
 		log("Already subscribed")
 		return sub_page_error("已訂閱", "您已訂閱至此服務")
 
@@ -171,7 +171,7 @@ def verify() -> str:
 		log("Bad flask.request")
 		return show("身分驗證：無效的請求", "請確認輸入的網址中包含完整的資訊")
 
-	if db.user_token.exists(school, email):
+	if db.user.exists(school, email):
 		log("Already subscribed")
 		return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
 
@@ -179,7 +179,7 @@ def verify() -> str:
 		log("Invalid email or token")
 		return show("身分驗證：無效的資料", "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）")
 
-	db.user_token.set_key(school, email, token)
+	db.user.set_key(school, email, token)
 	db.ask.delete_key(school, email)
 
 	log("Successfully subscribed")
@@ -204,14 +204,14 @@ def unsub() -> str:
 		log("Bad request")
 		return flask.render_template("unsub.html", state="bad_request")
 
-	if not db.user_token.exists(school, email):
+	if not db.user.exists(school, email):
 		log("Invalid email or token")
 		return flask.render_template("unsub.html", state="already_unsub")
 
-	if token != db.user_token.get_key(school, email):
+	if token != db.user.get_key(school, email):
 		return flask.render_template("unsub.html", state="invalid_token")
 
-	db.user_token.delete_key(school, email)
+	db.user.delete_key(school, email)
 	log("Successfully unsubscribed")
 	return flask.render_template("unsub.html", state="succeed")
 
@@ -366,6 +366,7 @@ def supporter() -> str | flask.Response:
 
 	if latest_id:
 		db.info.set_key(sch_id, "id", latest_id)
+		
 	else:
 		db.info.set_key(sch_id, "id", "0")
 

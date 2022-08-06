@@ -42,6 +42,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 	:param sch_uid: uid of school
 	:return: list of basic.Msg objects
 	"""
+
 	log(f"{sch_id} run", True)
 
 	next_: bool = True
