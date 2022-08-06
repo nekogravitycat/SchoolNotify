@@ -408,7 +408,7 @@ def api_db() -> flask.Response:
 
 
 @app.route("/api/school_info.txt")
-def school_orig_file() -> flask.Response:
+def school_info_file() -> flask.Response:
 	return flask.send_file(r"assets/school_info.txt")
 
 
