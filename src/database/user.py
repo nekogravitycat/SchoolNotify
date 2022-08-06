@@ -14,7 +14,7 @@ def list_keys(school: str) -> list:
 
 
 def exists(school: str, email: str) -> bool:
-	return f"{school}_email_{email}" in list(school)
+	return f"{school}_email_{email}" in list_keys(school)
 
 
 def delete_key(school: str, email: str) -> None:
