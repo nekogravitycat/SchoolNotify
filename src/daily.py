@@ -1,4 +1,4 @@
-from src import basic  # environment setup
+from src import basic
 
 
 def schedule_run() -> None:
