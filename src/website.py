@@ -373,6 +373,11 @@ def icon_file() -> flask.Response:
 	return flask.send_file(r"assets/icon.png")
 
 
+@app.route("/github")
+def github_redirect():
+	return flask.redirect(r"https://github.com/nekogravitycat/SchoolNotify")
+
+
 # the following functions are for testing purpose
 def run() -> None:
 	app.run(host="0.0.0.0", port=8080)
