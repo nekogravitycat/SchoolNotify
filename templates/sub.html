@@ -95,7 +95,7 @@
 				.catch((error) => {
 					window.alert("Something went wrong when fetching the data");
 					window.alert(error);
-				})
+				});
 			//pop window
 			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
 				document.getElementById("pop_window").classList.add("is-visible");
