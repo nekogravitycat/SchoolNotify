@@ -30,30 +30,37 @@ header: dict = {
 
 
 def today() -> datetime.date:
+	""" Get the current date in GMT+8 """
 	return datetime.now(timezone(timedelta(hours=8))).date()
 
 
-def push_email(school: str, result: list) -> None:
-	is_empty: bool = len(result) == 0
+def push_email(sch_id: str, news: list) -> None:
+	""" Send emails to the subscribers of the school
+
+	:param sch_id: id of school
+	:param news: list of basic.Msg objects
+	"""
+
+	is_empty: bool = len(news) == 0
 
 	if is_empty:
-		log(f"No new announcements for {school}\n")
+		log(f"No new announcements for {sch_id}\n")
 
 	else:
-		for r in result:
-			log(r.detail() + "\n")
+		for n in news:
+			log(n.detail() + "\n")
 
 	# if there is at least one subscriber in the list
-	if db.user_token.list_keys(school):
-		subject: str = f"{db.schools.get_name(school)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
+	if db.user_token.list_keys(sch_id):
+		subject: str = f"{db.schools.get_name(sch_id)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
 		content: str = ""
 
 		if is_empty:
 			content = f"尚無新公告<br><br>"
 
 		else:
-			for r in result:
-				content += f"{r.html()}<br><br>"
+			for n in news:
+				content += f"{n.html()}<br><br>"
 
 		recipients: list = []
 
@@ -62,32 +69,37 @@ def push_email(school: str, result: list) -> None:
 
 		else:
 			# prefix format: schid_email_address@example.com
-			prefix_len: int = len(school) + 7
+			prefix_len: int = len(sch_id) + 7
 
-			for re in db.user_token.list_keys(school):
+			for re in db.user_token.list_keys(sch_id):
+				# re[prefix_len:] is for removing the prefix (schid_email_)
 				recipients.append(re[prefix_len:])
 
-		myemail.send(recipients, subject, content, school)
+		myemail.send(recipients, subject, content, sch_id)
 
 	else:
-		log(f"The recipient list of {school} is empty", True)
+		log(f"The recipient list of {sch_id} is empty", True)
 
 	log("Done! Waiting for next round!")
 
 
-def show_result(result: list) -> None:
-	if len(result) == 0:
+def show_result(news: list) -> None:
+	""" Show every news details in a list of basic.Msg objects
+
+	:param news: list of basic.Msg objects
+	"""
+
+	if len(news) == 0:
 		log("No new announcements")
 
 	else:
-		for re in result:
+		for re in news:
 			log(re.detail())
 
 
-ischool_info: list = ["date", "id"]
-
-
 def run() -> None:
+	""" Run news-gathering for every school and send news emails to the subscribers """
+
 	for ID in db.schools.info.keys():
 		try:
 			info: dict = db.schools.info[ID]
@@ -98,11 +110,18 @@ def run() -> None:
 			log(f"{ID} Runtime Error: {e}", True)
 
 
-def debug(school_ids: None | list = None) -> None:
-	if not school_ids:
-		school_ids = db.schools.info.keys()
+def debug(sch_ids: list = None) -> None:
+	""" Run news-gathering for given list of school ids
 
-	for ID in school_ids:
+	:param sch_ids: list of school ids to run (optional, run every school's by default)
+	"""
+
+	ischool_info: list = ["date", "id"]
+
+	if not sch_ids:
+		sch_ids = db.schools.info.keys()
+
+	for ID in sch_ids:
 		info: dict = db.schools.info[ID]
 		db.memory.remember_school(ID, ischool_info)
 		show_result(ischool.get_news(ID, info["url"], info["uid"]))

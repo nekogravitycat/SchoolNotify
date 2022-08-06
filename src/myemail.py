@@ -7,9 +7,15 @@ from src import website
 from src.unilog import log
 
 
-# Return a boolean telling if the process ran successfully
-# "recipients" parameter must be a list rather than a single string
 def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "") -> bool:
+	""" Send emails to recipients in the list, contain unsubscribing link if "unsub_sch" is provided
+
+	:param recipients: list of recipients
+	:param subject: subject of mail
+	:param content_base: content_base of mail
+	:param unsub_sch: school to unsubscribe (optional, attach unsubscribing link if provided)
+	:return: True if ran successfully, False if not
+	"""
 	content_all: str = content_base
 
 	try:
@@ -32,7 +38,7 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 					msg["to"] = r
 					msg["subject"] = subject
 
-					if unsub_sch != "":
+					if unsub_sch:
 						content_all = (
 							content_base + f'點擊 <a href="{website.unsub_link(r, unsub_sch)}">這裡</a> 來退訂此服務'
 						)

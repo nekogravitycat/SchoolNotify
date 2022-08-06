@@ -14,12 +14,13 @@ app.config["JSON_AS_ASCII"] = False
 base: str = "https://sn.nekogc.com"
 
 
-def main():
-	db.schools.read_schools()
+def admin_verify(token: str) -> flask.Response | None:
+	""" Return the login page if the token is invalid, None if valid
 
+	:param token: token to verify
+	:return: login page if invalid, None if valid
+	"""
 
-# return the login page if the token is invalid, and None if valid
-def verify(token: str) -> flask.Response | None:
 	# empty token
 	if not token:
 		return flask.redirect("/login")
@@ -31,32 +32,69 @@ def verify(token: str) -> flask.Response | None:
 
 
 def verify_link(email: str, school: str, token: str) -> str:
+	""" Generate a verification link for user
+
+	:param email: user's email
+	:param school: user's school
+	:param token: user's token
+	:return: verification link
+	"""
+
 	return f"{base}/verify?email={email}&school={school}&token={token}"
 
 
 def unsub_link(email: str, school: str, token: str = "") -> str:
+	""" Generate an unsubscribe link for user
+
+		:param email: user's email
+		:param school: user's school
+		:param token: user's token (optional, will fetch from database by default)
+		:return: unsubscribe link
+		"""
+
 	if not token:
 		token = db.user_token.get_key(school, email)
+
 	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
 
-def show(title: str, content, icon="") -> str:
+def show(title: str, content: str, icon: str = "") -> str:
+	""" Show a message using message page template
+
+	:param title: message title
+	:param content: message content
+	:param icon: icon of message (optional)
+	:return: message page
+	"""
+
 	return flask.render_template(
 		"message.html", title=title, content=content.replace("\n", "<br>"), icon=icon
 	)
 
 
 def sub_page_error(title: str, msg: str) -> str:
+	""" Show error message when something went wrong during subscribing process
+
+	:param title: error title
+	:param msg: error message
+	:return: subscription page containing error message
+	"""
+
 	return flask.render_template(
 		"sub.html", pop_type="error", pop_title=title, pop_msg=msg
 	)
 
 
-def clear_ask(target: str):
+def clear_ask(timestamp: str) -> None:
+	""" Clear subscribe request with the given timestamp
+
+	:param timestamp: timestamp to find and clear
+	"""
+
 	cleared: str = ""
 
 	for a in db.ask.list_keys():
-		if db.myredis.get_key(a).split(";")[0] == target:
+		if db.myredis.get_key(a).split(";")[0] == timestamp:
 			cleared += f"{a[4:]}\n"
 			db.myredis.delete_key(a)
 
@@ -80,15 +118,15 @@ def home() -> str:
 		log("Bad flask.request: no email or school")
 		return sub_page_error("不完整的資訊", "請確認輸入的網址中包含完整的資訊")
 
-	if not db.schools.is_exist(school):
+	if not db.schools.exists(school):
 		log("Invalid school id")
 		return sub_page_error("無效的學校代碼", "請重新確認填寫的學校代碼是否正確")
 
-	if db.user_token.is_exist(school, email):
+	if db.user_token.exists(school, email):
 		log("Already subscribed")
 		return sub_page_error("已訂閱", "您已訂閱至此服務")
 
-	if db.ask.is_exist(school, email):
+	if db.ask.exists(school, email):
 		log("Already sent email")
 		return sub_page_error("請進行身分驗證", "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送")
 
@@ -117,7 +155,7 @@ def home() -> str:
 
 
 @app.route("/verify")
-def ver() -> str:
+def verify() -> str:
 	email: str = flask.request.args.get("email", default="", type=str)
 	school: str = flask.request.args.get("school", default="", type=str)
 	token: str = flask.request.args.get("token", default="", type=str)
@@ -128,11 +166,11 @@ def ver() -> str:
 		log("Bad flask.request")
 		return show("身分驗證：無效的請求", "請確認輸入的網址中包含完整的資訊")
 
-	if db.user_token.is_exist(school, email):
+	if db.user_token.exists(school, email):
 		log("Already subscribed")
 		return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
 
-	if (not db.ask.is_exist(school, email)) or (token != db.ask.get_key(school, email).split(";")[1]):
+	if (not db.ask.exists(school, email)) or (token != db.ask.get_key(school, email).split(";")[1]):
 		log("Invalid email or token")
 		return show("身分驗證：無效的資料", "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）")
 
@@ -161,7 +199,7 @@ def unsub() -> str:
 		log("Bad request")
 		return flask.render_template("unsub.html", state="bad_request")
 
-	if not db.user_token.is_exist(school, email):
+	if not db.user_token.exists(school, email):
 		log("Invalid email or token")
 		return flask.render_template("unsub.html", state="already_unsub")
 
@@ -208,7 +246,7 @@ def login() -> str | flask.Response:
 	# for GET method
 	if flask.request.method == "GET":
 		# verify user
-		result = verify(flask.request.cookies.get("token"))
+		result = admin_verify(flask.request.cookies.get("token"))
 		if result is not None:
 			return flask.render_template("/login.html")
 
@@ -237,7 +275,7 @@ def login() -> str | flask.Response:
 @app.route("/admin")
 def admin() -> str | flask.Response:
 	# verify user
-	result = verify(flask.request.cookies.get("token"))
+	result = admin_verify(flask.request.cookies.get("token"))
 	if result is not None:
 		return result
 
@@ -248,7 +286,7 @@ def admin() -> str | flask.Response:
 @app.route("/db")
 def show_db() -> str | flask.Response:
 	# verify user
-	result = verify(flask.request.cookies.get("token"))
+	result = admin_verify(flask.request.cookies.get("token"))
 	if result is not None:
 		return result
 
@@ -259,7 +297,7 @@ def show_db() -> str | flask.Response:
 @app.route("/db/edit", methods=["POST", "GET"])
 def edit_db() -> str | flask.Response:
 	# verify user
-	result = verify(flask.request.cookies.get("token"))
+	result = admin_verify(flask.request.cookies.get("token"))
 	if result is not None:
 		return result
 
@@ -284,7 +322,7 @@ def edit_db() -> str | flask.Response:
 @app.route("/spr", methods=["POST", "GET"])
 def supporter() -> str | flask.Response:
 	# verify user
-	result = verify(flask.request.cookies.get("token"))
+	result = admin_verify(flask.request.cookies.get("token"))
 	if result is not None:
 		return result
 
@@ -307,7 +345,7 @@ def supporter() -> str | flask.Response:
 			pop_msg="The School ID contains illegal characters",
 		)
 
-	if db.schools.is_exist(sch_id):
+	if db.schools.exists(sch_id):
 		return flask.render_template(
 			"supporter.html",
 			pop_title="School ID is invalid",
@@ -376,16 +414,3 @@ def icon_file() -> flask.Response:
 @app.route("/github")
 def github_redirect():
 	return flask.redirect(r"https://github.com/nekogravitycat/SchoolNotify")
-
-
-# the following functions are for testing purpose
-def run() -> None:
-	app.run(host="0.0.0.0", port=8080)
-
-
-def alive() -> None:
-	t = threading.Thread(target=run)
-	t.start()
-
-
-main()

@@ -6,10 +6,18 @@ from src import basic, database as db
 from src.unilog import log
 
 
-# get a list of newids in a selected range
-def get_newsid(sch_url: str, sch_uid: str, page_num: int = 0, max_rows: int = 15) -> list:
-	# these are the data required to be sent to the ischool api
+def get_newsid(sch_url: str, sch_uid: str, page_num, max_rows: int = 15) -> list:
+	""" Get a list of news_ids in a selected range
+
+	:param sch_url: domain name of school
+	:param sch_uid: uid of school
+	:param page_num: current page number
+	:param max_rows: max row number to show (optional, 15 by default)
+	:return: a list of news_ids
+	"""
+
 	send_data: dict = {
+		# data required to be sent to the ischool api
 		"field": "time",
 		"order": "DESC",
 		"pageNum": str(page_num),
@@ -26,8 +34,14 @@ def get_newsid(sch_url: str, sch_uid: str, page_num: int = 0, max_rows: int = 15
 	return re.findall(r'"newsId":"([0-9]*)"', response.text)
 
 
-# get a list of detail info from a given newsids list
 def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
+	""" Get a list of basic.Msg objects containing the latest news info
+
+	:param sch_id: id of school
+	:param sch_url: domain name of school
+	:param sch_uid: uid of school
+	:return: list of basic.Msg objects
+	"""
 	log(f"{sch_id} run", True)
 
 	next_: bool = True

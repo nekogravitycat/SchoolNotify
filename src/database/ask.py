@@ -16,7 +16,7 @@ def list_keys(school: str = "") -> list:
 		return myredis.list_prefix(f"ask_{school}")
 
 
-def is_exist(school: str, email: str) -> bool:
+def exists(school: str, email: str) -> bool:
 	return f"ask_{school}_{email}" in list_keys(school)
 
 
