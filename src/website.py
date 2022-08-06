@@ -14,6 +14,11 @@ app.config["JSON_AS_ASCII"] = False
 base: str = "https://sn.nekogc.com"
 
 
+def main():
+	log("website start!")
+	db.schools.read_schools()
+
+
 def admin_verify(token: str) -> flask.Response | None:
 	""" Return the login page if the token is invalid, None if valid
 
@@ -414,3 +419,6 @@ def icon_file() -> flask.Response:
 @app.route("/github")
 def github_redirect():
 	return flask.redirect(r"https://github.com/nekogravitycat/SchoolNotify")
+
+
+main()
