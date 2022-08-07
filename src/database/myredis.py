@@ -21,6 +21,10 @@ def delete_key(key: str) -> None:
 	r.delete(key)
 
 
+def exists(key: str) -> bool:
+	return r.exists(key) > 0
+
+
 def keys():
 	return r.scan_iter()
 

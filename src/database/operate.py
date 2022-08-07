@@ -22,14 +22,14 @@ def edit_key(method: str, key: str, value: str = "") -> dict:
 
 	# run the command
 	if method == "edit":
-		if key not in myredis.keys():
+		if not myredis.exists(key):
 			res["msg"] = "Key does not exist"
 			return res
 
 		myredis.set_key(key, value)
 
 	elif method == "add":
-		if key in myredis.keys():
+		if myredis.exists(key):
 			res["msg"] = "Key already exists"
 			return res
 
@@ -40,7 +40,7 @@ def edit_key(method: str, key: str, value: str = "") -> dict:
 		myredis.set_key(key, value)
 
 	elif method == "delete":
-		if key not in myredis.keys():
+		if not myredis.exists(key):
 			res["msg"] = "Key does not exist"
 			return res
 

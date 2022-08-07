@@ -18,7 +18,7 @@ def list_keys(school: str = "") -> list:
 
 
 def exists(school: str, email: str) -> bool:
-	return f"ask_{school}_{email}" in list_keys(school)
+	return myredis.exists(f"ask_{school}_{email}")
 
 
 def delete_key(school: str, email: str):
