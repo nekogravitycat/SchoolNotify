@@ -413,6 +413,16 @@ def api_db() -> flask.Response:
 	return flask.jsonify(res)
 
 
+@app.route("/log.txt")
+def logs_file() -> flask.Response:
+	# verify user
+	result = admin_verify(flask.request.cookies.get("token"))
+	if result is not None:
+		return result
+
+	return flask.send_file(r"logs.txt")
+
+
 @app.route("/api/school_info.json")
 def school_info_file() -> flask.Response:
 	return flask.send_file(r"assets/school_info.json")
