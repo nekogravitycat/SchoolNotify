@@ -381,7 +381,7 @@ def supporter() -> str | flask.Response:
 	)
 
 
-@app.route("/debug")
+@app.route("/debug", methods=["POST", "GET"])
 def debug():
 	# verify user
 	result = admin_verify(flask.request.cookies.get("token"))
