@@ -10,11 +10,7 @@ def set_key(school: str, email: str, token: str) -> None:
 
 
 def list_keys(school: str = "") -> list:
-	if not school:
-		return myredis.list_prefix("ask")
-
-	else:
-		return myredis.list_prefix(f"ask_{school}")
+	return myredis.list_prefix(f"ask_{school}") if school else myredis.list_prefix("ask")
 
 
 def exists(school: str, email: str) -> bool:

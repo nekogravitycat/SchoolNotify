@@ -55,7 +55,7 @@ def add_school(sch_id: str, sch_info: Sch) -> None:
 			"uid": sch_info.uid
 		}
 	}
-	data.update(to_insert)
+	data |= to_insert
 
 	with open(r"assets/school_info.json", "w", encoding="utf-8") as f:
 		json.dump(data, f, ensure_ascii=False, indent=2)
@@ -71,7 +71,4 @@ def get_name(sch_id: str) -> str:
 	:return: name of school, "*此學校不存在*" if doesn't exist
 	"""
 
-	if sch_id not in info:
-		return "*此學校不存在*"
-
-	return info[sch_id].name
+	return "*此學校不存在*" if sch_id not in info else info[sch_id].name

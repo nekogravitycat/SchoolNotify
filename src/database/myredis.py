@@ -30,9 +30,4 @@ def keys():
 
 
 def list_prefix(pre: str) -> list:
-	matches: list = []
-
-	for key in r.scan_iter(f"{pre}*"):
-		matches.append(key)
-
-	return matches
+	return list(r.scan_iter(f"{pre}*"))

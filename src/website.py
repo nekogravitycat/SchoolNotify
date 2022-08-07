@@ -438,10 +438,7 @@ def logs_file() -> str | flask.Response:
 	if result is not None:
 		return result
 
-	if not os.path.exists(r"logs.txt"):
-		return "No logs yet."
-
-	return flask.send_file(r"logs.txt")
+	return flask.send_file(r"logs.txt") if os.path.exists(r"logs.txt") else "No logs yet."
 
 
 @app.route("/api/school_info.json")

@@ -42,7 +42,7 @@ def push_email(sch_id: str, news: list) -> None:
 	:param news: list of basic.Msg objects
 	"""
 
-	is_empty: bool = len(news) == 0
+	is_empty: bool = not news
 
 	if is_empty:
 		log(f"No new announcements for {sch_id}\n")
@@ -57,7 +57,7 @@ def push_email(sch_id: str, news: list) -> None:
 		content: str = ""
 
 		if is_empty:
-			content = f"尚無新公告<br><br>"
+			content = "尚無新公告<br><br>"
 
 		else:
 			for n in news:
@@ -72,9 +72,8 @@ def push_email(sch_id: str, news: list) -> None:
 			# prefix format: schid_email_address@example.com
 			prefix_len: int = len(sch_id) + 7
 
-			for re in db.user.list_keys(sch_id):
-				# re[prefix_len:] is for removing the prefix (schid_email_)
-				recipients.append(re[prefix_len:])
+			# re[prefix_len:] is for removing the prefix (schid_email_)
+			recipients.extend(re[prefix_len:] for re in db.user.list_keys(sch_id))
 
 		myemail.send(recipients, subject, content, sch_id)
 
