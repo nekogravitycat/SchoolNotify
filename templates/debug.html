@@ -45,11 +45,11 @@
 			}
 		}
 		function run(action){
-			if(!confirm(`Are you sure to execute this action (${cmd})? Please proceed with caution.`)){
+			if(!window.confirm(`Are you sure to execute this action (${cmd})? Please proceed with caution.`)){
 				alert("Action canceled");
 				return;
 			}
-			if(!confirm(`Action will be exectued after clicking yes.`)) {
+			if(!window.confirm(`Action will be exectued after clicking yes.`)) {
 				alert("Action canceled");
 				return;
 			}
