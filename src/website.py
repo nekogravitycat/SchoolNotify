@@ -361,12 +361,12 @@ def supporter() -> str | flask.Response:
 		f"School_add: \n id={sch_id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n"
 	)
 
-	info: db.schools.Sch = db.schools.Sch(
+	sch_info: db.schools.Sch = db.schools.Sch(
 		name=name,
 		url=url,
 		uid=uid
 	)
-	db.schools.add_school(sch_id, info)
+	db.schools.add_school(sch_id, sch_info)
 
 	db.info.set_key(sch_id, "date", latest_date)
 
@@ -385,8 +385,8 @@ def supporter() -> str | flask.Response:
 def api_school() -> flask.Response:
 	res: dict = {}
 
-	for ID in db.schools.info:
-		res.update({ID: db.schools.info[ID].name})
+	for sch_id in db.schools.info:
+		res.update({sch_id: db.schools.info[sch_id].name})
 
 	return flask.jsonify(res)
 
