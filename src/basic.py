@@ -101,14 +101,14 @@ def show_result(news: list) -> None:
 def run() -> None:
 	""" Run news-gathering for every school and send news emails to the subscribers """
 
-	for ID in db.schools.info.keys():
+	for sch_id in db.schools.info.keys():
 		try:
-			info: db.schools.Sch = db.schools.info[ID]
-			news: list = ischool.get_news(ID, info.url, info.uid)
-			push_email(ID, news)
+			info: db.schools.Sch = db.schools.info[sch_id]
+			news: list = ischool.get_news(sch_id, info.url, info.uid)
+			push_email(sch_id, news)
 
 		except Exception as e:
-			log(f"{ID} Runtime Error: {e}", True)
+			log(f"{sch_id} Runtime Error: {e}", True)
 
 
 def debug(sch_ids: list = None) -> None:
@@ -122,8 +122,8 @@ def debug(sch_ids: list = None) -> None:
 	if not sch_ids:
 		sch_ids = db.schools.info.keys()
 
-	for ID in sch_ids:
-		info: dict = db.schools.info[ID]
-		db.memory.remember_school(ID, ischool_info)
-		show_result(ischool.get_news(ID, info["url"], info["uid"]))
-		db.memory.recall_school(ID, ischool_info)
+	for sch_id in sch_ids:
+		info: dict = db.schools.info[sch_id]
+		db.memory.remember_school(sch_id, ischool_info)
+		show_result(ischool.get_news(sch_id, info["url"], info["uid"]))
+		db.memory.recall_school(sch_id, ischool_info)

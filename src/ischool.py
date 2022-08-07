@@ -50,17 +50,17 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 	result: list = []
 
 	try:
-		newsid: list = get_newsid(sch_url, sch_uid, page)
+		news_ids: list = get_newsid(sch_url, sch_uid, page)
 		while next_:
 
-			for ID in newsid:
+			for news_id in news_ids:
 				# break the loop if the news was already got by us
-				if ID == db.info.get_key(sch_id, "id"):
+				if news_id == db.info.get_key(sch_id, "id"):
 					break
 
 				# the link to the news detail page
 				link: str = (
-					f"https://{sch_url}/ischool/public/news_view/show.php?nid={ID}"
+					f"https://{sch_url}/ischool/public/news_view/show.php?nid={news_id}"
 				)
 
 				# get the detail page
@@ -97,7 +97,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 		# if the result is not empty, update the latest info
 		if len(result) > 0:
 			db.info.set_key(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
-			db.info.set_key(sch_id, "id", newsid[0])
+			db.info.set_key(sch_id, "id", news_ids[0])
 
 		return result
 
