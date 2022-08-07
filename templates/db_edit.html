@@ -55,12 +55,12 @@
 					<form action="/db/edit" method="post" onsubmit="form_submit()">
 						<div class="ts-wrap is-vertical">
 							<!-- key name field -->
-							<div class="ts-text is-label is-medium">Key Name</div>
+							<label class="ts-text is-label is-medium" for="key_input">Key Name</label>
 							<div class="ts-input is-fluid is-medium is-solid">
-								<input type="text" name="key" required>
+								<input type="text" name="key" id="key_input" required>
 							</div>
 							<!-- key value field -->
-							<div class="ts-text is-label is-medium">Key Value</div>
+							<label class="ts-text is-label is-medium" for="value_input">Key Value</label>
 							<div class="ts-input is-fluid is-medium is-solid" id="value_input_div">
 								<input type="text" name="value" onchange="on_value_change()" id="value_input" required>
 							</div>
@@ -103,7 +103,7 @@
 		const value_input = document.getElementById("value_input");
 		var value_memory = "";
 		function onload(){
-			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
+			if("{{pop_title}}" !== "" || "{{pop_msg}}" !== ""){
 				document.getElementById("pop_window").classList.add("is-visible");
 			}
 			const pop_icon = document.getElementById("pop_icon");

@@ -57,38 +57,38 @@
 							<div class="column">
 								<div class="ts-wrap is-vertical">
 									<!-- id field -->
-									<div class="ts-text is-label is-medium">School ID</div>
+									<label class="ts-text is-label is-medium" for="school_id_input">School ID</label>
 									<div class="ts-input is-fluid is-medium is-solid">
-										<input type="text" name="id" required>
+										<input type="text" name="id" id="school_id_input" required>
 									</div>
 									<!-- url field -->
-									<div class="ts-text is-label is-medium">School URL</div>
+									<label class="ts-text is-label is-medium" for="school_url_input">School URL</label>
 									<div class="ts-input is-fluid is-medium is-solid">
-										<input type="text" name="url" required>
+										<input type="text" name="url" id="school_url_input" required>
 									</div>
 									<!-- uid field -->
-									<div class="ts-text is-label is-medium">School UID</div>
+									<label class="ts-text is-label is-medium" for="school_uid_input">School UID</label>
 									<div class="ts-input is-fluid is-medium is-solid">
-										<input type="text" name="uid" required>
+										<input type="text" name="uid" id="school_uid_input" required>
 									</div>
 								</div>
 							</div>
 							<div class="column">
 								<div class="ts-wrap is-vertical">
 									<!-- school name field-->
-									<div class="ts-text is-label is-medium">School Name</div>
+									<label class="ts-text is-label is-medium" for="school_name_input">School Name</label>
 									<div class="ts-input is-fluid is-medium is-solid">
-										<input type="text" name="name" required>
+										<input type="text" name="name" id="school_name_input" required>
 									</div>
 									<!-- latest date field -->
-									<div class="ts-text is-label is-medium">Latest Date</div>
+									<label class="ts-text is-label is-medium" for="latest_date_input">Latest Date</label>
 									<div class="ts-input is-fluid is-medium is-solid">
-										<input type="date" name="latest_date" required>
+										<input type="date" name="latest_date" id="latest_date_input" required>
 									</div>
 									<!-- latest id field -->
-									<div class="ts-text is-label is-medium">Latest ID (Optional)</div>
+									<label class="ts-text is-label is-medium" for="latest_id_input">Latest ID (Optional)</label>
 									<div class="ts-input is-fluid is-medium is-solid">
-										<input type="text" name="latest_id">
+										<input type="text" name="latest_id" id="latest_id_input">
 									</div>
 								</div>
 							</div>
@@ -106,7 +106,7 @@
 	</body>
 	<script>
 		function onload(){
-			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
+			if("{{pop_title}}" !== "" || "{{pop_msg}}" !== ""){
 				document.getElementById("pop_window").classList.add("is-visible");
 			}
 			const pop_icon = document.getElementById("pop_icon");
