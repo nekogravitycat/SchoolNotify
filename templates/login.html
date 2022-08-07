@@ -14,7 +14,7 @@
 		<link rel="shortcut icon" href="/api/icon.png" sizes="32x32" type="image/png"/>
 		<title>Admin Login</title>
 	</head>
-	<body>
+	<body onload="onload()">
 		<!-- main container -->
 		<div class="ts-center ts-container">
 			<!-- pop window -->
@@ -88,6 +88,5 @@
 			submit_btn.classList.add("is-loading");
 			submit_btn.disabled = true;
 		}
-		window.onload = onload();
 	</script>
 </html>

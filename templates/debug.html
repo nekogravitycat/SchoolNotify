@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" data-scale="large">
+	<head>
+		<meta charset="utf-8">
+		<!-- import Tocas UI form CloudFlare CDN -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.0.4/tocas.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tocas/4.0.4/tocas.min.js" integrity="sha384-OLBgp1GsljhM2TJ+sbHjaiH9txEUvgdDTAzHv2P24donTt6/529l+9Ua0vFImLlb" crossorigin="anonymous"></script>
+		<!-- import Noto Sans TC from Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com"/>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet"/>
+		<!-- other configurations -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" href="/api/icon.png" sizes="32x32" type="image/png"/>
+		<title>Debug Page</title>
+	</head>
+	<body onload="onload()">
+		<!-- main container -->
+		<div class="ts-center ts-container is-very-narrow">
+			<div class="ts-box" style="overflow-y: auto;">
+				<!-- header -->
+				<div class="ts-content is-dense">
+					<div class="ts-header is-start-icon">
+						<span class="ts-icon is-gear-icon"></span>
+						<span class="ts-text is-large is-heavy">SchoolNotify Debug Page</span>
+					</div>
+				</div>
+				<!-- buttons -->
+				<div class="ts-content is-tertiary is-tertiary">
+					<button class="ts-button is-outlined is-fluid" onclick="run('schedule_run')">Run daily.schedule_run()</button>
+					<div class="ts-space"></div>
+					<button class="ts-button is-outlined is-fluid" onclick="run('run')">Run basic.run()</button>
+					<div class="ts-space"></div>
+					<button class="ts-button is-outlined is-fluid" onclick="run('debug')">Run basic.debug()</button>
+					<div class="ts-space"></div>
+					<button class="ts-button is-outlined is-fluid" onclick="window.open('/', '_self')">Home Page</button>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		function onload(){
+			if("{{msg}}" != ""){
+				alert("{{msg}}");
+			}
+		}
+		function run(action){
+			if(!window.confirm(`Are you sure to execute this action (${action})? Please proceed with caution.`)){
+				alert("Action canceled");
+				return;
+			}
+			if(!window.confirm(`Action will be exectued after clicking yes.`)) {
+				alert("Action canceled");
+				return;
+			}
+			const info = {
+				"action": action,
+			};
+			const form = document.createElement("form");
+			form.method = "post";
+			form.action = "/debug";
+			for(const key in info) {
+				const input = document.createElement("input");
+				input.type = "hidden";
+				input.name = key;
+				input.value = info[key];
+				form.appendChild(input);
+			}
+			document.body.appendChild(form);
+			form.submit();
+		}
+	</script>
+</html>
