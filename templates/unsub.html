@@ -14,7 +14,7 @@
 		<link rel="shortcut icon" href="/api/icon.png" sizes="32x32" type="image/png"/>
 		<title>取消訂閱 SchoolNotify</title>
 	</head>
-	<body>
+	<body onload="onload()">
 		<!-- main container -->
 		<div class="ts-center ts-container is-very-narrow">
 			<div class="ts-box" style="overflow-y: auto;">
@@ -104,6 +104,5 @@
 		function go_home(){
 			window.open("/", "_self");
 		}
-		window.onload = onload();
 	</script>
 </html>

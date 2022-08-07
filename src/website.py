@@ -5,7 +5,7 @@ import hashlib
 import string
 import random
 import datetime
-from src import myemail, database as db
+from src import basic, daily, myemail, database as db
 from src.unilog import log
 
 app: flask.Flask = flask.Flask("")
@@ -379,6 +379,35 @@ def supporter() -> str | flask.Response:
 	return flask.render_template(
 		"supporter.html", pop_title="Succeed", pop_msg="Succeed!", pop_type="ok"
 	)
+
+
+@app.route("/debug")
+def debug():
+	# verify user
+	result = admin_verify(flask.request.cookies.get("token"))
+	if result is not None:
+		return result
+
+	# for GET method
+	if flask.request.method == "GET":
+		return flask.render_template("debug.html")
+
+	# for POST method
+	action: str = flask.request.form["action"]
+
+	if action == "schedule_run":
+		daily.schedule_run()
+
+	elif action == "run":
+		basic.run()
+
+	elif action == "debug":
+		basic.debug()
+
+	else:
+		return flask.render_template("debug.html", msg="Invalid action")
+
+	return flask.render_template("debug.html", msg="Action executed")
 
 
 @app.route("/api/sch")

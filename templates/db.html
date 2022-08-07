@@ -14,7 +14,7 @@
 		<link rel="shortcut icon" href="/api/icon.png" sizes="32x32" type="image/png"/>
 		<title>Database</title>
 	</head>
-	<body>
+	<body onload="onload()">
 		<!-- loading icon -->
 		<div class="ts-modal is-visible" id="loading_screen">
 			<div class="ts-loading is-large"></div>
@@ -58,6 +58,5 @@
 					window.alert(error);
 				})
 		}
-		window.onload = onload();
 	</script>
 </html>
