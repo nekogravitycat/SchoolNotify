@@ -90,7 +90,7 @@ def show_result(news: list) -> None:
 	:param news: list of basic.Msg objects
 	"""
 
-	if len(news) == 0:
+	if not news:
 		log("No new announcements")
 
 	else:
