@@ -414,11 +414,14 @@ def api_db() -> flask.Response:
 
 
 @app.route("/log.txt")
-def logs_file() -> flask.Response:
+def logs_file() -> str | flask.Response:
 	# verify user
 	result = admin_verify(flask.request.cookies.get("token"))
 	if result is not None:
 		return result
+
+	if not os.path.exists(r"logs.txt"):
+		return "No logs yet."
 
 	return flask.send_file(r"logs.txt")
 
