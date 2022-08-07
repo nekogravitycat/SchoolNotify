@@ -361,7 +361,13 @@ def supporter() -> str | flask.Response:
 		f"School_add: \n id={sch_id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n"
 	)
 
-	db.schools.add_school(sch_id, url, uid, name)
+	info: db.schools.Sch = db.schools.Sch(
+		name=name,
+		url=url,
+		uid=uid
+	)
+	db.schools.add_school(sch_id, info)
+
 	db.info.set_key(sch_id, "date", latest_date)
 
 	if latest_id:
@@ -380,7 +386,7 @@ def api_school() -> flask.Response:
 	res: dict = {}
 
 	for ID in db.schools.info:
-		res.update({ID: db.schools.info[ID]["name"]})
+		res.update({ID: db.schools.info[ID].name})
 
 	return flask.jsonify(res)
 
@@ -407,9 +413,9 @@ def api_db() -> flask.Response:
 	return flask.jsonify(res)
 
 
-@app.route("/api/school_info.txt")
+@app.route("/api/school_info.json")
 def school_info_file() -> flask.Response:
-	return flask.send_file(r"assets/school_info.txt")
+	return flask.send_file(r"assets/school_info.json")
 
 
 @app.route("/api/icon.png")

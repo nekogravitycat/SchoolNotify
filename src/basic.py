@@ -103,8 +103,8 @@ def run() -> None:
 
 	for ID in db.schools.info.keys():
 		try:
-			info: dict = db.schools.info[ID]
-			news: list = ischool.get_news(ID, info["url"], info["uid"])
+			info: db.schools.Sch = db.schools.info[ID]
+			news: list = ischool.get_news(ID, info.url, info.uid)
 			push_email(ID, news)
 
 		except Exception as e:

@@ -1,9 +1,0 @@
-hchs;www.hchs.hc.edu.tw;WID_0_2_0516b5aba93b58b0547367faafb2f1dbe2ebba4c;新竹高中
-whsh;web.whsh.tc.edu.tw;WID_0_2_518cd2a7e52b7f65fc750eded8b99ffcc2a7daca;文華高中
-hgsh;www.hgsh.hc.edu.tw;WID_0_2_21b2de5a55209704d947481c9d16786c85145eca;新竹女中
-tcivs;w3.tcivs.tc.edu.tw;WID_0_2_a18324d5b18f53971c1d32b13dcfe427c6c77ed4;台中高工
-dali;www.dali.tc.edu.tw;WID_0_2_377afa59cce9f22276e3f66e9d896cb97110c95d;興大附中
-hccvs;www.hccvs.hc.edu.tw;WID_0_2_53efb04eea75963e230f0fb0aeffe08107b41772;新竹高商
-cpshs;www.cpshs.hcc.edu.tw;WID_0_2_f92095519309688cd3d60355cbadcf5c5a8c97f4;竹北高中
-cnsh;www.cnsh.mlc.edu.tw;WID_0_2_0a28136f7b9e90910e6d2e383ba42fe1a2019ebd;竹南高中
-yjvs;www.yjvs.chc.edu.tw;WID_0_2_4c2145a2e8030ebcca1972022d44b0c087d727f2;永靖高工
