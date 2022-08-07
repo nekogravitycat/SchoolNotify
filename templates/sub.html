@@ -97,7 +97,7 @@
 					window.alert(error);
 				});
 			//pop window
-			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
+			if("{{pop_title}}" !== "" || "{{pop_msg}}" !== ""){
 				document.getElementById("pop_window").classList.add("is-visible");
 			}
 			const pop_icon = document.getElementById("pop_icon");
@@ -109,7 +109,7 @@
 			//memory
 			document.getElementById("email_input").value = "{{email}}";
 			school_select.value = "{{school}}";
-			if("{{again}}" != ""){
+			if("{{again}}" !== ""){
 				document.getElementById("submit_btn_text").innerText = "再次訂閱";
 			}
 		}

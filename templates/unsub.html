@@ -39,10 +39,10 @@
 		</div>
 	</body>
 	<script>
-		var url;
-		var email;
-		var school;
-		var token;
+		let url;
+		let email;
+		let school;
+		let token;
 		function change_info(title, content, remove_yes_btn=true){
 			document.getElementById("title").innerText = title;
 			document.getElementById("content").innerText = content;
@@ -75,7 +75,7 @@
 			email = url.searchParams.get("email");
 			school = url.searchParams.get("school");
 			token = url.searchParams.get("token");
-			if(email == null || school == null || token == null || "{{school}}" == "*此學校不存在*") {
+			if(email == null || school == null || token == null || "{{school}}" === "*此學校不存在*") {
 				bad_request();
 			}
 		}
