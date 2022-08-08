@@ -14,7 +14,7 @@ def edit_key(method: str, key: str, value: str = "") -> dict:
 	}
 
 	# check if the command is valid
-	method_valid: bool = (method == "delete") or (method in ["edit", "add"] and value)
+	method_valid: bool = method == "delete" or method in {"edit", "add"} and value
 
 	if not key or not method_valid:
 		res["msg"] = "Method is invalid"

@@ -55,10 +55,10 @@
 					<form action="/login" method="post" onsubmit="form_submit()">
 						<div class="ts-wrap is-vertical">
 							<!-- token field -->
-							<div class="ts-text is-label is-medium">Secret Token</div>
+							<label for="passwd" class="ts-text is-label is-medium">Secret Token</label>
 							<div class="ts-input is-fluid is-medium is-solid is-start-icon">
 								<span class="ts-icon is-lock-icon"></span>
-								<input type="password" name="token" required>
+								<input type="password" name="token" id="passwd" required>
 							</div>
 							<!-- submit button -->
 							<button class="ts-button is-fluid is-start-icon" id="submit_btn">
@@ -76,7 +76,7 @@
 		function onload(){
 			const url = new URL(location.href);
 			const wrong = url.searchParams.get("w");
-			if("{{wrong}}" != "" || wrong == "1"){
+			if("{{wrong}}" !== "" || wrong === "1"){
 				pop_window.classList.add("is-visible");
 			}
 		}

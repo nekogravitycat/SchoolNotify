@@ -55,13 +55,13 @@
 					<form action="/" method="post" onsubmit="form_submit()">
 						<div class="ts-wrap is-vertical">
 							<!-- email field -->
-							<div class="ts-text is-label is-medium">請填寫您的電子郵件</div>
+							<label class="ts-text is-label is-medium" for="email_input">請填寫您的電子郵件</label>
 							<div class="ts-input is-fluid is-medium is-solid is-start-icon">
 								<span class="ts-icon is-envelope-icon"></span>
 								<input type="email" name="email" placeholder="address@example.com" id="email_input" required>
 							</div>
 							<!-- school field -->
-							<div class="ts-text is-label is-medium">請選擇學校</div>
+							<label class="ts-text is-label is-medium" for="school_select">請選擇學校</label>
 							<div class="ts-select is-fluid is-medium is-solid">
 								<select name="school" id="school_select" required>
 									<option value="" disabled selected hidden>請選擇學校</option>
@@ -97,7 +97,7 @@
 					window.alert(error);
 				});
 			//pop window
-			if("{{pop_title}}" != "" || "{{pop_msg}}" != ""){
+			if("{{pop_title}}" !== "" || "{{pop_msg}}" !== ""){
 				document.getElementById("pop_window").classList.add("is-visible");
 			}
 			const pop_icon = document.getElementById("pop_icon");
@@ -109,7 +109,7 @@
 			//memory
 			document.getElementById("email_input").value = "{{email}}";
 			school_select.value = "{{school}}";
-			if("{{again}}" != ""){
+			if("{{again}}" !== ""){
 				document.getElementById("submit_btn_text").innerText = "再次訂閱";
 			}
 		}

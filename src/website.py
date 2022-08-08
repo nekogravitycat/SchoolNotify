@@ -146,7 +146,7 @@ def home() -> str:
 	)
 	email_thread.start()
 
-	db.ask.set_key(school, email, db.timestamp.get_key() + ";" + token)
+	db.ask.set_key(school, email, f"{db.timestamp.get_key()};{token}")
 	log(f"Passed: {school}, {token}")
 	return flask.render_template(
 		"sub.html",
@@ -155,7 +155,7 @@ def home() -> str:
 		again="1",
 		pop_type="ok",
 		pop_title="請進行身分驗證",
-		pop_msg=f"一封驗證電子郵件已送出，請查收",
+		pop_msg="一封驗證電子郵件已送出，請查收",
 	)
 
 
@@ -281,22 +281,18 @@ def login() -> str | flask.Response:
 def admin() -> str | flask.Response:
 	# verify user
 	result = admin_verify(flask.request.cookies.get("token"))
-	if result is not None:
-		return result
 
 	# main function
-	return flask.render_template("admin.html")
+	return result if result is not None else flask.render_template("admin.html")
 
 
 @app.route("/db")
 def show_db() -> str | flask.Response:
 	# verify user
 	result = admin_verify(flask.request.cookies.get("token"))
-	if result is not None:
-		return result
 
 	# main function
-	return flask.render_template("db.html")
+	return result if result is not None else flask.render_template("db.html")
 
 
 @app.route("/db/edit", methods=["POST", "GET"])
@@ -412,11 +408,7 @@ def debug():
 
 @app.route("/api/sch")
 def api_school() -> flask.Response:
-	res: dict = {}
-
-	for sch_id in db.schools.info:
-		res.update({sch_id: db.schools.info[sch_id].name})
-
+	res: dict = {sch_id: db.schools.info[sch_id].name for sch_id in db.schools.info}
 	return flask.jsonify(res)
 
 
@@ -434,10 +426,7 @@ def api_db() -> flask.Response:
 		return flask.jsonify({"state": "token_is_invalid"})
 
 	# token valid (pass)
-	res: dict = {}
-
-	for key in db.myredis.keys():
-		res.update({key: db.myredis.get_key(key)})
+	res: dict = {key: db.myredis.get_key(key) for key in db.myredis.keys()}
 
 	return flask.jsonify(res)
 
@@ -449,10 +438,7 @@ def logs_file() -> str | flask.Response:
 	if result is not None:
 		return result
 
-	if not os.path.exists(r"logs.txt"):
-		return "No logs yet."
-
-	return flask.send_file(r"logs.txt")
+	return flask.send_file(r"logs.txt") if os.path.exists(r"logs.txt") else "No logs yet."
 
 
 @app.route("/api/school_info.json")

@@ -95,7 +95,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 			page += 1
 
 		# if the result is not empty, update the latest info
-		if len(result) > 0:
+		if result:
 			db.info.set_key(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
 			db.info.set_key(sch_id, "id", news_ids[0])
 

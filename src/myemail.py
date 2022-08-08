@@ -39,9 +39,7 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 					msg["subject"] = subject
 
 					if unsub_sch:
-						content_all = (
-							content_base + f'點擊 <a href="{website.unsub_link(r, unsub_sch)}">這裡</a> 來退訂此服務'
-						)
+						content_all = f'{content_base}點擊 <a href="{website.unsub_link(r, unsub_sch)}">這裡</a> 來退訂此服務'
 
 					msg.attach(MIMEText(content_all, "html"))
 					smtp.send_message(msg)
