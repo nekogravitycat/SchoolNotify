@@ -377,35 +377,6 @@ def supporter() -> str | flask.Response:
 	)
 
 
-@app.route("/debug", methods=["POST", "GET"])
-def debug():
-	# verify user
-	result = admin_verify(flask.request.cookies.get("token"))
-	if result is not None:
-		return result
-
-	# for GET method
-	if flask.request.method == "GET":
-		return flask.render_template("debug.html")
-
-	# for POST method
-	action: str = flask.request.form["action"]
-
-	if action == "schedule_run":
-		daily.schedule_run()
-
-	elif action == "run":
-		basic.run()
-
-	elif action == "debug":
-		basic.debug()
-
-	else:
-		return flask.render_template("debug.html", msg="Invalid action")
-
-	return flask.render_template("debug.html", msg="Action executed")
-
-
 @app.route("/api/sch")
 def api_school() -> flask.Response:
 	res: dict = {sch_id: db.schools.info[sch_id].name for sch_id in db.schools.info}

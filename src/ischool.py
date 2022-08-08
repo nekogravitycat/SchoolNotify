@@ -43,7 +43,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 	:return: list of basic.Msg objects
 	"""
 
-	log(f"{sch_id} run", True)
+	log(f"ischool.get_news() run: id={sch_id}, url={sch_url}, uid={sch_uid}", True)
 
 	next_: bool = True
 	page: int = 0
