@@ -27,10 +27,13 @@ def get_newsid(sch_url: str, sch_uid: str, page_num, max_rows: int = 15) -> list
 		"tf": "1",  # "tf" means "the fuck?"
 		"auth_type": "user",
 	}
+	link: str = f"https://{sch_url}/ischool/widget/site_news/news_query_json.php"
+	log(f"get_newsid(): request url: {link}")
 	response: requests.Response = requests.post(
 		url=f"https://{sch_url}/ischool/widget/site_news/news_query_json.php",
 		data=send_data,
 	)
+	log(f"get_newsid(): response from {response.url}: {response}")
 	return re.findall(r'"newsId":"([0-9]*)"', response.text)
 
 
@@ -51,21 +54,24 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 
 	try:
 		news_ids: list = get_newsid(sch_url, sch_uid, page)
+		log(f"get_news(): get {len(news_ids)} ids: {news_ids}")
+
 		while next_:
 
 			for news_id in news_ids:
 				# break the loop if the news was already got by us
 				if news_id == db.info.get_key(sch_id, "id"):
+					log(f"get_news(): news_id ({news_id} already got)")
+					next_ = False
 					break
 
 				# the link to the news detail page
-				link: str = (
-					f"https://{sch_url}/ischool/public/news_view/show.php?nid={news_id}"
-				)
-
+				link: str = f"https://{sch_url}/ischool/public/news_view/show.php?nid={news_id}"
+				log(f"get_news(): request url: {link}")
 				# get the detail page
 				response: requests.Response = requests.get(link, headers=basic.header)
 				response.encoding = response.apparent_encoding
+				log(f"get_news(): response from {response.url}: {response}")
 
 				# parse the detail page
 				soup: bs4.BeautifulSoup = bs4.BeautifulSoup(

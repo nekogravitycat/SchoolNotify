@@ -1,9 +1,8 @@
-import sys
 from src import basic, daily
 
 
 def main():
-	action: str = sys.argv[1]
+	action: str = input("Action to execute: ")
 
 	if not action or action == "help":
 		print("Available actions: run, debug, schedule_run")
