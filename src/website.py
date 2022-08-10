@@ -5,7 +5,7 @@ import hashlib
 import string
 import random
 import datetime
-from src import basic, daily, myemail, database as db
+from src import myemail, database as db
 from src.unilog import log
 
 app: flask.Flask = flask.Flask("")

@@ -5,6 +5,11 @@ import re
 from src import basic, database as db
 from src.unilog import log
 
+header: dict = {
+	"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+	"Chrome/100.0.4896.60 Safari/537.36 "
+}
+
 
 def get_newsid(sch_url: str, sch_uid: str, page_num, max_rows: int = 15) -> list:
 	""" Get a list of news_ids in a selected range
@@ -69,7 +74,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 				link: str = f"https://{sch_url}/ischool/public/news_view/show.php?nid={news_id}"
 				log(f"get_news(): request url: {link}")
 				# get the detail page
-				response: requests.Response = requests.get(link, headers=basic.header)
+				response: requests.Response = requests.get(link, headers=header)
 				response.encoding = response.apparent_encoding
 				log(f"get_news(): response from {response.url}: {response}")
 

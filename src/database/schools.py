@@ -9,6 +9,13 @@ class Sch:
 		self.url = url
 		self.uid = uid
 
+	def to_dict(self) -> dict:
+		return {
+			"name": self.name,
+			"url": self.url,
+			"uid": self.uid
+		}
+
 
 def read_schools() -> None:
 	""" Read school info from "school_info.json" and store them into "info" dict variable """
