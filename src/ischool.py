@@ -37,6 +37,7 @@ def get_newsid(sch_url: str, sch_uid: str, page_num, max_rows: int = 15) -> list
 	response: requests.Response = requests.post(
 		url=f"https://{sch_url}/ischool/widget/site_news/news_query_json.php",
 		data=send_data,
+		headers=header
 	)
 	log(f"get_newsid(): response from {response.url}: {response}")
 	return re.findall(r'"newsId":"([0-9]*)"', response.text)
