@@ -16,6 +16,7 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 	:param unsub_sch: school to unsubscribe (optional, attach unsubscribing link if provided)
 	:return: True if ran successfully, False if not
 	"""
+
 	content_all: str = content_base
 
 	try:
@@ -27,9 +28,7 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 			list_len: int = len(recipients)
 			count: int = 1
 
-			from_addr: str = formataddr(
-				("SchoolNotify", os.environ["smtp_account"]), "utf-8"
-			)
+			from_addr: str = formataddr(("SchoolNotify", os.environ["smtp_account"]), "utf-8")
 
 			try:
 				for r in recipients:

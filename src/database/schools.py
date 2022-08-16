@@ -10,6 +10,8 @@ class Sch:
 		self.uid = uid
 
 	def to_dict(self) -> dict:
+		""" Make a dictionary containing name, url, and uid """
+
 		return {
 			"name": self.name,
 			"url": self.url,
@@ -55,13 +57,7 @@ def add_school(sch_id: str, sch_info: Sch) -> None:
 	with open(r"assets/school_info.json", "r", encoding="utf-8") as f:
 		data: dict = json.load(f)
 
-	to_insert: dict = {
-		sch_id: {
-			"name": sch_info.name,
-			"url": sch_info.url,
-			"uid": sch_info.uid
-		}
-	}
+	to_insert: dict = {sch_id: sch_info.to_dict()}
 	data |= to_insert
 
 	with open(r"assets/school_info.json", "w", encoding="utf-8") as f:
