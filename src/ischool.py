@@ -106,6 +106,9 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 			# if the latest news are more than a page, increase the page number by 1
 			page += 1
 
+			# break to prevent infinite loop (optional)
+			break
+
 		# if the result is not empty, update the latest info
 		if result:
 			db.info.set_key(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
