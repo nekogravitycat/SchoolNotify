@@ -72,9 +72,7 @@ def show(title: str, content: str, icon: str = "") -> str:
 	:return: message page
 	"""
 
-	return flask.render_template(
-		"message.html", title=title, content=content.replace("\n", "<br>"), icon=icon
-	)
+	return flask.render_template("message.html", title=title, content=content.replace("\n", "<br>"), icon=icon)
 
 
 def sub_page_error(title: str, msg: str) -> str:
@@ -85,9 +83,7 @@ def sub_page_error(title: str, msg: str) -> str:
 	:return: subscription page containing error message
 	"""
 
-	return flask.render_template(
-		"sub.html", pop_type="error", pop_title=title, pop_msg=msg
-	)
+	return flask.render_template("sub.html", pop_type="error", pop_title=title, pop_msg=msg)
 
 
 def clear_ask(timestamp: str) -> None:
@@ -141,9 +137,7 @@ def home() -> str:
 
 	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘。若您並未要求此動作，請忽略這封郵件"
 
-	email_thread = threading.Thread(
-		target=myemail.send, args=([email], r"請驗證您的電子郵件", content)
-	)
+	email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content))
 	email_thread.start()
 
 	db.ask.set_key(school, email, f"{db.timestamp.get_key()};{token}")
@@ -353,15 +347,9 @@ def supporter() -> str | flask.Response:
 			pop_msg="The School ID already exists",
 		)
 
-	log(
-		f"School_add: \n id={sch_id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n"
-	)
+	log(f"School_add: \n id={sch_id} \n url={url} \n uid={uid} \n latest_date={latest_date} \n latest_id={latest_id} \n")
 
-	sch_info: db.schools.Sch = db.schools.Sch(
-		name=name,
-		url=url,
-		uid=uid
-	)
+	sch_info = db.schools.Sch(name=name, url=url, uid=uid)
 	db.schools.add_school(sch_id, sch_info)
 
 	db.info.set_key(sch_id, "date", latest_date)
@@ -372,9 +360,7 @@ def supporter() -> str | flask.Response:
 	else:
 		db.info.set_key(sch_id, "id", "0")
 
-	return flask.render_template(
-		"supporter.html", pop_title="Succeed", pop_msg="Succeed!", pop_type="ok"
-	)
+	return flask.render_template("supporter.html", pop_title="Succeed", pop_msg="Succeed!", pop_type="ok")
 
 
 @app.route("/api/sch")
