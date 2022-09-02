@@ -9,6 +9,7 @@ def schedule_run() -> None:
 	log(f"schedule_run: weekday={weekday}")
 	# monday = 0, thursday = 3
 	if weekday in {0, 3}:
+		log("schedule_run: basic.run()")
 		basic.run()
 
 

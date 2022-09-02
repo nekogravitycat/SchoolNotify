@@ -96,7 +96,7 @@ def clear_ask(timestamp: str) -> None:
 
 	for a in db.ask.list_keys():
 		if db.myredis.get_key(a).split(";")[0] == timestamp:
-			cleared += f"{a[4:]}\n"
+			cleared += f"{a}\n"
 			db.myredis.delete_key(a)
 
 	if len(cleared) > 0:

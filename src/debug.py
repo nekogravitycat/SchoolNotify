@@ -23,7 +23,7 @@ def main():
 	else:
 		print(f'Action "{action}" is invalid')
 
-	print("Done!")
+	print(f'debug: Action "{action}" done!')
 
 
 if __name__ == "__main__":

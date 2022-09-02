@@ -48,7 +48,7 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 			except Exception as ex:
 				log(f"Email Sending Error: {r}\n{ex}\n")
 
-			log(f"{len(recipients)} Emails Sent: {subject}", True)
+			log(f"{count}/{len(recipients)} Emails Sent: {subject}", True)
 
 	except Exception as e:
 		log(f"SMTP Error: {e}")
