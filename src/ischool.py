@@ -106,6 +106,8 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 			# if the latest news are more than a page, increase the page number by 1
 			page += 1
 
+			# just to prevent "unused variable" warning
+			print(f"ischool: get_news(), next_={next_}; just to prevent 'unused variable' warning")
 			# break to prevent infinite loop (optional)
 			break
 
