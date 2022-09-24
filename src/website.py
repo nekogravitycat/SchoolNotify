@@ -273,29 +273,18 @@ def login() -> str | flask.Response:
 
 @app.route("/admin")
 def admin() -> str | flask.Response:
-	# verify user
-	result = admin_verify(flask.request.cookies.get("token"))
-
 	# main function
-	return result if result is not None else flask.render_template("admin.html")
+	return flask.render_template("admin.html")
 
 
-@app.route("/db")
+@app.route("/admin/db")
 def show_db() -> str | flask.Response:
-	# verify user
-	result = admin_verify(flask.request.cookies.get("token"))
-
 	# main function
-	return result if result is not None else flask.render_template("db.html")
+	return flask.render_template("db.html")
 
 
-@app.route("/db/edit", methods=["POST", "GET"])
+@app.route("/admin/db/edit", methods=["POST", "GET"])
 def edit_db() -> str | flask.Response:
-	# verify user
-	result = admin_verify(flask.request.cookies.get("token"))
-	if result is not None:
-		return result
-
 	# for GET method
 	if flask.request.method == "GET":
 		return flask.render_template("db_edit.html")
@@ -314,13 +303,8 @@ def edit_db() -> str | flask.Response:
 	)
 
 
-@app.route("/spr", methods=["POST", "GET"])
+@app.route("/admin/spr", methods=["POST", "GET"])
 def supporter() -> str | flask.Response:
-	# verify user
-	result = admin_verify(flask.request.cookies.get("token"))
-	if result is not None:
-		return result
-
 	# for GET method
 	if flask.request.method == "GET":
 		return flask.render_template("supporter.html")
@@ -369,32 +353,15 @@ def api_school() -> flask.Response:
 	return flask.jsonify(res)
 
 
-@app.route("/api/db")
+@app.route("/admin/api/db")
 def api_db() -> flask.Response:
-	# verify user
-	token: str = flask.request.cookies.get("token")
-
-	# token empty
-	if not token:
-		return flask.jsonify({"state": "token_is_empty"})
-
-	# token wrong
-	if token != os.environ["db_token"]:
-		return flask.jsonify({"state": "token_is_invalid"})
-
-	# token valid (pass)
 	res: dict = {key: db.myredis.get_key(key) for key in db.myredis.keys()}
 
 	return flask.jsonify(res)
 
 
-@app.route("/log.txt")
+@app.route("/admin/log.txt")
 def logs_file() -> str | flask.Response:
-	# verify user
-	result = admin_verify(flask.request.cookies.get("token"))
-	if result is not None:
-		return result
-
 	return flask.send_file(r"logs.txt") if os.path.exists(r"logs.txt") else "No logs yet."
 
 

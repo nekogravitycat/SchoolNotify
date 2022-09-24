@@ -31,7 +31,7 @@
 			existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 		}
 		function onload(){
-			fetch("/api/db")
+			fetch("/admin/api/db")
 				.then(response => response.json())
 				.then(data => {
 					const key_place = document.getElementById("key_place");
