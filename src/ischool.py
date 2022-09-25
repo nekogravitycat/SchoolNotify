@@ -80,19 +80,13 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 				log(f"get_news(): response from {response.url}: {response}")
 
 				# parse the detail page
-				soup: bs4.BeautifulSoup = bs4.BeautifulSoup(
-					response.text, "html.parser"
-				)
+				soup: bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
 				soup.encoding = response.encoding
 
 				# get the information
 				title: str = soup.title.string
-				date: time.struct_time = time.strptime(
-					soup.find(id="info_time").text.strip(), "%Y-%m-%d %H:%M:%S"
-				)
-				latest_date: time.struct_time = time.strptime(
-					db.info.get_key(sch_id, "date"), "%Y-%m-%d"
-				)
+				date: time.struct_time = time.strptime(soup.find(id="info_time").text.strip(), "%Y-%m-%d %H:%M:%S")
+				latest_date: time.struct_time = time.strptime(db.info.get_key(sch_id, "date"), "%Y-%m-%d")
 
 				# prevent it from getting outdated news
 				if date >= latest_date:
