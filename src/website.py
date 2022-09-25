@@ -1,10 +1,12 @@
+"""
+All routes start with nekogc.com/admin/ are protected by Cloudflare Access
+"""
+
 import os
 import flask
 import threading
-import hashlib
 import string
 import random
-import datetime
 from src import myemail, database as db
 from src.unilog import log
 
@@ -17,23 +19,6 @@ base: str = "https://sn.nekogc.com"
 def main():
 	log("website start!")
 	db.schools.read_schools()
-
-
-def admin_verify(token: str) -> flask.Response | None:
-	""" Return the login page if the token is invalid, None if valid
-
-	:param token: token to verify
-	:return: login page if invalid, None if valid
-	"""
-
-	# empty token
-	if not token:
-		return flask.redirect("/login")
-	# wrong token
-	if token != os.environ["db_token"]:
-		return flask.redirect("/login?w=1")
-	# valid token (pass)
-	return None
 
 
 def verify_link(email: str, school: str, token: str) -> str:
@@ -240,35 +225,20 @@ def uptime() -> str:
 	return "Hello, uptimerobot!"
 
 
-@app.route("/login", methods=["POST", "GET"])
-def login() -> str | flask.Response:
-	# for GET method
-	if flask.request.method == "GET":
-		# verify user
-		result = admin_verify(flask.request.cookies.get("token"))
-		if result is not None:
-			return flask.render_template("/login.html")
+@app.route("/api/sch")
+def api_school() -> flask.Response:
+	res: dict = {sch_id: db.schools.info[sch_id].name for sch_id in db.schools.info}
+	return flask.jsonify(res)
 
-		# main function
-		return flask.redirect("/admin")
 
-	# for POST method
-	token = flask.request.form["token"]
-	sha: str = hashlib.sha256(token.encode()).hexdigest()
+@app.route("/api/school_info.json")
+def school_info_file() -> flask.Response:
+	return flask.send_file(r"assets/school_info.json")
 
-	if sha != os.environ["db_token"]:
-		return flask.render_template("login.html", wrong="1")
 
-	if token:
-		resp = flask.make_response(flask.redirect("/admin"))
-		resp.set_cookie(
-			"token",
-			value=sha,
-			expires=(datetime.datetime.now() + datetime.timedelta(days=7)),
-		)
-		return resp
-
-	return flask.render_template("login.html", wrong="1")
+@app.route("/api/icon.png")
+def icon_file() -> flask.Response:
+	return flask.send_file(r"assets/icon.png")
 
 
 @app.route("/admin")
@@ -347,12 +317,6 @@ def supporter() -> str | flask.Response:
 	return flask.render_template("supporter.html", pop_title="Succeed", pop_msg="Succeed!", pop_type="ok")
 
 
-@app.route("/api/sch")
-def api_school() -> flask.Response:
-	res: dict = {sch_id: db.schools.info[sch_id].name for sch_id in db.schools.info}
-	return flask.jsonify(res)
-
-
 @app.route("/admin/api/db")
 def api_db() -> flask.Response:
 	res: dict = {key: db.myredis.get_key(key) for key in db.myredis.keys()}
@@ -363,16 +327,6 @@ def api_db() -> flask.Response:
 @app.route("/admin/log.txt")
 def logs_file() -> str | flask.Response:
 	return flask.send_file(r"logs.txt") if os.path.exists(r"logs.txt") else "No logs yet."
-
-
-@app.route("/api/school_info.json")
-def school_info_file() -> flask.Response:
-	return flask.send_file(r"assets/school_info.json")
-
-
-@app.route("/api/icon.png")
-def icon_file() -> flask.Response:
-	return flask.send_file(r"assets/icon.png")
 
 
 @app.route("/github")
