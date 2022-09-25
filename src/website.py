@@ -227,8 +227,7 @@ def uptime() -> str:
 
 @app.route("/api/sch")
 def api_school() -> flask.Response:
-	res: dict = {sch_id: db.schools.info[sch_id].name for sch_id in db.schools.info}
-	return flask.jsonify(res)
+	return flask.jsonify({sch_id: db.schools.info[sch_id].name for sch_id in db.schools.info})
 
 
 @app.route("/api/school_info.json")
@@ -243,13 +242,11 @@ def icon_file() -> flask.Response:
 
 @app.route("/admin")
 def admin() -> str | flask.Response:
-	# main function
 	return flask.render_template("admin.html")
 
 
 @app.route("/admin/db")
 def show_db() -> str | flask.Response:
-	# main function
 	return flask.render_template("db.html")
 
 
@@ -319,9 +316,7 @@ def supporter() -> str | flask.Response:
 
 @app.route("/admin/api/db")
 def api_db() -> flask.Response:
-	res: dict = {key: db.myredis.get_key(key) for key in db.myredis.keys()}
-
-	return flask.jsonify(res)
+	return flask.jsonify({key: db.myredis.get_key(key) for key in db.myredis.keys()})
 
 
 @app.route("/admin/log.txt")
