@@ -14,7 +14,7 @@ The system will send you news letters at 6pm on every Monday and Thursday, conta
 Each letter that's sent to you contains a unsubscribe link at the bottom of the mail.
 
 ## Where's my information stored? Are they safe?
-This service is hosted on [Heroku](https://heroku.com), and data is stored in [Redis Enterprise Cloud](https://redis.com). Only the developer of this project (me, nekogravitycat) can visit the database. We won't use or share any information anywhere.
+This service is hosted on my own server in Taiwan, and the data is stored in [Redis Enterprise Cloud](https://redis.com). Only the developer of this project (me, nekogravitycat) can visit the database. We won't use or share any information anywhere.
 
 To use this service, you only have to provide your email address, and we'll automatically generate a password stored in our database. Without the password, no one can modify your subscription status. The password will be included in the unsubscribe link we send to you, so please don't worry anything about that.
 
