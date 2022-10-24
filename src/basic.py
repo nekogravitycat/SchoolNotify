@@ -39,11 +39,12 @@ def push_email(sch_id: str, news: list) -> None:
 	is_empty: bool = not news
 
 	if is_empty:
-		log(f"No new announcements for {sch_id}\n")
+		log(f"No new announcements for {sch_id}, skip email sending\n")
+		log("push_email() done(skipped)!")
+		return
 
-	else:
-		for n in news:
-			log(n.detail() + "\n")
+	for n in news:
+		log(n.detail() + "\n")
 
 	# if there is at least one subscriber in the list
 	if db.user.list_keys(sch_id):
@@ -74,7 +75,7 @@ def push_email(sch_id: str, news: list) -> None:
 	else:
 		log(f"The recipient list of {sch_id} is empty", True)
 
-	log("Done! Waiting for next round!")
+	log("push_email() done!")
 
 
 def show_result(news: list) -> None:
