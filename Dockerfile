@@ -1,4 +1,4 @@
-FROM python:3.10.8
+FROM python:3.11.0
 RUN apt update && apt install -y cron
 COPY . /app
 COPY crontab /etc/cron.d/sn-daily
