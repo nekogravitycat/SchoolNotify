@@ -5,6 +5,11 @@ on:
     branches:
       - 'master'
 
+# Cancel any running actions on new commit
+concurrency:
+  group: ${{ github.head_ref }}"docker-image-build"
+  cancel-in-progress: true
+
 jobs:
   docker:
     runs-on: ubuntu-latest
