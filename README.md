@@ -5,7 +5,7 @@
 SchoolNotify is an online service, automaticity collecting newest information from your school's website, then send them into your email inbox.
 
 ## How can I use it?
-Just by simply subscribe to this service [here](https://sn.nekogc.com). Please fill out your email address and select your school. The system will send you a confirmation email. Please visit the link provided within 5 minutes (or the link will be invalid and need to subscribe again.)
+Just by simply subscribe to this service [here](https://sn.gravitycat.tw). Please fill out your email address and select your school. The system will send you a confirmation email. Please visit the link provided within 5 minutes (or the link will be invalid and need to subscribe again.)
 
 ## When will I receive news letters?
 The system will send you news letters at 6pm on every Monday and Thursday, containing new announcements from your school.
