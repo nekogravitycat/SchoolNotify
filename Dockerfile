@@ -1,4 +1,4 @@
-FROM python:3.11.0:slim
+FROM python:3.11.0-slim
 RUN apt update && apt install -y cron
 COPY . /app
 WORKDIR /app
