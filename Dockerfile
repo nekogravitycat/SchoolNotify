@@ -5,4 +5,4 @@ WORKDIR /app
 RUN chmod 0644 ./crontab-job
 RUN crontab ./crontab-job
 RUN pip install -r requirements.txt
-CMD ["gunicorn", "-b 0.0.0.0:5000", "src.website:app"]
+CMD cron && gunicorn -b 0.0.0.0:5000 src.website:app
