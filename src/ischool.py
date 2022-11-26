@@ -52,7 +52,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 	:return: list of basic.Msg objects
 	"""
 
-	log(f"ischool.get_news() run: id={sch_id}, url={sch_url}, uid={sch_uid}", True)
+	log(f"ischool.get_news() run: id={sch_id}, url={sch_url}, uid={sch_uid}")
 
 	next_: bool = True
 	page: int = 0
@@ -113,5 +113,5 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 		return result
 
 	except Exception as e:
-		log(f"{sch_id} failed: {repr(e)}", True)
+		log(f"{sch_id} failed: {repr(e)}")
 		return None

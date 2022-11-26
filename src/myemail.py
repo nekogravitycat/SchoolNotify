@@ -42,13 +42,11 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 
 					msg.attach(MIMEText(content_all, "html"))
 					smtp.send_message(msg)
-					log(f"email sent: {r} ({count}/{list_len})")
+					log(f"({count}/{list_len}) email sent: {r} {subject}")
 					count += 1
 
 			except Exception as ex:
 				log(f"Email Sending Error: {r}\n{ex}\n")
-
-			log(f"{count}/{len(recipients)} Emails Sent: {subject}", True)
 
 	except Exception as e:
 		log(f"SMTP Error: {e}")

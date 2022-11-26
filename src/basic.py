@@ -44,7 +44,7 @@ def push_email(sch_id: str, news: list) -> None:
 		return
 
 	for n in news:
-		log(n.detail() + "\n")
+		print(n.detail() + "\n")
 
 	# if there is at least one subscriber in the list
 	if db.user.list_keys(sch_id):
@@ -73,7 +73,7 @@ def push_email(sch_id: str, news: list) -> None:
 		myemail.send(recipients, subject, content, sch_id)
 
 	else:
-		log(f"The recipient list of {sch_id} is empty", True)
+		log(f"The recipient list of {sch_id} is empty")
 
 	log("push_email() done!")
 
@@ -85,11 +85,11 @@ def show_result(news: list) -> None:
 	"""
 
 	if not news:
-		log("No new announcements")
+		print("No new announcements")
 
 	else:
 		for re in news:
-			log(re.detail())
+			print(re.detail())
 
 
 def run() -> None:
@@ -102,7 +102,7 @@ def run() -> None:
 			push_email(sch_id, news)
 
 		except Exception as e:
-			log(f"{sch_id} Runtime Error: {e}", True)
+			log(f"{sch_id} Runtime Error: {e}")
 
 
 def debug(sch_ids: list = None) -> None:
