@@ -6,5 +6,5 @@ def log(data: str) -> None:
 
 	now = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
 
-	with open("log.txt", "a") as f:
+	with open("log/website.log", "a") as f:
 		f.write(f"[{now}] {data}\n")
