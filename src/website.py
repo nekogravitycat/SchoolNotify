@@ -199,7 +199,7 @@ def unsub() -> str:
 def uptime() -> str:
 	# verify the bot
 	token: str = flask.request.args.get("bot", default="", type=str)
-	if token != os.environ["uptimerobot_token"]:
+	if token != os.environ.get("uptimerobot_token"):
 		return show(
 			"You found me!",
 			"Hello, visitor! This page is built for a service called UptimeRobot. The bot will visit here every 5 mins, "

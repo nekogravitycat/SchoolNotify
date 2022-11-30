@@ -2,9 +2,9 @@ import redis
 import os
 
 r = redis.Redis(
-	host=os.environ["redis_url"],
+	host=os.environ.get("redis_url"),
 	port=12860,
-	password=os.environ["redis_password"],
+	password=os.environ.get("redis_password"),
 	decode_responses=True,
 )
 

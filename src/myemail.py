@@ -23,12 +23,12 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 		with smtplib.SMTP(host="smtp.office365.com", port=587) as smtp:
 			smtp.ehlo()
 			smtp.starttls()
-			smtp.login(os.environ["smtp_account"], os.environ["smtp_password"])
+			smtp.login(os.environ.get("smtp_account"), os.environ.get("smtp_password"))
 
 			list_len: int = len(recipients)
 			count: int = 1
 
-			from_addr: str = formataddr(("SchoolNotify", os.environ["smtp_account"]), "utf-8")
+			from_addr: str = formataddr(("SchoolNotify", os.environ.get("smtp_account")), "utf-8")
 
 			try:
 				for r in recipients:

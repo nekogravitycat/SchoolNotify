@@ -61,7 +61,7 @@ def push_email(sch_id: str, news: list) -> None:
 		recipients: list = []
 
 		if test_mail:
-			recipients.append(os.environ["email_admin"])
+			recipients.append(os.environ.get("email_admin"))
 
 		else:
 			# prefix format: schid_email_address@example.com
