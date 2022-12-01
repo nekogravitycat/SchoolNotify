@@ -1,5 +1,4 @@
 #!/bin/bash
 cd /app
-CWD="$(pwd)"
-echo "$CWD"
+echo "run_daily.sh run at $(date)"
 python /app/src/daily.py
