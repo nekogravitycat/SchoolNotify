@@ -1,2 +1,2 @@
-00 18 * * * cd /app && python /app/src/daily.py >> /app/log/crontab.log
+0 21 * * * cd /app && python /app/src/daily.py > /app/log/crontab.log
 # Don't remove the empty line at the end of this file. It is required to run the cron job
