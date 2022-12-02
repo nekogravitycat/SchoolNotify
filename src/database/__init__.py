@@ -1,1 +1,1 @@
-from src.database import ask, info, memory, myredis, operate, schools, timestamp, user
+from database import ask, info, memory, myredis, operate, schools, timestamp, user

@@ -1,4 +1,4 @@
-from src.database import myredis
+import myredis
 import re
 
 

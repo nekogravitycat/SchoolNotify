@@ -1,5 +1,5 @@
-from src import basic
-from src.unilog import log
+import basic
+from unilog import log
 
 
 def schedule_run() -> None:

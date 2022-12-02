@@ -3,8 +3,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
 import smtplib
-from src import website
-from src.unilog import log
+import website
+from unilog import log
 
 
 def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "") -> bool:
