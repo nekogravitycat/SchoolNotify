@@ -1,8 +1,8 @@
 import os
 import time
 from datetime import datetime, timezone, timedelta
-import myemail, ischool, database as db
-from unilog import log
+from src import myemail, ischool, database as db
+from src.unilog import log
 
 test_mail: bool = False
 

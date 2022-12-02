@@ -1,4 +1,4 @@
-import myredis
+from src.database import myredis
 
 
 def get_key() -> str:

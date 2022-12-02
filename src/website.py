@@ -7,8 +7,8 @@ import flask
 import threading
 import string
 import random
-import myemail, database as db
-from unilog import log
+from src import myemail, database as db
+from src.unilog import log
 
 app: flask.Flask = flask.Flask("")
 app.config["JSON_AS_ASCII"] = False

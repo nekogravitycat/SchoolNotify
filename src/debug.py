@@ -1,4 +1,4 @@
-import basic, daily
+from src import basic, daily
 
 
 def main():

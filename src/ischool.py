@@ -2,8 +2,8 @@ import time
 import requests
 import bs4
 import re
-import basic, database as db
-from unilog import log
+from src import basic, database as db
+from src.unilog import log
 
 header: dict = {
 	"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
