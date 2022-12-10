@@ -1,5 +1,5 @@
 """
-All routes start with nekogc.com/admin/ are protected by Cloudflare Access
+All routes start with gravitycat.tw/admin/ are protected by Cloudflare Access
 """
 
 import os
@@ -7,7 +7,7 @@ import flask
 import threading
 import string
 import random
-from src import myemail, database as db
+from src import myemail, basic, database as db
 from src.unilog import log
 
 app: flask.Flask = flask.Flask("")
@@ -19,33 +19,6 @@ base: str = "https://sn.gravitycat.tw"
 def main():
 	log("website start!")
 	db.schools.read_schools()
-
-
-def verify_link(email: str, school: str, token: str) -> str:
-	""" Generate a verification link for user
-
-	:param email: user's email
-	:param school: user's school
-	:param token: user's token
-	:return: verification link
-	"""
-
-	return f"{base}/verify?email={email}&school={school}&token={token}"
-
-
-def unsub_link(email: str, school: str, token: str = "") -> str:
-	""" Generate an unsubscribe link for user
-
-		:param email: user's email
-		:param school: user's school
-		:param token: user's token (optional, will fetch from database by default)
-		:return: unsubscribe link
-		"""
-
-	if not token:
-		token = db.user.get_key(school, email)
-
-	return f"{base}/unsub?email={email}&school={school}&token={token}"
 
 
 def show(title: str, content: str, icon: str = "") -> str:
@@ -118,7 +91,7 @@ def home() -> str:
 
 	# generates a six-characters-long token
 	token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
-	hyperlink: str = verify_link(email, school, token)
+	hyperlink: str = basic.verify_link(email, school, token)
 
 	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘。若您並未要求此動作，請忽略這封郵件"
 

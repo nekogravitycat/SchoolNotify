@@ -121,3 +121,33 @@ def debug(sch_ids: list = None) -> None:
 		db.memory.remember_school(sch_id, ischool_info)
 		show_result(ischool.get_news(sch_id, info.url, info.uid))
 		db.memory.recall_school(sch_id, ischool_info)
+
+
+base: str = "https://sn.gravitycat.tw"
+
+
+def verify_link(email: str, school: str, token: str) -> str:
+	""" Generate a verification link for user
+
+	:param email: user's email
+	:param school: user's school
+	:param token: user's token
+	:return: verification link
+	"""
+
+	return f"{base}/verify?email={email}&school={school}&token={token}"
+
+
+def unsub_link(email: str, school: str, token: str = "") -> str:
+	""" Generate an unsubscribe link for user
+
+		:param email: user's email
+		:param school: user's school
+		:param token: user's token (optional, will fetch from database by default)
+		:return: unsubscribe link
+		"""
+
+	if not token:
+		token = db.user.get_key(school, email)
+
+	return f"{base}/unsub?email={email}&school={school}&token={token}"

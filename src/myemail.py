@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
 import smtplib
-from src import website
+from src import basic
 from src.unilog import log
 
 
@@ -38,7 +38,7 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 					msg["subject"] = subject
 
 					if unsub_sch:
-						content_all = f'{content_base}點擊 <a href="{website.unsub_link(r, unsub_sch)}">這裡</a> 來退訂此服務'
+						content_all = f'{content_base}點擊 <a href="{basic.unsub_link(r, unsub_sch)}">這裡</a> 來退訂此服務'
 
 					msg.attach(MIMEText(content_all, "html"))
 					smtp.send_message(msg)
