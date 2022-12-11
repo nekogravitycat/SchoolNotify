@@ -1,5 +1,4 @@
 Flask
 bs4
 gunicorn
-redis
 requests

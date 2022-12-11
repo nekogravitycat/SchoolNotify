@@ -3,6 +3,7 @@ RUN apt update && apt install -y cron
 COPY . /app
 WORKDIR /app
 RUN mkdir log
+RUN mkdir data
 RUN chmod 0644 ./crontab/crontab-job
 RUN chmod +x ./crontab/run_daily.sh
 RUN crontab ./crontab/crontab-job

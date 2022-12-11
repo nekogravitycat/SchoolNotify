@@ -1,33 +1,59 @@
-import redis
+import json
 import os
+from src.unilog import log
 
-r = redis.Redis(
-	host=os.environ.get("redis_url"),
-	port=12860,
-	password=os.environ.get("redis_password"),
-	decode_responses=True,
-)
+table_file = "/app/data/data.json"
+table = {}
+
+
+def load_table() -> None:
+	if not os.path.exists(table_file):
+		try:
+			with open(table_file, "w+") as f:
+				f.write(json.dumps({"dummy": "meow"}))
+		except Exception as ex:
+			log(f"myredis.load_table() write new file {table_file} error: {ex}")
+
+	with open(table_file, "r") as f:
+		global table
+		table = json.loads(f.read())
+
+
+def dump_table() -> None:
+	with open(table_file, "w+") as f:
+		f.write(json.dumps(table))
 
 
 def set_key(key: str, value: str) -> None:
-	r.set(key, value)
+	table[key] = value
+	dump_table()
 
 
 def get_key(key: str) -> str:
-	return r.get(key)
+	return table.get(key)
 
 
 def delete_key(key: str) -> None:
-	r.delete(key)
+	del table[key]
+	dump_table()
 
 
 def exists(key: str) -> bool:
-	return r.exists(key) > 0
+	return key in table
 
 
 def keys():
-	return r.scan_iter()
+	return table.keys()
 
 
 def list_prefix(pre: str) -> list:
-	return list(r.scan_iter(f"{pre}*"))
+	result: list = []
+
+	for key in table.keys():
+		if key.startswith(pre):
+			result.append(key)
+
+	return result
+
+
+load_table()
