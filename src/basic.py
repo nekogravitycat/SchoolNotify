@@ -4,8 +4,6 @@ from datetime import datetime, timezone, timedelta
 from src import myemail, ischool, database as db
 from src.unilog import log
 
-test_mail: bool = False
-
 
 class Msg:
 	def __init__(self, link: str, title: str, date: time.struct_time) -> None:
@@ -29,11 +27,12 @@ def today() -> datetime.date:
 	return datetime.now(timezone(timedelta(hours=8))).date()
 
 
-def push_email(sch_id: str, news: list) -> None:
+def push_email(sch_id: str, news: list, test_mail: bool = False) -> None:
 	""" Send emails to the subscribers of the school
 
 	:param sch_id: id of school
 	:param news: list of basic.Msg objects
+	:param test_mail: whether to send email only to the admin
 	"""
 
 	is_empty: bool = not news
@@ -119,7 +118,9 @@ def debug(sch_ids: list = None) -> None:
 	for sch_id in sch_ids:
 		info: db.schools.Sch = db.schools.info[sch_id]
 		db.memory.remember_school(sch_id, ischool_info)
-		show_result(ischool.get_news(sch_id, info.url, info.uid))
+		news: list = ischool.get_news(sch_id, info.url, info.uid)
+		show_result(news)
+		push_email(sch_id, news, test_mail=True)
 		db.memory.recall_school(sch_id, ischool_info)
 
 
