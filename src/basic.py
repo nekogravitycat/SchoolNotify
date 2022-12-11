@@ -112,7 +112,7 @@ def debug(sch_ids: list = None) -> None:
 
 	ischool_info: list = ["date", "id"]
 
-	if not sch_ids:
+	if sch_ids is None:
 		sch_ids = db.schools.info.keys()
 
 	print(f"sch_ids: {sch_ids}")

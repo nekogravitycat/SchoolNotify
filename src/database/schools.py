@@ -75,3 +75,6 @@ def get_name(sch_id: str) -> str:
 	"""
 
 	return "*此學校不存在*" if sch_id not in info else info[sch_id].name
+
+
+read_schools()

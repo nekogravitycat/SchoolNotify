@@ -16,7 +16,6 @@ app.config["JSON_AS_ASCII"] = False
 
 def main():
 	log("website start!")
-	db.schools.read_schools()
 
 
 def show(title: str, content: str, icon: str = "") -> str:
