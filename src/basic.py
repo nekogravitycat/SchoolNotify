@@ -115,6 +115,8 @@ def debug(sch_ids: list = None) -> None:
 	if not sch_ids:
 		sch_ids = db.schools.info.keys()
 
+	print(f"sch_ids: {sch_ids}")
+
 	for sch_id in sch_ids:
 		info: db.schools.Sch = db.schools.info[sch_id]
 		db.memory.remember_school(sch_id, ischool_info)
