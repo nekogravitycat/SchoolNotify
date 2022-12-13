@@ -1,2 +1,0 @@
-0 18 * * * /app/crontab/run_daily.sh >> /app/log/crontab.log 2>&1
-# Don't remove the empty line at the end of this file. It is required to run the cron job
