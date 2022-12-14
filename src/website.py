@@ -200,11 +200,6 @@ def api_school() -> flask.Response:
 	return flask.jsonify({sch_id: db.schools.info[sch_id].name for sch_id in db.schools.info})
 
 
-@app.route("/api/school_info.json")
-def school_info_file() -> flask.Response:
-	return flask.send_file(r"assets/school_info.json")
-
-
 @app.route("/api/icon.png")
 def icon_file() -> flask.Response:
 	return flask.send_file(r"assets/icon.png")
@@ -287,11 +282,6 @@ def supporter() -> str | flask.Response:
 @app.route("/admin/api/db")
 def api_db() -> flask.Response:
 	return flask.jsonify({key: db.myredis.get_key(key) for key in db.myredis.keys()})
-
-
-@app.route("/admin/log.txt")
-def logs_file() -> str | flask.Response:
-	return flask.send_file(r"logs.txt") if os.path.exists(r"logs.txt") else "No logs yet."
 
 
 @app.route("/github")
