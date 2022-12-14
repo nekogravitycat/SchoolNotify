@@ -1,5 +1,6 @@
 import json
 
+info_file: str = r"data/school_info.json"
 info: dict = {}
 
 
@@ -22,7 +23,7 @@ class Sch:
 def read_schools() -> None:
 	""" Read school info from "school_info.json" and store them into "info" dict variable """
 
-	with open(r"assets/school_info.json", "r", encoding="utf8") as f:
+	with open(info_file, "r", encoding="utf8") as f:
 		data: dict = json.load(f)
 		for sch_id in data:
 			sch_info: Sch = Sch(
@@ -54,13 +55,13 @@ def add_school(sch_id: str, sch_info: Sch) -> None:
 		print(f"database.schools.add_school() error: school {sch_id} already exists")
 		return
 
-	with open(r"assets/school_info.json", "r", encoding="utf-8") as f:
+	with open(info_file, "r", encoding="utf-8") as f:
 		data: dict = json.load(f)
 
 	to_insert: dict = {sch_id: sch_info.to_dict()}
 	data |= to_insert
 
-	with open(r"assets/school_info.json", "w", encoding="utf-8") as f:
+	with open(info_file, "w", encoding="utf-8") as f:
 		json.dump(data, f, ensure_ascii=False, indent=2)
 
 	info.clear()
