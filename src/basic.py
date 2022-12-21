@@ -45,8 +45,10 @@ def push_email(sch_id: str, news: list, test_mail: bool = False) -> None:
 	for n in news:
 		print(n.detail() + "\n")
 
+	recipients = db.user.emails(sch_id)
+
 	# if there is at least one subscriber in the list
-	if db.user.list_keys(sch_id):
+	if recipients:
 		subject: str = f"{db.schools.get_name(sch_id)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
 		content: str = ""
 
@@ -57,17 +59,9 @@ def push_email(sch_id: str, news: list, test_mail: bool = False) -> None:
 			for n in news:
 				content += f"{n.html()}<br><br>"
 
-		recipients: list = []
-
 		if test_mail:
+			recipients.clear()
 			recipients.append(os.environ.get("email_admin"))
-
-		else:
-			# prefix format: schid_email_address@example.com
-			prefix_len: int = len(sch_id) + 7
-
-			# re[prefix_len:] is for removing the prefix (schid_email_)
-			recipients.extend(re[prefix_len:] for re in db.user.list_keys(sch_id))
 
 		myemail.send(recipients, subject, content, sch_id)
 
@@ -129,16 +123,14 @@ def debug(sch_ids: list = None) -> None:
 base: str = "https://sn.gravitycat.tw"
 
 
-def verify_link(email: str, school: str, token: str) -> str:
+def verify_link(uid: str) -> str:
 	""" Generate a verification link for user
 
-	:param email: user's email
-	:param school: user's school
-	:param token: user's token
+	:param uid: uid for the AskRecord
 	:return: verification link
 	"""
 
-	return f"{base}/verify?email={email}&school={school}&token={token}"
+	return f"{base}/verify?uid={uid}"
 
 
 def unsub_link(email: str, school: str, token: str = "") -> str:
@@ -151,6 +143,6 @@ def unsub_link(email: str, school: str, token: str = "") -> str:
 		"""
 
 	if not token:
-		token = db.user.get_key(school, email)
+		token = db.user.get_token(school, email)
 
 	return f"{base}/unsub?email={email}&school={school}&token={token}"

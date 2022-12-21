@@ -66,7 +66,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 
 			for news_id in news_ids:
 				# break the loop if the news was already got by us
-				if news_id == db.info.get_key(sch_id, "id"):
+				if news_id == db.info.get_info(sch_id, "id"):
 					log(f"get_news(): news_id ({news_id} already got)")
 					next_ = False
 					break
@@ -86,7 +86,7 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 				# get the information
 				title: str = soup.title.string
 				date: time.struct_time = time.strptime(soup.find(id="info_time").text.strip(), "%Y-%m-%d %H:%M:%S")
-				latest_date: time.struct_time = time.strptime(db.info.get_key(sch_id, "date"), "%Y-%m-%d")
+				latest_date: time.struct_time = time.strptime(db.info.get_info(sch_id, "date"), "%Y-%m-%d")
 
 				# prevent it from getting outdated news
 				if date >= latest_date:
@@ -107,8 +107,8 @@ def get_news(sch_id: str, sch_url: str, sch_uid: str) -> list | None:
 
 		# if the result is not empty, update the latest info
 		if result:
-			db.info.set_key(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
-			db.info.set_key(sch_id, "id", news_ids[0])
+			db.info.set_info(sch_id, "date", time.strftime("%Y-%m-%d", result[0].date))
+			db.info.set_info(sch_id, "id", news_ids[0])
 
 		return result
 

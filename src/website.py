@@ -49,10 +49,10 @@ def clear_ask(timestamp: str) -> None:
 
 	cleared: str = ""
 
-	for a in db.ask.list_keys():
-		if db.myredis.get_key(a).split(";")[0] == timestamp:
-			cleared += f"{a}\n"
-			db.myredis.delete_key(a)
+	for uid in db.ask.list_asks():
+		if db.ask.table.get(uid).get("timestamp") == timestamp:
+			cleared += f"{db.ask.table.get(uid).info()}\n"
+			db.ask.delete(uid)
 
 	if len(cleared) > 0:
 		log(f"request cleared:\n{cleared}")
@@ -82,21 +82,28 @@ def home() -> str:
 		log("Already subscribed")
 		return sub_page_error("已訂閱", "您已訂閱至此服務")
 
-	if db.ask.exists(school, email):
+	if db.ask.exists_school_email(school, email):
 		log("Already sent email")
 		return sub_page_error("請進行身分驗證", "一封驗證電子郵件先前已送出，請至收件夾查收或是等 15 分鐘以再次發送")
 
-	# generates a six-characters-long token
+	# generates a 6-characters-long token and 12-characters-long uid
 	token: str = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
-	hyperlink: str = basic.verify_link(email, school, token)
+	uid: str = "".join(random.choices(string.ascii_uppercase + string.digits, k=12))
+	hyperlink: str = basic.verify_link(uid)
 
 	content: str = f"點擊以下連結以完成電子郵件認證<br><a href={hyperlink}>{hyperlink}</a><br><br>連結有效期限為 5 分鐘。若您並未要求此動作，請忽略這封郵件"
 
 	email_thread = threading.Thread(target=myemail.send, args=([email], r"請驗證您的電子郵件", content))
 	email_thread.start()
 
-	db.ask.set_key(school, email, f"{db.timestamp.get_key()};{token}")
-	log(f"Passed: {school}, {token}")
+	record = db.ask.AskRecord(
+		school=school,
+		email=email,
+		timestamp=db.ask.timestamp,
+		token=token
+	)
+	db.ask.add(uid, record)
+	log(f"Passed: {record.info()}")
 	return flask.render_template(
 		"sub.html",
 		email=email,
@@ -110,28 +117,23 @@ def home() -> str:
 
 @app.route("/verify")
 def verify() -> str:
-	email: str = flask.request.args.get("email", default="", type=str)
-	school: str = flask.request.args.get("school", default="", type=str)
-	token: str = flask.request.args.get("token", default="", type=str)
+	uid: str = flask.request.args.get("uid", default="", type=str)
 
-	log(f"Verify: {email}, {school}, {token}")
+	log(f"Verify: {uid}")
 
-	if not email or not school or not token:
+	if not uid:
 		log("Bad flask.request")
 		return show("身分驗證：無效的請求", "請確認輸入的網址中包含完整的資訊")
 
-	if db.user.exists(school, email):
-		log("Already subscribed")
-		return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
-
-	if (not db.ask.exists(school, email)) or (token != db.ask.get_key(school, email).split(";")[1]):
+	if not db.ask.exists(uid):
 		log("Invalid email or token")
-		return show("身分驗證：無效的資料", "無效的電子郵件或令牌（或是驗證連結已失效，需再次請求訂閱）")
+		return show("身分驗證：無效的資料", "無效的資料（或是驗證連結已失效，需再次請求訂閱）")
 
-	db.user.set_key(school, email, token)
-	db.ask.delete_key(school, email)
+	record = db.ask.get(uid)
+	db.user.add(record.school, record.email, record.token)
+	db.ask.delete(uid)
 
-	log("Successfully subscribed")
+	log(f"Successfully subscribed: {record.info()}")
 	return show("成功訂閱！", "您已成功訂閱至此服務，感謝您的使用！", "circle-check")
 
 
@@ -157,10 +159,10 @@ def unsub() -> str:
 		log("Invalid email or token")
 		return flask.render_template("unsub.html", state="already_unsub")
 
-	if token != db.user.get_key(school, email):
+	if token != db.user.get_token(school, email):
 		return flask.render_template("unsub.html", state="invalid_token")
 
-	db.user.delete_key(school, email)
+	db.user.delete(school, email)
 	log("Successfully unsubscribed")
 	return flask.render_template("unsub.html", state="succeed")
 
@@ -178,19 +180,17 @@ def uptime() -> str:
 		)
 
 	# main function
-	timestamp: str = db.timestamp.get_key()
-
-	if timestamp == "A":
+	if db.ask.timestamp == "A":
 		clear_ask("B")
-		db.timestamp.set_key("B")
+		db.ask.timestamp = "B"
 
-	elif timestamp == "B":
+	elif db.ask.timestamp == "B":
 		clear_ask("C")
-		db.timestamp.set_key("C")
+		db.ask.timestamp = "C"
 
-	elif timestamp == "C":
+	elif db.ask.timestamp == "C":
 		clear_ask("A")
-		db.timestamp.set_key("A")
+		db.ask.timestamp = "A"
 
 	return "Hello, uptimerobot!"
 
@@ -268,13 +268,13 @@ def supporter() -> str | flask.Response:
 	sch_info = db.schools.Sch(name=name, url=url, uid=uid)
 	db.schools.add_school(sch_id, sch_info)
 
-	db.info.set_key(sch_id, "date", latest_date)
+	db.info.set_info(sch_id, "date", latest_date)
 
 	if latest_id:
-		db.info.set_key(sch_id, "id", latest_id)
+		db.info.set_info(sch_id, "id", latest_id)
 		
 	else:
-		db.info.set_key(sch_id, "id", "0")
+		db.info.set_info(sch_id, "id", "0")
 
 	return flask.render_template("supporter.html", pop_title="Succeed", pop_msg="Succeed!", pop_type="ok")
 

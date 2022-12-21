@@ -1,21 +1,37 @@
-from src.database import myredis
+from src.database import json_io
+from src.unilog import log
+
+io = json_io.TableIO(r"/app/data/subscriber_list.json")
 
 
-def get_key(school: str, email: str) -> str:
-	return myredis.get_key(f"{school}_email_{email}")
+def add(school: str, email: str, token: str) -> None:
+	if io.table.get(school) is None:
+		io.table.update({school: {}})
+
+	io.table.get(school)[email] = token
+	io.dump()
 
 
-def set_key(school: str, email: str, token: str) -> None:
-	myredis.set_key(f"{school}_email_{email}", token)
+def delete(school: str, email: str) -> None:
+	if io.table.get(school).get(email) is None:
+		log(f"database.user: key '{school}-{email}' not exists")
+		return
+
+	del io.table.get(school)[email]
+	io.dump()
 
 
-def list_keys(school: str) -> list:
-	return myredis.list_prefix(f"{school}_email")
+def get_token(school: str, email: str) -> str:
+	return io.table.get(school).get(email)
+
+
+def emails(school: str) -> list:
+	result = []
+	for u in io.table.get(school):
+		result.append(u)
+
+	return result
 
 
 def exists(school: str, email: str) -> bool:
-	return myredis.exists(f"{school}_email_{email}")
-
-
-def delete_key(school: str, email: str) -> None:
-	myredis.delete_key(f"{school}_email_{email}")
+	return io.table.get(school).get(email) is not None

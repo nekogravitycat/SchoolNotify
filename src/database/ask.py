@@ -1,21 +1,47 @@
-from src.database import myredis
+from src.unilog import log
+
+timestamp: str = "A"
+table: dict = {}
 
 
-def get_key(school: str, email: str) -> str:
-	return myredis.get_key(f"ask_{school}_{email}")
+class AskRecord:
+	def __init__(self, school: str, email: str, timestamp: str, token: str):
+		self.email = email
+		self.school = school
+		self.timestamp = timestamp
+		self.token = token
+
+	def info(self) -> str:
+		return f"{self.email};{self.school};{self.timestamp};{self.token}"
 
 
-def set_key(school: str, email: str, token: str) -> None:
-	myredis.set_key(f"ask_{school}_{email}", token)
+def add(uid: str, record: AskRecord):
+	table.update({uid: record})
 
 
-def list_keys(school: str = "") -> list:
-	return myredis.list_prefix(f"ask_{school}") if school else myredis.list_prefix("ask")
+def get(uid: str) -> AskRecord:
+	return table.get(uid)
 
 
-def exists(school: str, email: str) -> bool:
-	return myredis.exists(f"ask_{school}_{email}")
+def list_asks():
+	return table.keys()
 
 
-def delete_key(school: str, email: str):
-	myredis.delete_key(f"ask_{school}_{email}")
+def delete(uid: str) -> None:
+	if uid not in table:
+		log(f"database.ask: key '{uid}' not exists")
+		return
+
+	del table[uid]
+
+
+def exists(uid: str) -> bool:
+	return uid in table
+
+
+def exists_school_email(school: str, email: str) -> bool:
+	for uid in table:
+		if table.get(uid).school == school and table.get(uid).email == email:
+			return True
+
+	return False
