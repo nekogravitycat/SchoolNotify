@@ -50,7 +50,7 @@ def clear_ask(timestamp: str) -> None:
 	cleared: str = ""
 
 	for uid in db.ask.list_asks():
-		if db.ask.table.get(uid).get("timestamp") == timestamp:
+		if db.ask.table.get(uid).timestamp == timestamp:
 			cleared += f"{db.ask.table.get(uid).info()}\n"
 			db.ask.delete(uid)
 
