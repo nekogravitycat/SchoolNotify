@@ -99,7 +99,7 @@ def home() -> str:
 	record = db.ask.AskRecord(
 		school=school,
 		email=email,
-		timestamp=db.ask.timestamp,
+		timestamp=db.ask.now_timestamp,
 		token=token
 	)
 	db.ask.add(uid, record)
@@ -180,17 +180,17 @@ def uptime() -> str:
 		)
 
 	# main function
-	if db.ask.timestamp == "A":
+	if db.ask.now_timestamp == "A":
 		clear_ask("B")
-		db.ask.timestamp = "B"
+		db.ask.now_timestamp = "B"
 
-	elif db.ask.timestamp == "B":
+	elif db.ask.now_timestamp == "B":
 		clear_ask("C")
-		db.ask.timestamp = "C"
+		db.ask.now_timestamp = "C"
 
-	elif db.ask.timestamp == "C":
+	elif db.ask.now_timestamp == "C":
 		clear_ask("A")
-		db.ask.timestamp = "A"
+		db.ask.now_timestamp = "A"
 
 	return "Hello, uptimerobot!"
 

@@ -1,6 +1,6 @@
 from src.unilog import log
 
-timestamp: str = "A"
+now_timestamp: str = "A"
 table: dict = {}
 
 
