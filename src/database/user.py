@@ -13,7 +13,7 @@ def add(school: str, email: str, token: str) -> None:
 
 
 def delete(school: str, email: str) -> None:
-	if io.table.get(school).get(email) is None:
+	if io.table.get(school, {}).get(email) is None:
 		log(f"database.user: key '{school}-{email}' not exists")
 		return
 

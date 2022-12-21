@@ -4,7 +4,7 @@ io = json_io.TableIO(r"/app/data/latest_info.json")
 
 
 def get_info(school: str, info: str) -> str:
-	return io.table.get(school).get(info)
+	return io.table.get(school, {}).get(info)
 
 
 def set_info(school: str, info: str, context: str) -> None:
