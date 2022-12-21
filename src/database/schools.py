@@ -1,6 +1,6 @@
 import json
 
-info_file: str = r"data/latest_info.json"
+info_file: str = r"data/school_info.json"
 info: dict = {}
 
 

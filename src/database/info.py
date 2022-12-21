@@ -1,6 +1,6 @@
 from src.database import json_io
 
-io = json_io.TableIO(r"/app/data/school_info.json")
+io = json_io.TableIO(r"/app/data/latest_info.json")
 
 
 def get_info(school: str, info: str) -> str:
