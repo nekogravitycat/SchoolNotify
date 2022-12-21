@@ -22,16 +22,16 @@ def delete(school: str, email: str) -> None:
 
 
 def get_token(school: str, email: str) -> str:
-	return io.table.get(school).get(email)
+	return io.table.get(school, {}).get(email)
 
 
 def emails(school: str) -> list:
 	result = []
-	for u in io.table.get(school):
+	for u in io.table.get(school, {}):
 		result.append(u)
 
 	return result
 
 
 def exists(school: str, email: str) -> bool:
-	return io.table.get(school).get(email) is not None
+	return io.table.get(school, {}).get(email) is not None
