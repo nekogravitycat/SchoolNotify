@@ -52,12 +52,8 @@ def push_email(sch_id: str, news: list, test_mail: bool = False) -> None:
 		subject: str = f"{db.schools.get_name(sch_id)}學校公告 ({today().strftime('%m/%d')})".replace("-", "/")
 		content: str = ""
 
-		if is_empty:
-			content = "尚無新公告<br><br>"
-
-		else:
-			for n in news:
-				content += f"{n.html()}<br><br>"
+		for n in news:
+			content += f"{n.html()}<br><br>"
 
 		if test_mail:
 			recipients.clear()
