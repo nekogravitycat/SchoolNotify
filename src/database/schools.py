@@ -1,4 +1,5 @@
 import json
+import re
 
 info_file: str = r"data/school_info.json"
 info: dict = {}
@@ -76,6 +77,10 @@ def get_name(sch_id: str) -> str:
 	"""
 
 	return "*此學校不存在*" if sch_id not in info else info[sch_id].name
+
+
+def is_legal_name(key_name: str) -> re.Match:
+	return re.match(r"^[\w-]+$", key_name)
 
 
 read_schools()

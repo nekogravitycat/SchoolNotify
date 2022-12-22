@@ -47,15 +47,10 @@ def clear_ask(timestamp: str) -> None:
 	:param timestamp: timestamp to find and clear
 	"""
 
-	cleared: str = ""
-
 	for uid in list(db.ask.list_asks()):
 		if db.ask.get(uid).timestamp == timestamp:
-			cleared += f"{db.ask.get(uid).info()}\n"
+			log(f"request cleared: {db.ask.get(uid).info()}")
 			db.ask.delete(uid)
-
-	if len(cleared) > 0:
-		log(f"request cleared:\n{cleared}")
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -210,31 +205,6 @@ def admin() -> str | flask.Response:
 	return flask.render_template("admin.html")
 
 
-@app.route("/admin/db")
-def show_db() -> str | flask.Response:
-	return flask.render_template("db.html")
-
-
-@app.route("/admin/db/edit", methods=["POST", "GET"])
-def edit_db() -> str | flask.Response:
-	# for GET method
-	if flask.request.method == "GET":
-		return flask.render_template("db_edit.html")
-
-	# for POST method
-	key: str = flask.request.form["key"]
-	value: str = flask.request.form["value"]
-	method: str = flask.request.form["method"]
-
-	res: dict = db.operate.edit_key(method, key, value)
-	return flask.render_template(
-		"db_edit.html",
-		pop_type=res["status"],
-		pop_title=res["title"],
-		pop_msg=res["msg"],
-	)
-
-
 @app.route("/admin/spr", methods=["POST", "GET"])
 def supporter() -> str | flask.Response:
 	# for GET method
@@ -249,7 +219,7 @@ def supporter() -> str | flask.Response:
 	latest_date = flask.request.form["latest_date"]
 	latest_id = flask.request.form["latest_id"]
 
-	if not db.operate.is_legal_name(sch_id):
+	if not db.schools.is_legal_name(sch_id):
 		return flask.render_template(
 			"supporter.html",
 			pop_title="School ID is invalid",
@@ -277,11 +247,6 @@ def supporter() -> str | flask.Response:
 		db.info.set_info(sch_id, "id", "0")
 
 	return flask.render_template("supporter.html", pop_title="Succeed", pop_msg="Succeed!", pop_type="ok")
-
-
-@app.route("/admin/api/db")
-def api_db() -> flask.Response:
-	return flask.jsonify({key: db.myredis.get_key(key) for key in db.myredis.keys()})
 
 
 @app.route("/github")
