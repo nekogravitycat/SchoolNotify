@@ -63,7 +63,7 @@ def home() -> str:
 	email: str = flask.request.form["email"]
 	school: str = flask.request.form["school"]
 
-	log(f"Ask to sub: {email}, {school}")
+	log(f"Ask to sub: {flask.headers.get('X-Real-IP')}, {email}, {school}")
 
 	if not email or not school:
 		log("Bad flask.request: no email or school")
@@ -114,7 +114,7 @@ def home() -> str:
 def verify() -> str:
 	uid: str = flask.request.args.get("uid", default="", type=str)
 
-	log(f"Verify: {uid}")
+	log(f"Verify: {flask.headers.get('X-Real-IP')}, {uid}")
 
 	if not uid:
 		log("Bad flask.request")
@@ -144,7 +144,7 @@ def unsub() -> str:
 	school: str = flask.request.form["school"]
 	token: str = flask.request.form["token"]
 
-	log(f"Unsub: {email}, {school}, {token}")
+	log(f"Unsub: {flask.headers.get('X-Real-IP')}, {email}, {school}, {token}")
 
 	if not email or not school or not token:
 		log("Bad request")
@@ -202,11 +202,13 @@ def icon_file() -> flask.Response:
 
 @app.route("/admin")
 def admin() -> str | flask.Response:
+	log(f"access /admin: {flask.request.headers.get('X-Real-IP')}")
 	return flask.render_template("admin.html")
 
 
 @app.route("/admin/spr", methods=["POST", "GET"])
 def supporter() -> str | flask.Response:
+	log(f"access /admin/spr: {flask.request.headers.get('X-Real-IP')}")
 	# for GET method
 	if flask.request.method == "GET":
 		return flask.render_template("supporter.html")
