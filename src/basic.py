@@ -38,8 +38,7 @@ def push_email(sch_id: str, news: list, test_mail: bool = False) -> None:
 	is_empty: bool = not news
 
 	if is_empty:
-		log(f"No new announcements for {sch_id}, skip email sending\n")
-		log("push_email() done(skipped)!")
+		log(f"No new announcements for {sch_id}, skip email sending")
 		return
 
 	for n in news:
@@ -85,6 +84,10 @@ def run() -> None:
 	""" Run news-gathering for every school and send news emails to the subscribers """
 
 	for sch_id in db.schools.info.keys():
+		if not db.user.emails(sch_id):
+			log(f"There's no subscriber for {sch_id}, skipping")
+			continue
+
 		try:
 			info: db.schools.Sch = db.schools.info[sch_id]
 			news: list = ischool.get_news(sch_id, info.url, info.uid)

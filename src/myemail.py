@@ -7,14 +7,13 @@ from src import basic
 from src.unilog import log
 
 
-def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "") -> bool:
+def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "") -> None:
 	""" Send emails to recipients in the list, contain unsubscribing link if "unsub_sch" is provided
 
 	:param recipients: list of recipients
 	:param subject: subject of mail
 	:param content_base: content_base of mail
 	:param unsub_sch: school to unsubscribe (optional, attach unsubscribing link if provided)
-	:return: True if ran successfully, False if not
 	"""
 
 	content_all: str = content_base
@@ -42,7 +41,7 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 
 					msg.attach(MIMEText(content_all, "html"))
 					smtp.send_message(msg)
-					log(f"({count}/{list_len}) email sent: {r} {subject}")
+					print(f"({count}/{list_len}) email sent: {r} {subject}")
 					count += 1
 
 			except Exception as ex:
@@ -50,6 +49,3 @@ def send(recipients: list, subject: str, content_base: str, unsub_sch: str = "")
 
 	except Exception as e:
 		log(f"SMTP Error: {e}")
-		return False
-
-	return True
