@@ -20,7 +20,7 @@ containing new announcements from your school.
 Each letter that's sent to you contains an unsubscribe link at the bottom of the mail.
 
 ## Where's my information stored? Are they safe?
-This service and the data are hosted and stored on my own server in Taiwan.
+This service and the data are hosted and stored on my [Linode](https://linode.com) in Tokyo, JP.
 Only the developer of this project (me, nekogravitycat) can visit the database.
 We won't use or share any information anywhere.
 
