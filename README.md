@@ -6,7 +6,7 @@ SchoolNotify is an online service, automatically collecting the newest informati
 from your school's website, then sends them into your email inbox.
 
 ## How can I use it?
-Just simply subscribe to this service [here](https://sn.gravitycat.tw).
+~~Just simply subscribe to this service [here](https://sn.gravitycat.tw).~~ (The service is no longer available.)
 Please fill out your email address and select your school.
 The system will send you a confirmation email.
 Please visit the link provided within 5 minutes
